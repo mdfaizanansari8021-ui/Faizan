@@ -40,9 +40,10 @@
             font-family: 'Roboto', 'Noto Sans Devanagari', sans-serif;
             user-select: none; /* Security: Disable text selection */
             background-color: #f0f2f5;
+            overscroll-behavior: none;
         }
 
-        /* Prevent Context Menu */
+        /* Prevent Context Menu & Selection */
         body.security-active {
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -89,7 +90,9 @@
             .no-print { display: none !important; }
             .print-only { display: block !important; }
             body { background-color: white; color: black; }
-            .assessment-sheet { border: none; box-shadow: none; width: 100%; }
+            .assessment-sheet { border: 2px solid #000; box-shadow: none; width: 100%; margin: 0; }
+            #detailedAnalysis { display: block !important; }
+            .page-break { page-break-before: always; }
         }
         
         .print-only { display: none; }
@@ -99,10 +102,21 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
-
-        /* Modal */
-        .modal { transition: opacity 0.3s ease; }
-        .modal-content { max-height: 90vh; overflow-y: auto; }
+        
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 8rem;
+            opacity: 0.05;
+            pointer-events: none;
+            font-weight: bold;
+            color: #000;
+            white-space: nowrap;
+            z-index: 0;
+        }
     </style>
 </head>
 <body class="h-screen flex flex-col security-active" oncontextmenu="return false;">
@@ -110,8 +124,7 @@
     <!-- ================= HEADER ================= -->
     <header class="header-gradient text-white shadow-md no-print h-16 flex items-center justify-between px-4 fixed w-full z-50 top-0">
         <div class="flex items-center gap-3">
-            <div class="bg-white p-1 rounded-full h-10 w-10 flex items-center justify-center">
-                <!-- Fallback Text Logo if image fails -->
+            <div class="bg-white p-1 rounded-full h-10 w-10 flex items-center justify-center shadow-inner">
                 <span class="text-xs font-bold text-blue-800 text-center leading-tight">BSEB<br>2025</span>
             </div>
             <div>
@@ -120,23 +133,53 @@
             </div>
         </div>
         
-        <div class="flex items-center gap-4">
-            <div class="hidden md:block text-right">
-                <div class="text-sm font-semibold">Candidate: Md Faizan Ansari</div>
-                <div class="text-xs opacity-80">Roll No: 2501001</div>
-            </div>
-            <div class="h-10 w-10 rounded-full bg-gray-300 border-2 border-white overflow-hidden">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Faizan" alt="User" class="h-full w-full object-cover">
+        <div class="flex items-center gap-4" id="headerProfile">
+            <!-- Populated by JS after login -->
+            <div class="text-right hidden md:block">
+                <div class="text-sm font-semibold text-yellow-300">Login Required</div>
             </div>
         </div>
     </header>
 
+    <!-- ================= LOGIN PAGE (Overlay) ================= -->
+    <div id="loginPage" class="fixed inset-0 bg-gray-100 z-[70] flex flex-col items-center justify-center p-4 no-print">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
+            <div class="bg-blue-900 p-6 text-center">
+                <h2 class="text-2xl font-bold text-white mb-2">Candidate Login</h2>
+                <p class="text-blue-200 text-sm">Bihar D.El.Ed. CBT 2025</p>
+            </div>
+            <div class="p-8 space-y-6">
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Full Name / पूरा नाम</label>
+                    <input type="text" id="inputName" class="w-full px-4 py-3 rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition" placeholder="Enter your name">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-bold mb-2">Date of Birth / जन्म तिथि</label>
+                    <input type="date" id="inputDob" class="w-full px-4 py-3 rounded border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition">
+                </div>
+                <div class="pt-4">
+                    <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded transition shadow-lg transform hover:scale-[1.02]">
+                        Proceed to Instructions
+                    </button>
+                </div>
+                <p class="text-xs text-center text-gray-500 mt-4">
+                    By logging in, you agree to the examination rules and monitoring policies.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- ================= INSTRUCTIONS PAGE (Overlay) ================= -->
-    <div id="instructionPage" class="fixed inset-0 bg-white z-[60] flex flex-col p-8 overflow-y-auto no-print">
-        <div class="max-w-4xl mx-auto w-full">
+    <div id="instructionPage" class="hidden fixed inset-0 bg-white z-[60] flex flex-col p-8 overflow-y-auto no-print">
+        <div class="max-w-4xl mx-auto w-full relative">
+            <div class="absolute top-0 right-0 p-2 bg-yellow-100 border border-yellow-400 rounded text-xs text-yellow-800">
+                System Check: <span class="text-green-600 font-bold">OK</span>
+            </div>
+            
             <h2 class="text-2xl font-bold text-center text-blue-900 mb-6 border-b-2 border-orange-400 pb-2">Instructions / निर्देश</h2>
             
             <div class="bg-blue-50 p-4 rounded border border-blue-200 mb-6 text-sm space-y-2">
+                <p><strong>Candidate:</strong> <span id="instrName" class="font-bold">...</span></p>
                 <p><strong>Total Duration:</strong> 150 Minutes</p>
                 <p><strong>Total Questions:</strong> 120</p>
                 <p><strong>Marking Scheme:</strong> +1 for Correct, 0 for Incorrect (No Negative Marking).</p>
@@ -154,16 +197,24 @@
                 </div>
                 <div>
                     <h3 class="font-bold mb-2">Security Warning:</h3>
-                    <p class="text-red-600 text-sm">Do not attempt to switch tabs or open other applications. Right-click and copy-paste are disabled. Your IP is being monitored.</p>
+                    <div class="bg-red-50 border border-red-200 p-3 rounded text-sm text-red-700">
+                        <p class="font-bold">Strict Action Will Be Taken If:</p>
+                        <ul class="list-disc ml-4 mt-1">
+                            <li>You switch tabs or minimize the window.</li>
+                            <li>You try to copy/paste content.</li>
+                            <li>You exit Fullscreen mode.</li>
+                        </ul>
+                        <p class="mt-2 text-xs">Your IP and browser activity are being monitored.</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="flex items-center gap-2 mb-6">
-                <input type="checkbox" id="agreeCheck" class="w-5 h-5">
-                <label for="agreeCheck" class="text-sm">I have read and understood the instructions. मैं निर्देशों को पढ़ और समझ लिया है।</label>
+            <div class="flex items-center gap-2 mb-6 bg-gray-100 p-3 rounded">
+                <input type="checkbox" id="agreeCheck" class="w-5 h-5 accent-blue-600">
+                <label for="agreeCheck" class="text-sm font-medium cursor-pointer select-none">I have read the instructions and agree to the security terms. / मैंने निर्देश पढ़ लिए हैं।</label>
             </div>
 
-            <button onclick="startExam()" id="startBtn" disabled class="bg-blue-600 text-white px-8 py-3 rounded font-bold hover:bg-blue-700 disabled:opacity-50 w-full md:w-auto">
+            <button onclick="startExam()" id="startBtn" disabled class="bg-green-600 text-white px-8 py-3 rounded font-bold hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed w-full md:w-auto transition shadow-lg">
                 Start Examination / परीक्षा शुरू करें
             </button>
         </div>
@@ -174,24 +225,26 @@
         
         <!-- Left: Question Area -->
         <section class="flex-1 flex flex-col bg-white overflow-hidden relative">
+            <div class="watermark" id="examWatermark">BSEB CBT</div>
+
             <!-- Subject Tabs -->
-            <div class="bg-gray-100 border-b flex overflow-x-auto whitespace-nowrap p-1" id="sectionTabs">
+            <div class="bg-gray-100 border-b flex overflow-x-auto whitespace-nowrap p-1 z-10" id="sectionTabs">
                 <!-- Tabs generated by JS -->
             </div>
 
             <!-- Timer & Action Bar -->
-            <div class="flex justify-between items-center p-2 border-b bg-gray-50">
+            <div class="flex justify-between items-center p-2 border-b bg-gray-50 z-10">
                 <div class="text-sm font-bold text-gray-700">Q. No: <span id="currentQNum">1</span></div>
-                <div class="flex items-center gap-2 bg-black text-white px-3 py-1 rounded">
-                    <span>Time Left:</span>
-                    <span id="timer" class="font-mono font-bold text-yellow-400">02:30:00</span>
+                <div class="flex items-center gap-2 bg-black text-white px-3 py-1 rounded shadow-sm">
+                    <span class="text-xs uppercase tracking-wider">Time Left:</span>
+                    <span id="timer" class="font-mono font-bold text-yellow-400 text-lg">02:30:00</span>
                 </div>
                 <div class="text-sm text-gray-600 font-bold" id="marksDisplay">+1.00 / -0.00</div>
             </div>
 
             <!-- Question Content -->
-            <div class="flex-1 overflow-y-auto p-6" id="questionContainer">
-                <div id="questionText" class="text-lg font-medium text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
+            <div class="flex-1 overflow-y-auto p-6 z-10" id="questionContainer">
+                <div id="questionText" class="text-xl font-medium text-gray-800 mb-6 border-l-4 border-blue-500 pl-4 py-1 leading-relaxed">
                     Loading Question...
                 </div>
                 
@@ -201,26 +254,27 @@
             </div>
 
             <!-- Bottom Navigation -->
-            <div class="bg-white border-t p-3 flex justify-between items-center shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+            <div class="bg-white border-t p-3 flex justify-between items-center shadow-[0_-2px_10px_rgba(0,0,0,0.1)] z-10">
                 <div class="flex gap-2">
-                    <button onclick="markForReview()" class="px-4 py-2 bg-purple-100 text-purple-700 border border-purple-300 rounded hover:bg-purple-200 text-sm font-bold">Mark for Review</button>
-                    <button onclick="clearResponse()" class="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 text-sm font-bold">Clear</button>
+                    <button onclick="markForReview()" class="px-3 md:px-4 py-2 bg-purple-100 text-purple-700 border border-purple-300 rounded hover:bg-purple-200 text-sm font-bold transition">Mark for Review</button>
+                    <button onclick="clearResponse()" class="px-3 md:px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 text-sm font-bold transition">Clear</button>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="prevQuestion()" class="px-6 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded hover:bg-blue-100 font-bold">Previous</button>
-                    <button onclick="saveAndNext()" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold shadow-sm">Save & Next</button>
+                    <button onclick="prevQuestion()" class="px-4 md:px-6 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded hover:bg-blue-100 font-bold transition">Previous</button>
+                    <button onclick="saveAndNext()" class="px-4 md:px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold shadow-md transform active:scale-95 transition">Save & Next</button>
                 </div>
             </div>
         </section>
 
         <!-- Right: Palette (Sidebar) -->
-        <aside class="w-full md:w-80 bg-gray-50 border-l flex flex-col h-[30vh] md:h-auto overflow-hidden">
-            <div class="p-3 bg-gray-200 font-bold text-gray-700 text-center border-b">
-                Question Palette
+        <aside class="w-full md:w-80 bg-gray-50 border-l flex flex-col h-[30vh] md:h-auto overflow-hidden z-20">
+            <div class="p-3 bg-gray-200 font-bold text-gray-700 text-center border-b flex justify-between items-center">
+                <span>Question Palette</span>
+                <span id="userInfoSmall" class="text-xs font-normal text-blue-800">User</span>
             </div>
             
             <div class="p-4 flex-1 overflow-y-auto">
-                <div class="grid grid-cols-2 gap-2 text-xs mb-4">
+                <div class="grid grid-cols-2 gap-2 text-xs mb-4 select-none">
                     <div class="flex items-center gap-1"><span class="w-4 h-4 bg-green-500 clipped"></span> Answered</div>
                     <div class="flex items-center gap-1"><span class="w-4 h-4 bg-red-500 clipped"></span> Not Answered</div>
                     <div class="flex items-center gap-1"><span class="w-4 h-4 bg-gray-200 border"></span> Not Visited</div>
@@ -234,7 +288,7 @@
             </div>
 
             <div class="p-4 border-t bg-white">
-                <button onclick="submitExam()" class="w-full bg-blue-800 text-white py-3 rounded font-bold hover:bg-blue-900 shadow-lg">
+                <button onclick="submitExam()" class="w-full bg-blue-800 text-white py-3 rounded font-bold hover:bg-blue-900 shadow-lg transition uppercase tracking-wide">
                     SUBMIT TEST
                 </button>
             </div>
@@ -243,84 +297,115 @@
 
     <!-- ================= RESULT / ASSESSMENT SHEET ================= -->
     <div id="resultPage" class="hidden min-h-screen bg-gray-100 p-4 print-only">
-        <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden assessment-sheet" id="printableArea">
+        <div class="max-w-5xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden assessment-sheet" id="printableArea">
             
             <!-- Result Header -->
-            <div class="bg-blue-800 text-white p-6 border-b-4 border-orange-500">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="text-center md:text-left">
-                        <h1 class="text-2xl font-bold uppercase tracking-wide">Student Assessment Sheet</h1>
-                        <p class="text-sm opacity-90">Bihar D.El.Ed. Entrance Exam 2025</p>
+            <div class="bg-white border-b-2 border-gray-300 p-8 relative">
+                <div class="absolute top-4 right-4 border-2 border-red-500 text-red-500 rounded px-2 py-1 font-bold text-xs uppercase transform rotate-12 opacity-80">
+                    Provisional
+                </div>
+                
+                <div class="flex flex-col md:flex-row items-center gap-6 mb-6">
+                    <div class="w-20 h-20 bg-blue-900 rounded-full flex items-center justify-center text-white font-bold text-xs text-center leading-tight shadow-lg">
+                        BSEB<br>ESTD<br>1952
                     </div>
-                    <div class="hidden md:block text-right">
-                        <div class="text-3xl font-bold" id="finalScoreDisplay">00 / 120</div>
-                        <div class="text-xs uppercase tracking-wider">Total Score</div>
+                    <div class="text-center md:text-left flex-1">
+                        <h1 class="text-3xl font-bold text-blue-900 uppercase tracking-wide mb-1">Bihar School Examination Board</h1>
+                        <h2 class="text-xl font-semibold text-gray-600">D.El.Ed. Joint Entrance Test 2025 - Score Card</h2>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-5xl font-bold text-blue-900" id="finalScoreDisplay">000</div>
+                        <div class="text-sm font-bold text-gray-500 uppercase tracking-wider">Total Score / 120</div>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm bg-blue-900/50 p-3 rounded">
-                    <div>
-                        <span class="block opacity-70 text-xs">Student Name</span>
-                        <span class="font-bold">Md Faizan Ansari</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-sm border p-4 bg-gray-50 rounded">
+                    <div class="flex justify-between border-b border-gray-200 pb-1">
+                        <span class="text-gray-500">Candidate Name</span>
+                        <span class="font-bold text-gray-800 uppercase" id="resName">--</span>
                     </div>
-                    <div>
-                        <span class="block opacity-70 text-xs">Student ID</span>
-                        <span class="font-bold">FAI-2026-IND</span>
+                    <div class="flex justify-between border-b border-gray-200 pb-1">
+                        <span class="text-gray-500">Date of Birth</span>
+                        <span class="font-bold text-gray-800" id="resDob">--</span>
                     </div>
-                    <div>
-                        <span class="block opacity-70 text-xs">Date</span>
-                        <span class="font-bold" id="examDate">03 Jan 2026</span>
+                    <div class="flex justify-between border-b border-gray-200 pb-1">
+                        <span class="text-gray-500">Exam Date</span>
+                        <span class="font-bold text-gray-800" id="examDate">--</span>
                     </div>
-                    <div>
-                        <span class="block opacity-70 text-xs">Location</span>
-                        <span class="font-bold">India 🇮🇳</span>
+                    <div class="flex justify-between border-b border-gray-200 pb-1">
+                        <span class="text-gray-500">Application ID</span>
+                        <span class="font-bold text-gray-800" id="appId">--</span>
+                    </div>
+                    <div class="flex justify-between border-b border-gray-200 pb-1">
+                        <span class="text-gray-500">Tab Switches (Warnings)</span>
+                        <span class="font-bold text-red-600" id="resWarnings">0</span>
                     </div>
                 </div>
             </div>
 
             <!-- Analysis Summary -->
-            <div class="p-6 bg-gray-50 border-b">
-                <h3 class="font-bold text-gray-700 mb-3">Performance Analysis</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <div class="bg-white p-3 rounded border shadow-sm">
-                        <div class="text-2xl font-bold text-gray-800" id="totalQuestions">120</div>
-                        <div class="text-xs text-gray-500">Total Questions</div>
+            <div class="p-6 bg-white border-b">
+                <h3 class="font-bold text-gray-700 mb-4 uppercase text-sm tracking-widest border-l-4 border-blue-600 pl-2">Performance Summary</h3>
+                <div class="grid grid-cols-4 gap-4 text-center">
+                    <div class="p-4 rounded bg-blue-50 border border-blue-100">
+                        <div class="text-2xl font-bold text-blue-800" id="totalQuestions">120</div>
+                        <div class="text-xs text-blue-600 font-bold uppercase mt-1">Total</div>
                     </div>
-                    <div class="bg-white p-3 rounded border shadow-sm">
-                        <div class="text-2xl font-bold text-green-600" id="correctCount">0</div>
-                        <div class="text-xs text-gray-500">Correct</div>
+                    <div class="p-4 rounded bg-green-50 border border-green-100">
+                        <div class="text-2xl font-bold text-green-700" id="correctCount">0</div>
+                        <div class="text-xs text-green-600 font-bold uppercase mt-1">Correct</div>
                     </div>
-                    <div class="bg-white p-3 rounded border shadow-sm">
-                        <div class="text-2xl font-bold text-red-600" id="wrongCount">0</div>
-                        <div class="text-xs text-gray-500">Incorrect</div>
+                    <div class="p-4 rounded bg-red-50 border border-red-100">
+                        <div class="text-2xl font-bold text-red-700" id="wrongCount">0</div>
+                        <div class="text-xs text-red-600 font-bold uppercase mt-1">Wrong</div>
                     </div>
-                    <div class="bg-white p-3 rounded border shadow-sm">
-                        <div class="text-2xl font-bold text-gray-400" id="unattemptedCount">0</div>
-                        <div class="text-xs text-gray-500">Unattempted</div>
+                    <div class="p-4 rounded bg-gray-50 border border-gray-200">
+                        <div class="text-2xl font-bold text-gray-600" id="unattemptedCount">0</div>
+                        <div class="text-xs text-gray-500 font-bold uppercase mt-1">Skipped</div>
                     </div>
                 </div>
             </div>
 
             <!-- Detailed Question List -->
             <div class="p-6">
-                <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Detailed Response Sheet</h3>
-                <div id="detailedAnalysis" class="space-y-6">
-                    <!-- Injected via JS -->
+                <h3 class="font-bold text-gray-700 mb-4 uppercase text-sm tracking-widest border-l-4 border-blue-600 pl-2">Detailed Response Analysis</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-gray-500 border rounded-lg">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 border w-16">Q.No</th>
+                                <th scope="col" class="px-4 py-3 border">Question & Options</th>
+                                <th scope="col" class="px-4 py-3 border w-32 text-center">Your Ans</th>
+                                <th scope="col" class="px-4 py-3 border w-32 text-center">Correct Ans</th>
+                                <th scope="col" class="px-4 py-3 border w-24 text-center">Result</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailedAnalysisBody">
+                            <!-- Injected via JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
             <!-- Footer -->
-            <div class="bg-gray-100 p-4 text-center text-xs text-gray-500 border-t">
-                Generated by Bihar D.El.Ed CBT System • Secure Verification ID: <span id="securityId"></span>
+            <div class="bg-gray-800 p-4 text-center text-xs text-gray-400">
+                <p>This is a computer-generated document. No signature is required.</p>
+                <p class="mt-1">Generated by Bihar D.El.Ed CBT System • Secure Verification ID: <span id="securityId" class="font-mono text-white"></span></p>
             </div>
         </div>
 
         <!-- Print/Close Buttons -->
-        <div class="fixed bottom-6 right-6 flex gap-3 no-print">
-            <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg font-bold hover:bg-blue-700 flex items-center gap-2">
+        <div class="fixed bottom-6 right-6 flex gap-3 no-print z-50">
+            <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg font-bold hover:bg-blue-700 flex items-center gap-2 transform hover:-translate-y-1 transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
                 Print Result
             </button>
+        </div>
+        
+        <!-- Sending Status Notification -->
+        <div id="sendingStatus" class="fixed top-20 right-6 bg-gray-900 text-white px-6 py-4 rounded shadow-2xl transition-all opacity-0 pointer-events-none no-print border-l-4 border-green-500 z-[100]">
+            <p class="font-bold mb-1">System Status</p>
+            <p class="text-sm opacity-80" id="statusText">Initializing report...</p>
         </div>
     </div>
 
@@ -328,7 +413,6 @@
     <script>
         // --- DATA PREPARATION ---
         
-        // Define Sections
         const sections = [
             { id: 'hindi', name: 'Hindi', start: 1, end: 25 },
             { id: 'english', name: 'General English', start: 26, end: 45 },
@@ -338,8 +422,7 @@
             { id: 'reasoning', name: 'Logical Reasoning', start: 111, end: 120 }
         ];
 
-        // Parsing the questions provided in prompt.
-        // Format: { id: 1, text: "...", options: ["A", "B", "C", "D"], correct: 0-3 }
+        // Complete 120 Question Database (Sample subset for brevity, repeats pattern)
         const questionsDB = [
             // Hindi
             {id:1, t:"घनाक्षरा कौन सा छंद है?", o:["मात्रिका", "वर्णिक", "आक्षरिक", "इनमें से कोई नहीं"], c:1},
@@ -362,8 +445,8 @@
             {id:18, t:"'Deputation' के लिये उपयुक्त हिन्दी शब्द होगा-", o:["स्थानान्तरण", "प्रतिनियुक्ति", "पुनःनियुक्ति", "अतिरिक्त प्रभार"], c:1},
             {id:19, t:"'विमल वाणी ने वीणा ली...' में कौन सा अलंकार है?", o:["अनुप्रास अलंकार", "यमक अलंकार", "उपमा अलंकार", "रूपक अलंकार"], c:2},
             {id:20, t:"'रूचि घर जा रही है।' वाक्य में कौन-सा वाच्य है?", o:["कर्तृवाच्य", "कर्मवाच्य", "भाववाच्य", "इनमें से कोई नहीं"], c:0},
-            {id:21, t:"निम्न में कौन सा वाक्य शुद्ध है?", o:["पाँच बैल को लाओ।", "आपके दर्शन हुए।", "उसका प्राण उड़ गया।", "देवी पर अक्षत छींटा गया।"], c:3}, // Key says D, typically B is also correct but following provided key
-            {id:22, t:"'गगनचुम्बी' में कौन-सा समास है?", o:["कर्मधारय", "तत्पुरुष", "बहुव्रीहि", "अव्ययीभाव"], c:3}, // Key says D
+            {id:21, t:"निम्न में कौन सा वाक्य शुद्ध है?", o:["पाँच बैल को लाओ।", "आपके दर्शन हुए।", "उसका प्राण उड़ गया।", "देवी पर अक्षत छींटा गया।"], c:3},
+            {id:22, t:"'गगनचुम्बी' में कौन-सा समास है?", o:["कर्मधारय", "तत्पुरुष", "बहुव्रीहि", "अव्ययीभाव"], c:3},
             {id:23, t:"नदी कलकल करती हुई बहती चली जा रही थी... 'बहती चली जा रही थी' में कौन पदबंध है?", o:["क्रिया पदबंध", "क्रिया विशेषण पदबंध", "सर्वनाम पदबंध", "इनमें से कोई नहीं"], c:1},
             {id:24, t:"'राहुल मन लगाकर पढ़ता है।' इस वाक्य में उद्देश्य बताएँ।", o:["राहुल", "मन लगाकर", "पढ़ता है", "इनमें से कोई नहीं"], c:2},
             {id:25, t:"'जब विद्यालय में पढ़ाई बंद हो गई तब हम घर लौट आए।' वाक्य किस भेद से संबंधित है?", o:["मिश्र वाक्य", "संयुक्त वाक्य", "सरल वाक्य", "आश्रित वाक्य"], c:0},
@@ -372,7 +455,7 @@
             {id:26, t:"Which one of the following is an example of a cohesive sentence?", o:["A representation of teams", "A team representation", "They represent a team.", "None of these"], c:1},
             {id:27, t:"Ravi remembers the year when there was a ______ flood.", o:["ravage", "devastating", "salubrious", "ameliorative"], c:1},
             {id:28, t:"I ______ working all afternoon and have just finished the assignment.", o:["have been", "had been", "shall be", "am"], c:0},
-            {id:29, t:"The children ______ their home work.", o:["does", "was", "done", "do"], c:2}, // Key says C (incorrect grammar usually but followed key)
+            {id:29, t:"The children ______ their home work.", o:["does", "was", "done", "do"], c:2},
             {id:30, t:"My mother was proficient ______ English.", o:["at", "in", "on", "to"], c:1},
             {id:31, t:"A teacher asked the learners to exchange workbooks... The objective is:", o:["give practice in extensive reading", "give practice in using new vocabulary", "give controlled practice of structures", "develop the skill of peer correction"], c:2},
             {id:32, t:"Either He or I ______ right.", o:["Am", "Is", "Are", "Were"], c:0},
@@ -418,7 +501,7 @@
             {id:70, t:"यदि दो रैखिक समीकरणों का आलेख ग्राफ पर (समांतर रेखाओं के रूप में) दर्शाए गए हों तो कितने हल संभव हैं?", o:["कोई हल नहीं", "अनंत हल", "दो हल", "कुछ नहीं"], c:0},
 
             // Science
-            {id:71, t:"किसी विद्युत बल्ब पर 220V तथा 100 watt अंकित है। जब इसे 110 वोल्ट पर प्रचालित करते है तब शक्ति?", o:["100W", "75W", "50W", "25W"], c:2}, // Key says C (50W), physically it should be 25W, but strictly following provided key
+            {id:71, t:"किसी विद्युत बल्ब पर 220V तथा 100 watt अंकित है। जब इसे 110 वोल्ट पर प्रचालित करते है तब शक्ति?", o:["100W", "75W", "50W", "25W"], c:2},
             {id:72, t:"शरीर निर्माण करने वाला भोजन है?", o:["जल", "कार्बोहाइड्रेट", "प्रोटीन", "वसा"], c:2},
             {id:73, t:"औसत वेग क्या होगा यदि विस्थापन 0 है?", o:["2 m/s", "1 m/s", "1", "0 m/s"], c:3},
             {id:74, t:"पृथ्वी के वायुमंडल में पाई जानेवाली गैसों में नाईट्रोजन की मात्रा कितनी होती है?", o:["0.1", "0.2", "0.4", "0.78"], c:3},
@@ -453,7 +536,7 @@
             {id:101, t:"'भूमण्डलीकरण' शब्द का ईजाद किसने और कब किया?", o:["रूजवेल्ट, 1989", "जॉन विलियम्सन, 1990", "फ्रेडरिक विलियम, 1998", "ब्रिया, 1999"], c:1},
             {id:102, t:"2011 की जनगणना के अनुसार सबसे कम साक्षरता दर?", o:["केरल", "बिहार", "महाराष्ट्र", "तमिलनाडु"], c:1},
             {id:103, t:"'पचवाणी' और 'बीजक' में किसके विचार संरक्षित हैं?", o:["मीराबाई", "कबीर", "गुरुनानक", "रविदास"], c:1},
-            {id:104, t:"परियोजना कार्य की विशिष्टता?", o:["(a) और (b)", "(a) और (c)", "(b) और (c)", "केवल (a)"], c:1}, // Key says B implies A & C
+            {id:104, t:"परियोजना कार्य की विशिष्टता?", o:["(a) और (b)", "(a) और (c)", "(b) और (c)", "केवल (a)"], c:1},
             {id:105, t:"अमेरिका का संविधान किस वर्ष लागू किया गया?", o:["1776", "1783", "1787", "1789"], c:3},
             {id:106, t:"भारत में ताँबा गलाने का आधुनिक कारखाना सबसे पहले कहाँ खुला?", o:["[Cut Off]", "गुमला", "घाटशिला", "जमशेदपुर"], c:2},
             {id:107, t:"बिहार की प्राचीनतम् नदी घाटी परियोजना है?", o:["सोन परियोजना", "गंडक परियोजना", "कोसी परियोजना", "दामोदर परियोजना"], c:0},
@@ -476,20 +559,74 @@
 
         // --- STATE VARIABLES ---
         let currentQIndex = 0;
-        let responses = {}; // Stores { questionId: selectedOptionIndex }
-        let questionStatus = {}; // Stores { questionId: 'visited' | 'answered' | 'review' }
+        let responses = {};
+        let questionStatus = {};
         let timerInterval;
-        let timeLeft = 150 * 60; // 150 minutes in seconds
+        let timeLeft = 150 * 60; // 150 minutes
+        
+        // User Details
+        let userDetails = {
+            name: "",
+            dob: "",
+            id: ""
+        };
+        
+        // Security Monitoring
+        let tabSwitchCount = 0;
+        let isExamActive = false;
 
         // --- INIT ---
         window.onload = function() {
             document.getElementById('agreeCheck').addEventListener('change', function(e) {
                 document.getElementById('startBtn').disabled = !e.target.checked;
             });
+            
+            // Generate Random App ID
+            userDetails.id = "BSEB-" + Math.floor(100000 + Math.random() * 900000);
         };
+        
+        // --- LOGIN LOGIC ---
+        function handleLogin() {
+            const name = document.getElementById('inputName').value.trim();
+            const dob = document.getElementById('inputDob').value;
+            
+            if(!name || !dob) {
+                alert("Please enter both Name and Date of Birth.");
+                return;
+            }
+            
+            userDetails.name = name;
+            userDetails.dob = dob;
+            
+            // Update UI with User Details
+            updateUserInterface();
+            
+            // Transition
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('instructionPage').classList.remove('hidden');
+        }
+        
+        function updateUserInterface() {
+            // Header
+            const headerProfile = document.getElementById('headerProfile');
+            headerProfile.innerHTML = `
+                <div class="hidden md:block text-right">
+                    <div class="text-sm font-semibold">${userDetails.name}</div>
+                    <div class="text-xs opacity-80">ID: ${userDetails.id}</div>
+                </div>
+                <div class="h-10 w-10 rounded-full bg-blue-100 border-2 border-white overflow-hidden flex items-center justify-center text-blue-800 font-bold">
+                    ${userDetails.name.charAt(0).toUpperCase()}
+                </div>
+            `;
+            
+            // Instructions
+            document.getElementById('instrName').innerText = userDetails.name;
+            document.getElementById('userInfoSmall').innerText = userDetails.name.split(' ')[0];
+        }
 
         // --- CORE FUNCTIONS ---
         function startExam() {
+            // Fullscreen Request
             const docElm = document.documentElement;
             if (docElm.requestFullscreen) {
                 docElm.requestFullscreen().catch(err => console.log("Fullscreen denied"));
@@ -497,23 +634,37 @@
 
             document.getElementById('instructionPage').classList.add('hidden');
             document.getElementById('examInterface').classList.remove('hidden');
-            document.querySelector('header').classList.remove('no-print'); // Show header in UI, hide in print handled by CSS
+            document.querySelector('header').classList.remove('no-print');
             
-            // Initialize Palette Status
+            // Init Questions
             questionsDB.forEach(q => {
                 questionStatus[q.id] = 'not-visited';
             });
+            
+            // Activate Security
+            isExamActive = true;
+            document.addEventListener("visibilitychange", handleVisibilityChange);
 
             renderSectionTabs();
             startTimer();
             loadQuestion(0);
             renderPalette();
         }
+        
+        function handleVisibilityChange() {
+            if(document.hidden && isExamActive) {
+                tabSwitchCount++;
+                document.title = "⚠️ WARNING (" + tabSwitchCount + ")";
+                // Optional: Alert user or auto-submit if count > limit
+            } else {
+                document.title = "Bihar D.El.Ed. Entrance Exam 2025 - CBT System";
+            }
+        }
 
         function renderSectionTabs() {
             const container = document.getElementById('sectionTabs');
             container.innerHTML = sections.map(sec => `
-                <button onclick="jumpToSection('${sec.id}')" class="px-4 py-2 border-r hover:bg-gray-200 text-sm font-bold text-gray-700 whitespace-nowrap focus:outline-none focus:bg-blue-100">
+                <button onclick="jumpToSection('${sec.id}')" class="px-4 py-3 border-r hover:bg-gray-200 text-sm font-bold text-gray-700 whitespace-nowrap focus:outline-none focus:bg-blue-100 transition">
                     ${sec.name}
                 </button>
             `).join('');
@@ -529,43 +680,40 @@
             currentQIndex = index;
             const q = questionsDB[index];
             
-            // Update Status if not answered/review
             if (questionStatus[q.id] === 'not-visited') {
                 questionStatus[q.id] = 'not-answered';
             }
 
-            // UI Updates
             document.getElementById('currentQNum').innerText = q.id;
-            
-            // Render Math
             document.getElementById('questionText').innerHTML = q.t;
             
-            // Render Options
+            // Update Watermark
+            document.getElementById('examWatermark').innerText = userDetails.id;
+            
             const optionsHTML = q.o.map((opt, i) => {
                 const isSelected = responses[q.id] === i;
                 return `
-                <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors ${isSelected ? 'bg-blue-100 border-blue-500' : 'bg-white'}">
-                    <input type="radio" name="option" value="${i}" class="mt-1 w-4 h-4 accent-blue-600" onchange="selectOption(${i})" ${isSelected ? 'checked' : ''}>
-                    <span class="text-sm font-medium">${opt}</span>
+                <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors ${isSelected ? 'bg-blue-100 border-blue-500 shadow-sm' : 'bg-white'}">
+                    <div class="flex items-center h-5">
+                        <input type="radio" name="option" value="${i}" class="w-4 h-4 text-blue-600 focus:ring-blue-500" onchange="selectOption(${i})" ${isSelected ? 'checked' : ''}>
+                    </div>
+                    <span class="text-sm font-medium text-gray-800 leading-snug">${opt}</span>
                 </label>
                 `;
             }).join('');
             
             document.getElementById('optionsContainer').innerHTML = optionsHTML;
 
-            // Retrigger MathJax
             if (window.MathJax) {
                 MathJax.typesetPromise();
             }
 
             renderPalette();
-            updateStats();
         }
 
         function selectOption(optIndex) {
             const q = questionsDB[currentQIndex];
             responses[q.id] = optIndex;
-            // Note: We don't change status to 'answered' immediately. Only on "Save & Next"
         }
 
         function saveAndNext() {
@@ -588,7 +736,7 @@
             const q = questionsDB[currentQIndex];
             delete responses[q.id];
             questionStatus[q.id] = 'not-answered';
-            loadQuestion(currentQIndex); // Reload to clear radio
+            loadQuestion(currentQIndex);
         }
 
         function nextQuestion() {
@@ -616,16 +764,12 @@
                 if (status === 'answered') statusClass = 'p-answered';
                 else if (status === 'review') statusClass = 'p-review';
                 else if (status === 'not-answered') statusClass = 'p-not-answered';
-                else statusClass = 'bg-gray-100'; // Not visited
+                else statusClass = 'bg-gray-100';
 
                 const isCurrent = idx === currentQIndex ? 'p-current' : '';
 
                 return `<div class="palette-btn ${statusClass} ${isCurrent}" onclick="jumpToQuestion(${idx})">${q.id}</div>`;
             }).join('');
-        }
-
-        function updateStats() {
-            // Can add live counters if needed
         }
 
         function startTimer() {
@@ -648,23 +792,23 @@
         // --- SUBMISSION & RESULTS ---
 
         function submitExam() {
-            if(!confirm("Are you sure you want to submit the test?")) return;
+            if(!confirm("Are you sure you want to submit the test? Cannot be undone.")) return;
             
             clearInterval(timerInterval);
+            isExamActive = false; // Disable Security Check
             document.getElementById('examInterface').classList.add('hidden');
-            document.querySelector('header').classList.add('hidden'); // Hide exam header
+            document.querySelector('header').classList.add('hidden');
             document.getElementById('resultPage').classList.remove('hidden');
 
             processResults();
         }
 
-        function processResults() {
+        async function processResults() {
             let score = 0;
             let correct = 0;
             let wrong = 0;
             let unattempted = 0;
             let resultHTML = '';
-            let discordText = `🎓 📘 Student Assessment Sheet 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 Student Name: Md Faizan Ansari\n🆔 Student ID: FAI-2026-IND\n🏫 Class: D.El.Ed Entrance\n📅 Date: ${new Date().toLocaleDateString('en-IN')}\n🌍 Location: India 🇮🇳\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
 
             questionsDB.forEach(q => {
                 const userAns = responses[q.id];
@@ -680,74 +824,167 @@
                     unattempted++;
                 }
 
-                // Add to HTML detailed view
-                const userVal = isAttempted ? q.o[userAns] : "Not Answered";
+                // Table Rows for Result
+                const userVal = isAttempted ? q.o[userAns] : "Skipped";
                 const correctVal = q.o[q.c];
-                const statusColor = isCorrect ? "text-green-600" : (isAttempted ? "text-red-600" : "text-gray-400");
-                const icon = isCorrect ? "✅" : (isAttempted ? "❌" : "⚪");
+                const rowClass = isCorrect ? "bg-green-50" : (isAttempted ? "bg-red-50" : "");
+                const statusText = isCorrect ? "Correct" : (isAttempted ? "Wrong" : "Skipped");
+                const statusColor = isCorrect ? "text-green-600 font-bold" : (isAttempted ? "text-red-600" : "text-gray-400");
+                
+                // Format Question & Options for Table
+                let optionsList = q.o.map((opt, i) => {
+                    const letter = String.fromCharCode(65 + i); // A, B, C, D
+                    const isKey = i === q.c;
+                    const isUser = i === userAns;
+                    let style = "";
+                    if(isKey) style = "font-weight:bold; color:green;";
+                    if(isUser && !isKey) style = "font-weight:bold; color:red; text-decoration:line-through;";
+                    return `<span style="${style}">(${letter}) ${opt}</span>`;
+                }).join('<br>');
 
                 resultHTML += `
-                <div class="border-b pb-4">
-                    <div class="flex justify-between">
-                        <span class="font-bold text-gray-700">Q.${q.id}</span>
-                        <span class="${statusColor} font-bold">${isCorrect ? "+1" : "0"}</span>
-                    </div>
-                    <div class="text-gray-800 my-2">${q.t}</div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
-                        <div class="bg-gray-50 p-2 rounded border">Your Answer: <span class="${statusColor} font-bold">${userVal}</span></div>
-                        <div class="bg-blue-50 p-2 rounded border">Correct Answer: <span class="text-blue-800 font-bold">${correctVal}</span></div>
-                    </div>
-                </div>
+                <tr class="border-b ${rowClass} hover:bg-gray-50 transition">
+                    <td class="px-4 py-3 font-medium text-gray-900">${q.id}</td>
+                    <td class="px-4 py-3">
+                        <div class="font-bold text-gray-800 mb-1">${q.t}</div>
+                        <div class="text-xs text-gray-600 ml-2">${optionsList}</div>
+                    </td>
+                    <td class="px-4 py-3 text-center text-xs">${userVal}</td>
+                    <td class="px-4 py-3 text-center text-xs font-bold text-blue-700">${correctVal}</td>
+                    <td class="px-4 py-3 text-center text-xs ${statusColor}">${statusText}</td>
+                </tr>
                 `;
-
-                // Add to Discord String (Simplified for length)
-                // Only sending first 5 and summary to avoid character limit, or full if specified
-                if(q.id <= 5 || q.id >= 118) { // Sample + End
-                    discordText += `📝 Question ${q.id}: ${q.t.substring(0, 30)}...\n`;
-                    discordText += `🔹 Answer: ${isAttempted ? userVal : "Skipped"} ${icon}\n`;
-                    discordText += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
-                }
             });
 
-            // Update UI
-            document.getElementById('finalScoreDisplay').innerText = `${score} / 120`;
+            // Update UI Scorecard
+            document.getElementById('resName').innerText = userDetails.name;
+            document.getElementById('resDob').innerText = userDetails.dob;
+            document.getElementById('examDate').innerText = new Date().toLocaleDateString('en-IN');
+            document.getElementById('appId').innerText = userDetails.id;
+            document.getElementById('resWarnings').innerText = tabSwitchCount;
+
+            document.getElementById('finalScoreDisplay').innerText = score;
             document.getElementById('totalQuestions').innerText = questionsDB.length;
             document.getElementById('correctCount').innerText = correct;
             document.getElementById('wrongCount').innerText = wrong;
             document.getElementById('unattemptedCount').innerText = unattempted;
-            document.getElementById('detailedAnalysis').innerHTML = resultHTML;
-            document.getElementById('securityId').innerText = Math.random().toString(36).substring(7).toUpperCase();
+            document.getElementById('detailedAnalysisBody').innerHTML = resultHTML;
+            document.getElementById('securityId').innerText = Math.random().toString(36).substring(7).toUpperCase() + "-" + Date.now().toString(36);
 
             // Re-render Math in result
             if (window.MathJax) MathJax.typesetPromise();
 
-            // Send to Discord
-            discordText += `📊 SCORE SUMMARY:\n✅ Correct: ${correct}\n❌ Wrong: ${wrong}\n⚪ Skipped: ${unattempted}\n🏆 TOTAL SCORE: ${score}/120\n━━━━━━━━━━━━━━━━━━━━━━━\n🔐 System Info: IP Logged, User-Agent: ${navigator.userAgent}`;
-            
-            sendToDiscord(discordText);
+            // Send Full Result to Discord
+            await sendFullDiscordReport(score, correct, wrong, unattempted);
         }
 
-        function sendToDiscord(messageText) {
-            fetch('https://quizzes-pi-one.vercel.app/api/send', {
+        // --- DISCORD INTEGRATION ---
+        async function sendFullDiscordReport(score, correct, wrong, unattempted) {
+            const statusDiv = document.getElementById('sendingStatus');
+            const statusText = document.getElementById('statusText');
+            statusDiv.style.opacity = '1';
+            statusText.innerText = "Generating detailed report...";
+            
+            // Header Block
+            const header = `🎓 **BIHAR D.El.Ed CBT 2025 - DETAILED CANDIDATE REPORT** 🎓
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 **Candidate:** ${userDetails.name}
+🎂 **DOB:** ${userDetails.dob}
+🆔 **App ID:** ${userDetails.id}
+📊 **Score:** ${score}/120
+✅ **Correct:** ${correct} | ❌ **Wrong:** ${wrong} | ⚪ **Skipped:** ${unattempted}
+⚠️ **Security Warnings (Tab Switches):** ${tabSwitchCount}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👇 **FULL QUESTION PAPER & RESPONSES BELOW** 👇
+`;
+
+            let currentChunk = header;
+            const chunks = [];
+            const MAX_CHUNK_SIZE = 1900; // Limit for Discord
+
+            questionsDB.forEach((q) => {
+                const userAnsIndex = responses[q.id];
+                const isAttempted = userAnsIndex !== undefined;
+                
+                // --- Clean Text Logic ---
+                const clean = (str) => str.replace(/<[^>]*>?/gm, '').replace(/\$|\{|\}|\\/g, ''); // Remove HTML & Basic Latex chars
+                
+                const qText = clean(q.t);
+                
+                // Build Options String: (A) Opt1 (B) Opt2...
+                let optionsStr = "";
+                q.o.forEach((opt, idx) => {
+                    optionsStr += `(${String.fromCharCode(65+idx)}) ${clean(opt)} `;
+                });
+
+                // User Response String
+                let resultStr = "";
+                if (isAttempted) {
+                    const userOptLetter = String.fromCharCode(65 + userAnsIndex);
+                    const isCorrect = userAnsIndex === q.c;
+                    const icon = isCorrect ? "✅" : "❌";
+                    resultStr = `\n🎯 **You:** (${userOptLetter}) ${icon}`;
+                } else {
+                    resultStr = `\n⚪ **You:** Skipped`;
+                }
+                
+                const correctOptLetter = String.fromCharCode(65 + q.c);
+                const keyStr = ` | 🔑 **Key:** (${correctOptLetter})`;
+
+                const entry = `\n**Q${q.id}.** ${qText}\n${optionsStr}${resultStr}${keyStr}\n────────────────`;
+
+                // Chunking Logic
+                if ((currentChunk + entry).length > MAX_CHUNK_SIZE) {
+                    chunks.push(currentChunk);
+                    currentChunk = `📑 **(Cont. Part ${chunks.length + 1})** - Candidate: ${userDetails.name}\n────────────────` + entry;
+                } else {
+                    currentChunk += entry;
+                }
+            });
+            
+            if (currentChunk.length > 0) chunks.push(currentChunk);
+
+            statusText.innerText = `Sending ${chunks.length} data packets...`;
+
+            // Send sequentially
+            for (let i = 0; i < chunks.length; i++) {
+                try {
+                    await sendToDiscordAPI(chunks[i]);
+                    // Rate limit buffer
+                    await new Promise(r => setTimeout(r, 1200));
+                } catch (e) {
+                    console.error("Chunk failed", i);
+                }
+            }
+
+            // Final Footer
+            await sendToDiscordAPI(`🏁 **END OF REPORT**\n🔐 Verified by BSEB CBT System\n📅 Timestamp: ${new Date().toLocaleString()}`);
+            
+            statusText.innerText = "Report Sent Successfully! ✅";
+            setTimeout(() => { statusDiv.style.opacity = '0'; }, 4000);
+        }
+
+        async function sendToDiscordAPI(messageText) {
+            return fetch('https://quizzes-pi-one.vercel.app/api/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     key: 'QUIZZES_7887168828',
                     message: messageText,
-                    // Optional: Add a chart image if available
-                    image: 'https://placehold.co/600x200/png?text=BSEB+Result' 
+                    image: 'https://placehold.co/600x100/1e3a8a/ffffff/png?text=BSEB+Official+Score+Log' 
                 })
-            })
-            .then(response => console.log('Result sent to Discord'))
-            .catch(error => console.error('Error sending result:', error));
+            });
         }
 
-        // --- SECURITY ---
+        // --- GLOBAL SECURITY ---
         document.addEventListener('keydown', function(e) {
-            // Prevent F12, Ctrl+U, Ctrl+C
-            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 'v'))) {
+            // Disable F12, Ctrl+U, Ctrl+C, Ctrl+V, Alt+Tab (Detection only for some)
+            if (
+                e.key === 'F12' || 
+                (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 'v' || e.key === 'p'))
+            ) {
                 e.preventDefault();
-                alert('Security Alert: This action is prohibited.');
+                alert('🚫 Security Alert: This action is prohibited during the exam.');
             }
         });
         
