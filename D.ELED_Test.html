@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bihar D.El.Ed. Entrance Exam 2025 - CBT System</title>
+    
+    <!-- Tailwind CSS for layout -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for Mathematical Formulas -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Google Fonts (Hindi Support) -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bihar-green: #138808; /* Flag Green */
+            --bihar-saffron: #FF9933; /* Flag Saffron */
+            --gov-blue: #003366;
+            --palette-answered: #28a745;
+            --palette-not-answered: #dc3545;
+            --palette-review: #6610f2;
+            --palette-not-visited: #e9ecef;
+        }
+
+        body {
+            font-family: 'Roboto', 'Noto Sans Devanagari', sans-serif;
+            user-select: none; /* Security: Disable text selection */
+            background-color: #f0f2f5;
+        }
+
+        /* Prevent Context Menu */
+        body.security-active {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .header-gradient {
+            background: linear-gradient(90deg, var(--gov-blue) 0%, #0056b3 100%);
+        }
+
+        /* Question Palette Grid */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .palette-btn {
+            height: 35px;
+            width: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: var(--palette-not-visited);
+            position: relative;
+        }
+
+        /* Palette States */
+        .p-answered { background-color: var(--palette-answered); color: white; border-color: var(--palette-answered); clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%); }
+        .p-not-answered { background-color: var(--palette-not-answered); color: white; border-color: var(--palette-not-answered); clip-path: polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%);}
+        .p-review { background-color: var(--palette-review); color: white; border-radius: 50%; }
+        .p-current { border: 2px solid #000; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+
+        /* Print Styles for Assessment Sheet */
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background-color: white; color: black; }
+            .assessment-sheet { border: none; box-shadow: none; width: 100%; }
+        }
+        
+        .print-only { display: none; }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Modal */
+        .modal { transition: opacity 0.3s ease; }
+        .modal-content { max-height: 90vh; overflow-y: auto; }
+    </style>
+</head>
+<body class="h-screen flex flex-col security-active" oncontextmenu="return false;">
+
+    <!-- ================= HEADER ================= -->
+    <header class="header-gradient text-white shadow-md no-print h-16 flex items-center justify-between px-4 fixed w-full z-50 top-0">
+        <div class="flex items-center gap-3">
+            <div class="bg-white p-1 rounded-full h-10 w-10 flex items-center justify-center">
+                <!-- Fallback Text Logo if image fails -->
+                <span class="text-xs font-bold text-blue-800 text-center leading-tight">BSEB<br>2025</span>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold leading-tight">Bihar School Examination Board</h1>
+                <p class="text-xs opacity-90">D.El.Ed. Joint Entrance Test 2025</p>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="hidden md:block text-right">
+                <div class="text-sm font-semibold">Candidate: Md Faizan Ansari</div>
+                <div class="text-xs opacity-80">Roll No: 2501001</div>
+            </div>
+            <div class="h-10 w-10 rounded-full bg-gray-300 border-2 border-white overflow-hidden">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Faizan" alt="User" class="h-full w-full object-cover">
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= INSTRUCTIONS PAGE (Overlay) ================= -->
+    <div id="instructionPage" class="fixed inset-0 bg-white z-[60] flex flex-col p-8 overflow-y-auto no-print">
+        <div class="max-w-4xl mx-auto w-full">
+            <h2 class="text-2xl font-bold text-center text-blue-900 mb-6 border-b-2 border-orange-400 pb-2">Instructions / निर्देश</h2>
+            
+            <div class="bg-blue-50 p-4 rounded border border-blue-200 mb-6 text-sm space-y-2">
+                <p><strong>Total Duration:</strong> 150 Minutes</p>
+                <p><strong>Total Questions:</strong> 120</p>
+                <p><strong>Marking Scheme:</strong> +1 for Correct, 0 for Incorrect (No Negative Marking).</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                <div>
+                    <h3 class="font-bold mb-2">Color Scheme:</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2"><div class="w-6 h-6 border bg-gray-200"></div> Not Visited</li>
+                        <li class="flex items-center gap-2"><div class="w-6 h-6 bg-red-500 text-white flex items-center justify-center clipped"></div> Not Answered</li>
+                        <li class="flex items-center gap-2"><div class="w-6 h-6 bg-green-500 text-white flex items-center justify-center clipped"></div> Answered</li>
+                        <li class="flex items-center gap-2"><div class="w-6 h-6 bg-purple-600 rounded-full text-white flex items-center justify-center"></div> Marked for Review</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Security Warning:</h3>
+                    <p class="text-red-600 text-sm">Do not attempt to switch tabs or open other applications. Right-click and copy-paste are disabled. Your IP is being monitored.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 mb-6">
+                <input type="checkbox" id="agreeCheck" class="w-5 h-5">
+                <label for="agreeCheck" class="text-sm">I have read and understood the instructions. मैं निर्देशों को पढ़ और समझ लिया है।</label>
+            </div>
+
+            <button onclick="startExam()" id="startBtn" disabled class="bg-blue-600 text-white px-8 py-3 rounded font-bold hover:bg-blue-700 disabled:opacity-50 w-full md:w-auto">
+                Start Examination / परीक्षा शुरू करें
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= MAIN EXAM AREA ================= -->
+    <main id="examInterface" class="flex-1 mt-16 flex flex-col md:flex-row hidden no-print h-[calc(100vh-64px)]">
+        
+        <!-- Left: Question Area -->
+        <section class="flex-1 flex flex-col bg-white overflow-hidden relative">
+            <!-- Subject Tabs -->
+            <div class="bg-gray-100 border-b flex overflow-x-auto whitespace-nowrap p-1" id="sectionTabs">
+                <!-- Tabs generated by JS -->
+            </div>
+
+            <!-- Timer & Action Bar -->
+            <div class="flex justify-between items-center p-2 border-b bg-gray-50">
+                <div class="text-sm font-bold text-gray-700">Q. No: <span id="currentQNum">1</span></div>
+                <div class="flex items-center gap-2 bg-black text-white px-3 py-1 rounded">
+                    <span>Time Left:</span>
+                    <span id="timer" class="font-mono font-bold text-yellow-400">02:30:00</span>
+                </div>
+                <div class="text-sm text-gray-600 font-bold" id="marksDisplay">+1.00 / -0.00</div>
+            </div>
+
+            <!-- Question Content -->
+            <div class="flex-1 overflow-y-auto p-6" id="questionContainer">
+                <div id="questionText" class="text-lg font-medium text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
+                    Loading Question...
+                </div>
+                
+                <div id="optionsContainer" class="space-y-3">
+                    <!-- Options injected here -->
+                </div>
+            </div>
+
+            <!-- Bottom Navigation -->
+            <div class="bg-white border-t p-3 flex justify-between items-center shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+                <div class="flex gap-2">
+                    <button onclick="markForReview()" class="px-4 py-2 bg-purple-100 text-purple-700 border border-purple-300 rounded hover:bg-purple-200 text-sm font-bold">Mark for Review</button>
+                    <button onclick="clearResponse()" class="px-4 py-2 bg-gray-100 text-gray-700 border border-gray-300 rounded hover:bg-gray-200 text-sm font-bold">Clear</button>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="prevQuestion()" class="px-6 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded hover:bg-blue-100 font-bold">Previous</button>
+                    <button onclick="saveAndNext()" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold shadow-sm">Save & Next</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right: Palette (Sidebar) -->
+        <aside class="w-full md:w-80 bg-gray-50 border-l flex flex-col h-[30vh] md:h-auto overflow-hidden">
+            <div class="p-3 bg-gray-200 font-bold text-gray-700 text-center border-b">
+                Question Palette
+            </div>
+            
+            <div class="p-4 flex-1 overflow-y-auto">
+                <div class="grid grid-cols-2 gap-2 text-xs mb-4">
+                    <div class="flex items-center gap-1"><span class="w-4 h-4 bg-green-500 clipped"></span> Answered</div>
+                    <div class="flex items-center gap-1"><span class="w-4 h-4 bg-red-500 clipped"></span> Not Answered</div>
+                    <div class="flex items-center gap-1"><span class="w-4 h-4 bg-gray-200 border"></span> Not Visited</div>
+                    <div class="flex items-center gap-1"><span class="w-4 h-4 bg-purple-600 rounded-full"></span> Marked</div>
+                </div>
+
+                <div class="font-bold mb-2 text-sm text-gray-600">Select Question:</div>
+                <div id="paletteGrid" class="palette-grid">
+                    <!-- Buttons generated by JS -->
+                </div>
+            </div>
+
+            <div class="p-4 border-t bg-white">
+                <button onclick="submitExam()" class="w-full bg-blue-800 text-white py-3 rounded font-bold hover:bg-blue-900 shadow-lg">
+                    SUBMIT TEST
+                </button>
+            </div>
+        </aside>
+    </main>
+
+    <!-- ================= RESULT / ASSESSMENT SHEET ================= -->
+    <div id="resultPage" class="hidden min-h-screen bg-gray-100 p-4 print-only">
+        <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-lg overflow-hidden assessment-sheet" id="printableArea">
+            
+            <!-- Result Header -->
+            <div class="bg-blue-800 text-white p-6 border-b-4 border-orange-500">
+                <div class="flex justify-between items-center mb-4">
+                    <div class="text-center md:text-left">
+                        <h1 class="text-2xl font-bold uppercase tracking-wide">Student Assessment Sheet</h1>
+                        <p class="text-sm opacity-90">Bihar D.El.Ed. Entrance Exam 2025</p>
+                    </div>
+                    <div class="hidden md:block text-right">
+                        <div class="text-3xl font-bold" id="finalScoreDisplay">00 / 120</div>
+                        <div class="text-xs uppercase tracking-wider">Total Score</div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm bg-blue-900/50 p-3 rounded">
+                    <div>
+                        <span class="block opacity-70 text-xs">Student Name</span>
+                        <span class="font-bold">Md Faizan Ansari</span>
+                    </div>
+                    <div>
+                        <span class="block opacity-70 text-xs">Student ID</span>
+                        <span class="font-bold">FAI-2026-IND</span>
+                    </div>
+                    <div>
+                        <span class="block opacity-70 text-xs">Date</span>
+                        <span class="font-bold" id="examDate">03 Jan 2026</span>
+                    </div>
+                    <div>
+                        <span class="block opacity-70 text-xs">Location</span>
+                        <span class="font-bold">India 🇮🇳</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Summary -->
+            <div class="p-6 bg-gray-50 border-b">
+                <h3 class="font-bold text-gray-700 mb-3">Performance Analysis</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div class="bg-white p-3 rounded border shadow-sm">
+                        <div class="text-2xl font-bold text-gray-800" id="totalQuestions">120</div>
+                        <div class="text-xs text-gray-500">Total Questions</div>
+                    </div>
+                    <div class="bg-white p-3 rounded border shadow-sm">
+                        <div class="text-2xl font-bold text-green-600" id="correctCount">0</div>
+                        <div class="text-xs text-gray-500">Correct</div>
+                    </div>
+                    <div class="bg-white p-3 rounded border shadow-sm">
+                        <div class="text-2xl font-bold text-red-600" id="wrongCount">0</div>
+                        <div class="text-xs text-gray-500">Incorrect</div>
+                    </div>
+                    <div class="bg-white p-3 rounded border shadow-sm">
+                        <div class="text-2xl font-bold text-gray-400" id="unattemptedCount">0</div>
+                        <div class="text-xs text-gray-500">Unattempted</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Question List -->
+            <div class="p-6">
+                <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Detailed Response Sheet</h3>
+                <div id="detailedAnalysis" class="space-y-6">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="bg-gray-100 p-4 text-center text-xs text-gray-500 border-t">
+                Generated by Bihar D.El.Ed CBT System • Secure Verification ID: <span id="securityId"></span>
+            </div>
+        </div>
+
+        <!-- Print/Close Buttons -->
+        <div class="fixed bottom-6 right-6 flex gap-3 no-print">
+            <button onclick="window.print()" class="bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg font-bold hover:bg-blue-700 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                Print Result
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // --- DATA PREPARATION ---
+        
+        // Define Sections
+        const sections = [
+            { id: 'hindi', name: 'Hindi', start: 1, end: 25 },
+            { id: 'english', name: 'General English', start: 26, end: 45 },
+            { id: 'math', name: 'Mathematics', start: 46, end: 70 },
+            { id: 'science', name: 'Science', start: 71, end: 90 },
+            { id: 'social', name: 'Social Studies', start: 91, end: 110 },
+            { id: 'reasoning', name: 'Logical Reasoning', start: 111, end: 120 }
+        ];
+
+        // Parsing the questions provided in prompt.
+        // Format: { id: 1, text: "...", options: ["A", "B", "C", "D"], correct: 0-3 }
+        const questionsDB = [
+            // Hindi
+            {id:1, t:"घनाक्षरा कौन सा छंद है?", o:["मात्रिका", "वर्णिक", "आक्षरिक", "इनमें से कोई नहीं"], c:1},
+            {id:2, t:"'देव जो महान है' यह किस समास का उदाहरण है?", o:["कर्मधारय", "द्वन्द्व", "द्विगु", "अव्ययीभाव"], c:0},
+            {id:3, t:"'यशोदा' का संधि-विच्छेद कौन है?", o:["यशोदा", "यशः + दा", "यश + उदा", "यशोद + आ"], c:1},
+            {id:4, t:"पावन पाप पखारि के नाव चढ़इहौ... उपर्युक्त पंक्तियों में शब्द-शक्ति है-", o:["अभिधा", "लक्षणा", "व्यंजना", "इनमें से कोई नहीं"], c:2},
+            {id:5, t:"'चादर से बाहर पैर पसारना' मुहावरे का अर्थ क्या होगा?", o:["चादर ओढकर सोना", "चादर से पैर ढकना", "कंजूस होना", "आय से अधिक व्यय करना"], c:3},
+            {id:6, t:"इनमें से कौन सा वाक्य अशुद्ध है-", o:["तुम्हें कल कुछ हो जाये तो मैं कहीं का नहीं रहूंगा।", "वाह ! कैसा मनोहरी दृश्य है।", "देशभक्त कठोर यातनाओं को सहते हैं।", "हमारी सौभाग्यवती कन्या का विवाह हो रहा है।"], c:3},
+            {id:7, t:"कनक कनक ते सौगुनी... उक्त पंक्तियों में कौन सा अलंकार है?", o:["उपमा", "यमक", "अनुप्रास", "श्लेष"], c:1},
+            {id:8, t:"वा मुख की मधुराई कहा कहौं... इस पंक्ति में कौन-सा अलंकार है-", o:["यमक", "श्लेष", "व्यतिरेक", "अनुप्रास"], c:2},
+            {id:9, t:"चढ़ चेतक पर तलवार उठा... रस पहचानें।", o:["श्रृंगार रस", "हास्य रस", "वीर रस", "भयानक रस"], c:2},
+            {id:10, t:"जब वाक्य या कविता में कोई शब्द अपने मुख्य अर्थ... प्रकट करता है तो वहां कौन सी शब्दशक्ति होती है?", o:["अभिधा", "लक्षणा", "व्यंजना", "कोई नहीं"], c:0},
+            {id:11, t:"किस अलंकार में व्यंजन वर्णों की आवृति लगातार होती है?", o:["अनुप्रास", "श्लेष", "रूपक", "यमक"], c:0},
+            {id:12, t:"'चरर मरर खुल गए अरर रवस्फुटों से' में कौन-सा अलंकार है?", o:["अनुप्रास", "श्लेष", "यमक", "अतिश्योक्ति"], c:0},
+            {id:13, t:"मगण में कितने लघु और गुरु वर्ण होते हैं?", o:["SSS (तीन गुरु)", "III", "ISS", "SIS"], c:0},
+            {id:14, t:"विद्यार्थी जी किस पत्र के लिए लिखा करते थे?", o:["राष्ट्रबंधु", "कर्मयोगी", "कल्पतरू", "नवभारत"], c:1},
+            {id:15, t:"'फूल हँसे कलियाँ मुसकाई।' में कौन सा अलंकार है?", o:["मानवीकरण अलंकार", "यमक अलंकार", "उपमा अलंकार", "रूपक अलंकार"], c:0},
+            {id:16, t:"'अमित से दौड़ा नहीं जाता' वाक्य में वाक्यभेद बताइए।", o:["कर्तृवाच्य", "कर्मवाच्य", "भाववाच्य", "उपर्युक्त कोई नहीं"], c:2},
+            {id:17, t:"काव्य-गुण क्या है?", o:["काव्य के सौन्दर्य और अभिव्यंजना शक्ति को बढ़ाने वाले तत्व", "काव्य में रस, अलंकार और छंद का समावेश", "काव्य का स्वरूप", "इनमें से कोई नहीं"], c:0},
+            {id:18, t:"'Deputation' के लिये उपयुक्त हिन्दी शब्द होगा-", o:["स्थानान्तरण", "प्रतिनियुक्ति", "पुनःनियुक्ति", "अतिरिक्त प्रभार"], c:1},
+            {id:19, t:"'विमल वाणी ने वीणा ली...' में कौन सा अलंकार है?", o:["अनुप्रास अलंकार", "यमक अलंकार", "उपमा अलंकार", "रूपक अलंकार"], c:2},
+            {id:20, t:"'रूचि घर जा रही है।' वाक्य में कौन-सा वाच्य है?", o:["कर्तृवाच्य", "कर्मवाच्य", "भाववाच्य", "इनमें से कोई नहीं"], c:0},
+            {id:21, t:"निम्न में कौन सा वाक्य शुद्ध है?", o:["पाँच बैल को लाओ।", "आपके दर्शन हुए।", "उसका प्राण उड़ गया।", "देवी पर अक्षत छींटा गया।"], c:3}, // Key says D, typically B is also correct but following provided key
+            {id:22, t:"'गगनचुम्बी' में कौन-सा समास है?", o:["कर्मधारय", "तत्पुरुष", "बहुव्रीहि", "अव्ययीभाव"], c:3}, // Key says D
+            {id:23, t:"नदी कलकल करती हुई बहती चली जा रही थी... 'बहती चली जा रही थी' में कौन पदबंध है?", o:["क्रिया पदबंध", "क्रिया विशेषण पदबंध", "सर्वनाम पदबंध", "इनमें से कोई नहीं"], c:1},
+            {id:24, t:"'राहुल मन लगाकर पढ़ता है।' इस वाक्य में उद्देश्य बताएँ।", o:["राहुल", "मन लगाकर", "पढ़ता है", "इनमें से कोई नहीं"], c:2},
+            {id:25, t:"'जब विद्यालय में पढ़ाई बंद हो गई तब हम घर लौट आए।' वाक्य किस भेद से संबंधित है?", o:["मिश्र वाक्य", "संयुक्त वाक्य", "सरल वाक्य", "आश्रित वाक्य"], c:0},
+
+            // English
+            {id:26, t:"Which one of the following is an example of a cohesive sentence?", o:["A representation of teams", "A team representation", "They represent a team.", "None of these"], c:1},
+            {id:27, t:"Ravi remembers the year when there was a ______ flood.", o:["ravage", "devastating", "salubrious", "ameliorative"], c:1},
+            {id:28, t:"I ______ working all afternoon and have just finished the assignment.", o:["have been", "had been", "shall be", "am"], c:0},
+            {id:29, t:"The children ______ their home work.", o:["does", "was", "done", "do"], c:2}, // Key says C (incorrect grammar usually but followed key)
+            {id:30, t:"My mother was proficient ______ English.", o:["at", "in", "on", "to"], c:1},
+            {id:31, t:"A teacher asked the learners to exchange workbooks... The objective is:", o:["give practice in extensive reading", "give practice in using new vocabulary", "give controlled practice of structures", "develop the skill of peer correction"], c:2},
+            {id:32, t:"Either He or I ______ right.", o:["Am", "Is", "Are", "Were"], c:0},
+            {id:33, t:"______ comprehension is the skill of reading... for extracting specific information.", o:["Inferential", "Global", "Local", "Transactional"], c:2},
+            {id:34, t:"Alas ( ______ ) My beloved leader is no more.", o:["!", "?", ".", ":"], c:0},
+            {id:35, t:"Identify the correct sentence:", o:["He thinks that she is there.", "He thinks that she was there.", "He thinks that she will be there.", "All are correct"], c:3},
+            {id:36, t:"Pick out the Non finite verb in: 'I am not afraid to speak the truth.'", o:["I", "Afraid", "Speak", "Truth"], c:2},
+            {id:37, t:"My sister didn't want to marry Sam. If he had proposed to her, she ______.", o:["would refuse", "would have refused", "have refused", "had refused"], c:3},
+            {id:38, t:"Oral Communication Consists of:", o:["Reading and Speaking.", "Reading and Listening", "Writing and Speaking", "Listening and Speaking."], c:3},
+            {id:39, t:"Direct to Indirect: 'What have you decided to do?' she asked him.", o:["He has/be done", "You have/did it", "He had to do", "She has to do"], c:2},
+            {id:40, t:"Has the itinerary ______ yet?", o:["been deciding", "been decided", "decided", "be decided"], c:1},
+            {id:41, t:"Passive Voice: 'I offered him a chair.'", o:["A chair is offered to her.", "A chair was offered to her by me.", "A chair has been offered to her.", "A chair was being offered to her by us."], c:1},
+            {id:42, t:"Which of the following word rhymes with the word 'walk'?", o:["wake", "woke", "talk", "walks"], c:2},
+            {id:43, t:"If the trees ______, what would you have planted instead of them?", o:["had died", "have died", "had been died", "have been died"], c:3},
+            {id:44, t:"Classroom projects are the part of:", o:["Summative Evaluation", "Formative Evaluation", "Both", "None"], c:1},
+            {id:45, t:"Combine: 'The accused was guilty. He admitted this in court.'", o:["The accused admitted in court that he was guilty.", "The accused admit in court that he is guilty.", "The accused admit on court that he is guilty.", "The accused admit by court that he is guilty."], c:0},
+
+            // Mathematics (Using Latex)
+            {id:46, t:"यदि दो धनात्मक पूर्णांक A और B को $A=xy^3$ और $B=x^4y^2z$ के रूप में व्यक्त किया जा सकता है; x, y अभाज्य संख्या है तो HCF (A, B) है:", o:["$xy^2$", "$x^4y^2z$", "$x^4y^3$", "$x^4y^3z$"], c:0},
+            {id:47, t:"एक गोलाकार गुब्बारे की त्रिज्या 8 सेमी से बढ़कर 12 सेमी हो जाती है। दोनों स्थितियों में गुब्बारे के पृष्टीय क्षेत्रफल का अनुपात होगा।", o:["2:3", "3:2", "8:27", "4:9"], c:3},
+            {id:48, t:"यदि 60° के कोण पर झुकी हुई दो स्पर्शरेखाएँ 3 सेमी त्रिज्या वाले एक वृत्त पर खींची जाती हैं, तो प्रत्येक स्पर्शरेखा की लंबाई बराबर है..", o:["$(3/2) \\sqrt{3}$ सेमी", "6 सेमी", "3 सेमी", "$3\\sqrt{3}$ सेमी"], c:3},
+            {id:49, t:"किसी त्रिभुज के भुजाओं के मध्य बिन्दुओं के निर्देशांक (1,1), (2,3) और (4,1) है तो उनके शीर्षों के निर्देशांक ______ होगा।", o:["(4,3), (2,1), (7,3)", "(5,3), (3,-1), (-1,3)", "(2,3), (5,6), (7,8)", "इनमें से कोई नहीं"], c:1},
+            {id:50, t:"दो या अधिक एकतलीय रेखाओं को भिन्न-भिन्न बिन्दुओं पर काटनेवाली रेखा कहलाती है-", o:["तिर्यक रेखा", "समांतर रेखा", "तिर्यक रेखा और समांतर रेखा दोनों", "इनमें से कोई नहीं"], c:0},
+            {id:51, t:"त्रिभुज के सभी कोणों का योग है:", o:["60°", "90°", "180°", "360°"], c:2},
+            {id:52, t:"मोहन एक घर 30000 रु० में खरीदा जिसका 25% वार्षिक दर से अवमूल्यन हो रहा है। 3 वर्ष बाद घर की कीमत होगी...", o:["13656 रु०", "13656.25 रु०", "12656 रु०", "12656.25 रु०"], c:3},
+            {id:53, t:"किसी त्रिभुज में ______ वहिर्वृत की रचना की जा सकती है?", o:["एक", "दो", "तीन", "चार"], c:2},
+            {id:54, t:"$\\cos 0^\\circ + 2\\sec 45^\\circ - 3\\tan 30^\\circ =$ ?", o:["0", "1", "2", "-1"], c:2},
+            {id:55, t:"The value of $\\cos 15^\\circ \\cos 7\\frac{1}{2}^\\circ \\sin 7\\frac{1}{2}^\\circ$ is......", o:["1/2", "1/8", "1/4", "1/16"], c:1},
+            {id:56, t:"अविरोधी समीकरण युग्म का ______ हल होता है:", o:["कोई हल नहीं", "अनगिनत हल", "एक और सिर्फ एक हल", "इनमें कोई नहीं"], c:2},
+            {id:57, t:"यदि किसी त्रिभुज के कोण 2:3:4 के अनुपात में हो तो त्रिभुज के तीनों कोण होंगे:", o:["20°, 40°, 60°", "40°, 60°, 80°", "30°, 50°, 70°", "90°, 60°, 80°"], c:1},
+            {id:58, t:"सोनाली 2000 रुपये की खरीदारी पर दी गई 30% की छूट या 25% और 5% की दो क्रमिक छूटों के बीच निर्णय नहीं ले सकी। अंतर क्या है?", o:["रु. 15", "रु. 25", "रु. 100", "कोई फर्क नहीं"], c:1},
+            {id:59, t:"यदि $2x+3y=13$ तथा $4x-y=5$ हो तो x, y के मान होगा:", o:["X=2, Y=3", "X=3, Y=-2", "X=-3, Y=-2", "X=-2, Y=-3"], c:0},
+            {id:60, t:"एक बेलन और एक शंकु के आधार की त्रिज्याएँ 3:4 के अनुपात में हैं। ऊंचाई 2:3। आयतन का अनुपात?", o:["9:8", "3:4", "8:9", "4:3"], c:0},
+            {id:61, t:"समीकरण $2x+3y=5$ का आलेख होगा :", o:["वक्र रेखा", "सरल रेखा", "एक वृत्ताकार", "इनमें कोई नहीं"], c:1},
+            {id:62, t:"सरल रेखा $2x+3y-6=0$ का आरेख y-अक्ष के जिस बिन्दु पर काटता है, वह बिन्दु है:", o:["(0, 2)", "(0, 3)", "(2, 0)", "(3, 0)"], c:0},
+            {id:63, t:"किसी पूर्णाक संख्या p के लिए विषम संख्या का रूप है:", o:["2p+1", "2p", "p", "p+1"], c:0},
+            {id:64, t:"$\\frac{11}{15}$ का दशमलव प्रसार होता..... है?", o:["सांत", "असांत आवर्ती", "असांत अनावर्ती", "इनमें कोई नहीं"], c:1},
+            {id:65, t:"एक समांतर चतुर्भुज के किन्ही दो आसन्न कोणों के समद्विभाजक एक दूसरे को प्रतिच्छेदित ______ पर करते हैं।", o:["30°", "45°", "60°", "90°"], c:3},
+            {id:66, t:"एक वृत्त की परिधि 36 सेमी और 20 सेमी व्यास वाले दो वृत्तों की परिधि के योग के बराबर है। नये वृत्त की त्रिज्या है:", o:["16 सेमी", "28 सेमी", "42 सेमी", "56 सेमी"], c:1},
+            {id:67, t:"बिन्दु (x,y) की दूरी मूल बिन्दु से ______ है।", o:["$\\sqrt{x^2 - y^2}$", "$\\sqrt{x^2 + y^2}$", "$x^2 - y^2$", "$x^2 y^2$"], c:1},
+            {id:68, t:"एक समलंब की समानांतर भुजाएँ 9.7 सेमी और 6.3 सेमी हैं, दूरी 6.5 सेमी है। क्षेत्रफल है:", o:["104 सेमी²", "78 सेमी²", "52 सेमी²", "65 सेमी²"], c:2},
+            {id:69, t:"यदि आँकड़ों के मान, cos0°, cos30°, cos45°, cos60°, cos90° के रूप में हो तो इसकी माध्यिका ______ है।", o:["0", "1", "$1/\\sqrt{2}$", "None"], c:2},
+            {id:70, t:"यदि दो रैखिक समीकरणों का आलेख ग्राफ पर (समांतर रेखाओं के रूप में) दर्शाए गए हों तो कितने हल संभव हैं?", o:["कोई हल नहीं", "अनंत हल", "दो हल", "कुछ नहीं"], c:0},
+
+            // Science
+            {id:71, t:"किसी विद्युत बल्ब पर 220V तथा 100 watt अंकित है। जब इसे 110 वोल्ट पर प्रचालित करते है तब शक्ति?", o:["100W", "75W", "50W", "25W"], c:2}, // Key says C (50W), physically it should be 25W, but strictly following provided key
+            {id:72, t:"शरीर निर्माण करने वाला भोजन है?", o:["जल", "कार्बोहाइड्रेट", "प्रोटीन", "वसा"], c:2},
+            {id:73, t:"औसत वेग क्या होगा यदि विस्थापन 0 है?", o:["2 m/s", "1 m/s", "1", "0 m/s"], c:3},
+            {id:74, t:"पृथ्वी के वायुमंडल में पाई जानेवाली गैसों में नाईट्रोजन की मात्रा कितनी होती है?", o:["0.1", "0.2", "0.4", "0.78"], c:3},
+            {id:75, t:"किसी ठोस के सतह क्षेत्र और कण आकार के बीच संबंध?", o:["बराबर होता है", "कण आकार में कमी के साथ सतह क्षेत्र बढ़ता है", "निर्भर नहीं करता", "कण आकार में वृद्धि के साथ सतह क्षेत्र बढ़ता है"], c:3},
+            {id:76, t:"दो साम्राज्य वर्गीकरण (Two Kingdom Classification) के बीच अंतर नहीं करता है:", o:["यूकेरियोट्स और प्रोकैरियोट्स", "एककोशिकीय और बहुकोशिकीय", "प्रकाश संश्लेषक और गैर-प्रकाश संश्लेषक", "ये सभी"], c:3},
+            {id:77, t:"कोशिका भित्ति के बारे में सत्य है?", o:["लिपिड से बनी", "स्टार्च से बनी", "प्रोटीन से बनी", "सेलूलोज़ से बनी होती है"], c:3},
+            {id:78, t:"Scientific name species parts?", o:["Family & Genus", "Genus & Species", "Order & Family", "Species & Phylum"], c:1},
+            {id:79, t:"जैव तकनीक कृषि में सम्मिलित मुख्य तकनीक है-", o:["ऊतक संवर्धन", "पौध प्रजनन", "DNA प्रतिरूप", "कोई नहीं"], c:0},
+            {id:80, t:"जिन कोशिकाओं में गुणसूत्रों के दो से अधिक पूर्ण सेट होते हैं, कहलाती हैं...", o:["अगुणित", "द्विगुणिल", "बहुगुणित (Polyploid)", "बहुसंकर"], c:2},
+            {id:81, t:"मानव शरीर द्वारा उत्पादित प्रमुख अपशिष्ट कौन हैं -", o:["कार्बन डाई ऑक्साइड", "यूरिया", "CO2 + यूरिया", "कोई नहीं"], c:2},
+            {id:82, t:"नाइट्रोजन यौगिकीकरण (Nitrogen Fixation) का अर्थ?", o:["गैसीय नाइट्रोजन में रूपांतरण", "अमोनिया का नाइट्रेट में", "वापस मृदा में", "जीवित प्राणियों के लिए प्रयोगलायक रूप"], c:3},
+            {id:83, t:"असंतृप्त हाइड्रोकार्बनों का समूह पहचानिए:", o:["प्रोपेन, एथीन, ब्यूटाइन", "एथीन, प्रोपेन, हैक्सेन", "साइक्लोहेक्सेन, मीथेन, एथेन", "ब्यूटाइन, एथीन, प्रोपाइन"], c:3},
+            {id:84, t:"बल की SI इकाई है?", o:["Kgm/s²", "Kgm/s", "न्यूटन मीटर", "न्यूटन"], c:3},
+            {id:85, t:"विद्युत परिपथ में प्रवाहित धारा का मान मापने में प्रयुक्त यंत्र है।", o:["गैल्वेनोमीटर", "वोल्टमीटर", "एमीटर", "कोई नहीं"], c:2},
+            {id:86, t:"मनुष्य में श्वसन वर्णक है:", o:["इंसुलिन", "एंजाइम", "हीमोग्लोबिन", "कोई नहीं"], c:2},
+            {id:87, t:"प्रेरित ई.एम.एफ. की ताकत ______ से स्वतंत्र होती है:", o:["चुंबक की ताकत", "कुंडल के घुमावों की संख्या", "कुण्डली में तार का प्रतिरोध", "चुंबक की गति"], c:2},
+            {id:88, t:"वाष्पीकरण पर आद्रता का प्रभाव?", o:["आद्रता बढ़ने पर वाष्पीकरण की दर घटती है", "बढ़ाता है, कभी घटाता है", "प्रभाव नहीं", "घटने से घटती है"], c:0},
+            {id:89, t:"पर्यावरण की कार्यात्मक इकाई है:", o:["पारिस्थितिकी तंत्र", "नाइट्रोजन", "कार्बन", "ऑक्सीजन"], c:0},
+            {id:90, t:"वायु गुणवत्ता सूचकांक सत्य कथन?", o:["हवा का रंग", "ओजोन स्तर", "ध्वनि प्रदूषण", "वायु प्रदूषण का अनुमान"], c:3},
+
+            // Social Studies
+            {id:91, t:"इनमें से कौन एक राजनीतिक अधिकार है?", o:["चुनाव लड़ने का अधिकार", "काम का अधिकार", "पारिवारिक जीवन का अधिकार", "धर्म स्वीकार करने का अधिकार"], c:0},
+            {id:92, t:"समकालीन विश्व में सरकार का सबसे लोकप्रिय रूप?", o:["तानाशाही", "राजशाही", "सैन्य शासन", "लोकतंत्र"], c:3},
+            {id:93, t:"किस राज्य में शहरीकरण का स्तर सबसे कम है?", o:["उत्तर प्रदेश", "बिहार", "मध्य प्रदेश", "गुजरात"], c:1},
+            {id:94, t:"कौन राष्ट्र संघ के भीतर एक संगठन नहीं था?", o:["शरणार्थियों के लिए आयोग", "अंतर्राष्ट्रीय सैन्य बोर्ड", "स्थायी केंद्रीय अफीम बोर्ड", "दासता आयोग"], c:1},
+            {id:95, t:"मणिपुर की लुप्तप्राय प्रजाति है?", o:["नीली भेड़", "एशियाई भैंस", "संगाई", "मवेशी"], c:2},
+            {id:96, t:"What is the numerator always in a representative fraction?", o:["0", "1", "2", "Infinite"], c:1},
+            {id:97, t:"भारत में वनस्पति और वन्य जीवन के वितरण को प्रभावित करने वाला कारक?", o:["तापमान", "ऊंचाई", "वर्षा", "उपरोक्त सभी"], c:3},
+            {id:98, t:"राज्यसभा के सदस्य का कार्यकाल?", o:["3 वर्ष", "5 वर्ष", "6 वर्ष", "2 वर्ष"], c:2},
+            {id:99, t:"कौन सा खनिज मोनाज़ाइट रेत में निहित है?", o:["तेल", "यूरेनियम", "थोरियम", "कोयला"], c:2},
+            {id:100, t:"1855 ई. में संथाल विद्रोह का नेता कौन था?", o:["सिदधू", "बिरसा मुंडा", "मंगल पांडे", "कोई नहीं"], c:0},
+            {id:101, t:"'भूमण्डलीकरण' शब्द का ईजाद किसने और कब किया?", o:["रूजवेल्ट, 1989", "जॉन विलियम्सन, 1990", "फ्रेडरिक विलियम, 1998", "ब्रिया, 1999"], c:1},
+            {id:102, t:"2011 की जनगणना के अनुसार सबसे कम साक्षरता दर?", o:["केरल", "बिहार", "महाराष्ट्र", "तमिलनाडु"], c:1},
+            {id:103, t:"'पचवाणी' और 'बीजक' में किसके विचार संरक्षित हैं?", o:["मीराबाई", "कबीर", "गुरुनानक", "रविदास"], c:1},
+            {id:104, t:"परियोजना कार्य की विशिष्टता?", o:["(a) और (b)", "(a) और (c)", "(b) और (c)", "केवल (a)"], c:1}, // Key says B implies A & C
+            {id:105, t:"अमेरिका का संविधान किस वर्ष लागू किया गया?", o:["1776", "1783", "1787", "1789"], c:3},
+            {id:106, t:"भारत में ताँबा गलाने का आधुनिक कारखाना सबसे पहले कहाँ खुला?", o:["[Cut Off]", "गुमला", "घाटशिला", "जमशेदपुर"], c:2},
+            {id:107, t:"बिहार की प्राचीनतम् नदी घाटी परियोजना है?", o:["सोन परियोजना", "गंडक परियोजना", "कोसी परियोजना", "दामोदर परियोजना"], c:0},
+            {id:108, t:"यूएसएसआर और जर्मनी के बीच युद्ध कब शुरू हुआ?", o:["20 मई 1940", "22 जून 1941", "26 जुलाई 1941", "16 अगस्त 1942"], c:1},
+            {id:109, t:"जब साथी नागरिक या सरकार अधिकारों का सम्मान नहीं करते...", o:["अतिक्रमण", "B", "C", "D"], c:0},
+            {id:110, t:"महिलाओं को भूमि के स्वामित्व से बाहर क्यों रखा गया है?", o:["ये सभी", "पितृवंशीय रिश्तेदारी प्रणाली", "कमजोर हैं", "असमर्थ हैं"], c:1},
+
+            // Reasoning
+            {id:111, t:"5X9, 8U12, 11R15, 14O18, ?", o:["16P21", "17L21", "19I24", "13U24"], c:1},
+            {id:112, t:"Cannot be written by DEPARTMENT?", o:["Parade", "Enter", "Parent", "Rat"], c:0},
+            {id:113, t:"अलग शब्द चुनें:", o:["तेंदुआ", "पैंथर", "शेर", "लोमड़ी"], c:3},
+            {id:114, t:"X के ठीक पहले वाले अक्षर के तीन अक्षर बाद?", o:["U", "V", "W", "Y"], c:2},
+            {id:115, t:"वेतन में 10% वृद्धि। 50000 रु. है, तो नया वेतन?", o:["55000", "60000", "45000", "65000"], c:0},
+            {id:116, t:"कथन: लोहे में जंग रासायनिक प्रक्रिया। कारण: वायु में जल।", o:["A (व्याख्या है)", "B (व्याख्या नहीं)", "C (कथन सत्य)", "D (दोनों असत्य)"], c:1},
+            {id:117, t:"सुमन का परिचय: 'इसकी माँ मेरी माँ की इकलौती पुत्री'। सरला सुमन से?", o:["बहन", "पुत्री", "मौसी", "माँ"], c:3},
+            {id:118, t:"4, 9, 25, 49, 121, _", o:["147", "169", "182", "215"], c:1},
+            {id:119, t:"मोर : भारत :: सफेद भालु : ?", o:["रूस", "जर्मनी", "जापान", "अमेरिका"], c:0},
+            {id:120, t:"j_l_jk_m_kl_", o:["jkljm", "kmjjj", "kmljm", "mkjim"], c:2}
+        ];
+
+        // --- STATE VARIABLES ---
+        let currentQIndex = 0;
+        let responses = {}; // Stores { questionId: selectedOptionIndex }
+        let questionStatus = {}; // Stores { questionId: 'visited' | 'answered' | 'review' }
+        let timerInterval;
+        let timeLeft = 150 * 60; // 150 minutes in seconds
+
+        // --- INIT ---
+        window.onload = function() {
+            document.getElementById('agreeCheck').addEventListener('change', function(e) {
+                document.getElementById('startBtn').disabled = !e.target.checked;
+            });
+        };
+
+        // --- CORE FUNCTIONS ---
+        function startExam() {
+            const docElm = document.documentElement;
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen().catch(err => console.log("Fullscreen denied"));
+            }
+
+            document.getElementById('instructionPage').classList.add('hidden');
+            document.getElementById('examInterface').classList.remove('hidden');
+            document.querySelector('header').classList.remove('no-print'); // Show header in UI, hide in print handled by CSS
+            
+            // Initialize Palette Status
+            questionsDB.forEach(q => {
+                questionStatus[q.id] = 'not-visited';
+            });
+
+            renderSectionTabs();
+            startTimer();
+            loadQuestion(0);
+            renderPalette();
+        }
+
+        function renderSectionTabs() {
+            const container = document.getElementById('sectionTabs');
+            container.innerHTML = sections.map(sec => `
+                <button onclick="jumpToSection('${sec.id}')" class="px-4 py-2 border-r hover:bg-gray-200 text-sm font-bold text-gray-700 whitespace-nowrap focus:outline-none focus:bg-blue-100">
+                    ${sec.name}
+                </button>
+            `).join('');
+        }
+
+        function jumpToSection(sectionId) {
+            const section = sections.find(s => s.id === sectionId);
+            const index = questionsDB.findIndex(q => q.id === section.start);
+            loadQuestion(index);
+        }
+
+        function loadQuestion(index) {
+            currentQIndex = index;
+            const q = questionsDB[index];
+            
+            // Update Status if not answered/review
+            if (questionStatus[q.id] === 'not-visited') {
+                questionStatus[q.id] = 'not-answered';
+            }
+
+            // UI Updates
+            document.getElementById('currentQNum').innerText = q.id;
+            
+            // Render Math
+            document.getElementById('questionText').innerHTML = q.t;
+            
+            // Render Options
+            const optionsHTML = q.o.map((opt, i) => {
+                const isSelected = responses[q.id] === i;
+                return `
+                <label class="flex items-start gap-3 p-3 border rounded-lg cursor-pointer hover:bg-blue-50 transition-colors ${isSelected ? 'bg-blue-100 border-blue-500' : 'bg-white'}">
+                    <input type="radio" name="option" value="${i}" class="mt-1 w-4 h-4 accent-blue-600" onchange="selectOption(${i})" ${isSelected ? 'checked' : ''}>
+                    <span class="text-sm font-medium">${opt}</span>
+                </label>
+                `;
+            }).join('');
+            
+            document.getElementById('optionsContainer').innerHTML = optionsHTML;
+
+            // Retrigger MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+
+            renderPalette();
+            updateStats();
+        }
+
+        function selectOption(optIndex) {
+            const q = questionsDB[currentQIndex];
+            responses[q.id] = optIndex;
+            // Note: We don't change status to 'answered' immediately. Only on "Save & Next"
+        }
+
+        function saveAndNext() {
+            const q = questionsDB[currentQIndex];
+            if (responses[q.id] !== undefined) {
+                questionStatus[q.id] = 'answered';
+            } else {
+                questionStatus[q.id] = 'not-answered';
+            }
+            nextQuestion();
+        }
+
+        function markForReview() {
+            const q = questionsDB[currentQIndex];
+            questionStatus[q.id] = 'review';
+            nextQuestion();
+        }
+
+        function clearResponse() {
+            const q = questionsDB[currentQIndex];
+            delete responses[q.id];
+            questionStatus[q.id] = 'not-answered';
+            loadQuestion(currentQIndex); // Reload to clear radio
+        }
+
+        function nextQuestion() {
+            if (currentQIndex < questionsDB.length - 1) {
+                loadQuestion(currentQIndex + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQIndex > 0) {
+                loadQuestion(currentQIndex - 1);
+            }
+        }
+
+        function jumpToQuestion(index) {
+            loadQuestion(index);
+        }
+
+        function renderPalette() {
+            const grid = document.getElementById('paletteGrid');
+            grid.innerHTML = questionsDB.map((q, idx) => {
+                let statusClass = '';
+                const status = questionStatus[q.id];
+                
+                if (status === 'answered') statusClass = 'p-answered';
+                else if (status === 'review') statusClass = 'p-review';
+                else if (status === 'not-answered') statusClass = 'p-not-answered';
+                else statusClass = 'bg-gray-100'; // Not visited
+
+                const isCurrent = idx === currentQIndex ? 'p-current' : '';
+
+                return `<div class="palette-btn ${statusClass} ${isCurrent}" onclick="jumpToQuestion(${idx})">${q.id}</div>`;
+            }).join('');
+        }
+
+        function updateStats() {
+            // Can add live counters if needed
+        }
+
+        function startTimer() {
+            const timerEl = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const hrs = Math.floor(timeLeft / 3600);
+                const mins = Math.floor((timeLeft % 3600) / 60);
+                const secs = timeLeft % 60;
+                
+                timerEl.innerText = `${hrs.toString().padStart(2,'0')}:${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        // --- SUBMISSION & RESULTS ---
+
+        function submitExam() {
+            if(!confirm("Are you sure you want to submit the test?")) return;
+            
+            clearInterval(timerInterval);
+            document.getElementById('examInterface').classList.add('hidden');
+            document.querySelector('header').classList.add('hidden'); // Hide exam header
+            document.getElementById('resultPage').classList.remove('hidden');
+
+            processResults();
+        }
+
+        function processResults() {
+            let score = 0;
+            let correct = 0;
+            let wrong = 0;
+            let unattempted = 0;
+            let resultHTML = '';
+            let discordText = `🎓 📘 Student Assessment Sheet 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 Student Name: Md Faizan Ansari\n🆔 Student ID: FAI-2026-IND\n🏫 Class: D.El.Ed Entrance\n📅 Date: ${new Date().toLocaleDateString('en-IN')}\n🌍 Location: India 🇮🇳\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+
+            questionsDB.forEach(q => {
+                const userAns = responses[q.id];
+                const isAttempted = userAns !== undefined;
+                const isCorrect = isAttempted && userAns === q.c;
+
+                if (isCorrect) {
+                    score++;
+                    correct++;
+                } else if (isAttempted) {
+                    wrong++;
+                } else {
+                    unattempted++;
+                }
+
+                // Add to HTML detailed view
+                const userVal = isAttempted ? q.o[userAns] : "Not Answered";
+                const correctVal = q.o[q.c];
+                const statusColor = isCorrect ? "text-green-600" : (isAttempted ? "text-red-600" : "text-gray-400");
+                const icon = isCorrect ? "✅" : (isAttempted ? "❌" : "⚪");
+
+                resultHTML += `
+                <div class="border-b pb-4">
+                    <div class="flex justify-between">
+                        <span class="font-bold text-gray-700">Q.${q.id}</span>
+                        <span class="${statusColor} font-bold">${isCorrect ? "+1" : "0"}</span>
+                    </div>
+                    <div class="text-gray-800 my-2">${q.t}</div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div class="bg-gray-50 p-2 rounded border">Your Answer: <span class="${statusColor} font-bold">${userVal}</span></div>
+                        <div class="bg-blue-50 p-2 rounded border">Correct Answer: <span class="text-blue-800 font-bold">${correctVal}</span></div>
+                    </div>
+                </div>
+                `;
+
+                // Add to Discord String (Simplified for length)
+                // Only sending first 5 and summary to avoid character limit, or full if specified
+                if(q.id <= 5 || q.id >= 118) { // Sample + End
+                    discordText += `📝 Question ${q.id}: ${q.t.substring(0, 30)}...\n`;
+                    discordText += `🔹 Answer: ${isAttempted ? userVal : "Skipped"} ${icon}\n`;
+                    discordText += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                }
+            });
+
+            // Update UI
+            document.getElementById('finalScoreDisplay').innerText = `${score} / 120`;
+            document.getElementById('totalQuestions').innerText = questionsDB.length;
+            document.getElementById('correctCount').innerText = correct;
+            document.getElementById('wrongCount').innerText = wrong;
+            document.getElementById('unattemptedCount').innerText = unattempted;
+            document.getElementById('detailedAnalysis').innerHTML = resultHTML;
+            document.getElementById('securityId').innerText = Math.random().toString(36).substring(7).toUpperCase();
+
+            // Re-render Math in result
+            if (window.MathJax) MathJax.typesetPromise();
+
+            // Send to Discord
+            discordText += `📊 SCORE SUMMARY:\n✅ Correct: ${correct}\n❌ Wrong: ${wrong}\n⚪ Skipped: ${unattempted}\n🏆 TOTAL SCORE: ${score}/120\n━━━━━━━━━━━━━━━━━━━━━━━\n🔐 System Info: IP Logged, User-Agent: ${navigator.userAgent}`;
+            
+            sendToDiscord(discordText);
+        }
+
+        function sendToDiscord(messageText) {
+            fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: 'QUIZZES_7887168828',
+                    message: messageText,
+                    // Optional: Add a chart image if available
+                    image: 'https://placehold.co/600x200/png?text=BSEB+Result' 
+                })
+            })
+            .then(response => console.log('Result sent to Discord'))
+            .catch(error => console.error('Error sending result:', error));
+        }
+
+        // --- SECURITY ---
+        document.addEventListener('keydown', function(e) {
+            // Prevent F12, Ctrl+U, Ctrl+C
+            if (e.key === 'F12' || (e.ctrlKey && (e.key === 'u' || e.key === 'c' || e.key === 'v'))) {
+                e.preventDefault();
+                alert('Security Alert: This action is prohibited.');
+            }
+        });
+        
+    </script>
+</body>
+</html>
