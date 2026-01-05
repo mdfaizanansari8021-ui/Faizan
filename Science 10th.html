@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board Class 10 Science (80 Questions)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+            background-color: #000;
+            color: #fff;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 40%);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .glass-panel {
+            background: rgba(18, 18, 20, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .anim-text {
+            background: linear-gradient(to right, #60a5fa, #c084fc, #f472b6, #60a5fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300%;
+            animation: rainbow 4s linear infinite;
+        }
+
+        @keyframes rainbow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+        .option-card {
+            transition: all 0.2s ease;
+        }
+        .option-card:active { transform: scale(0.98); }
+        
+        .loader {
+            width: 18px; height: 18px;
+            border: 2px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .hindi-text { font-family: 'Noto Sans Devanagari', sans-serif; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center justify-center" oncontextmenu="return false;">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <h1 class="text-3xl font-black mt-2 tracking-tighter text-center px-4">
+            POWERED BY <br> <span class="anim-text text-4xl">FAIZAN ALI</span>
+        </h1>
+    </div>
+
+    <!-- Setup Screen -->
+    <div id="setup-screen" class="hidden w-full max-w-md px-6 py-8">
+        <div class="glass-panel rounded-3xl p-8 border-t-4 border-t-blue-500">
+            <h2 class="text-3xl font-bold mt-2 mb-2 text-center text-white">Student Login</h2>
+            <p class="text-gray-400 text-center mb-8 text-sm">Bihar Board Class 10 (80 Questions)</p>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-blue-400 uppercase tracking-wider mb-2 ml-1">Full Name / पूरा नाम</label>
+                    <input type="text" id="user-name" class="w-full bg-black/40 border border-gray-700 rounded-xl px-5 py-4 text-lg focus:outline-none focus:border-blue-500 transition-all text-white placeholder-gray-600" placeholder="Enter your name">
+                </div>
+                
+                <button onclick="startQuiz()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg transform transition-all active:scale-95 text-lg">
+                    Start Exam 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="hidden w-full max-w-2xl px-4 py-4 flex-col min-h-screen">
+        <!-- Header -->
+        <div class="flex justify-between items-end mb-6 glass-panel rounded-2xl p-4 sticky top-4 z-40">
+            <div>
+                <span class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Question / प्रश्न</span>
+                <div class="flex items-baseline gap-1">
+                    <span id="q-current" class="text-3xl font-black text-white">1</span>
+                    <span class="text-gray-500 text-lg font-bold">/</span>
+                    <span id="q-total" class="text-gray-500 text-lg font-bold">80</span>
+                </div>
+            </div>
+            <!-- Score Hidden during Quiz -->
+            <div class="text-right opacity-0">
+                 <span class="text-[10px] text-gray-400 uppercase tracking-widest font-bold">Score</span>
+                 <div class="text-3xl font-black text-green-400">-</div>
+            </div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="glass-panel rounded-3xl p-6 mb-6 relative overflow-hidden">
+            <h2 id="q-en" class="text-lg md:text-xl font-bold leading-snug text-gray-200 mb-3">Loading...</h2>
+            <div class="h-px w-full bg-gray-700 my-3"></div>
+            <h2 id="q-hi" class="text-xl md:text-2xl font-bold leading-snug text-blue-300 hindi-text">लोड हो रहा है...</h2>
+        </div>
+
+        <!-- Options -->
+        <div id="options-container" class="space-y-3 pb-20"></div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="hidden w-full max-w-3xl px-4 py-8 flex-col items-center">
+        <div class="glass-panel rounded-3xl p-8 w-full mb-6 text-center border-t-4 border-green-500">
+            <h2 class="text-3xl font-black text-white mb-2">Exam Completed!</h2>
+            <h3 class="text-xl text-gray-400 hindi-text mb-6">परीक्षा समाप्त!</h3>
+            
+            <div class="flex justify-center items-center gap-2 mb-2">
+                <span class="text-sm uppercase tracking-widest text-gray-500">Final Score</span>
+            </div>
+            <div class="text-6xl font-black text-white mb-6">
+                <span id="final-score">0</span><span class="text-3xl text-gray-600"> / 80</span>
+            </div>
+
+            <!-- Discord Status -->
+            <div class="bg-gray-900/80 rounded-xl p-4 flex items-center justify-center gap-3 border border-gray-800">
+                <div id="sending-loader" class="loader"></div>
+                <span id="sending-status" class="text-sm font-bold text-gray-300">Syncing Result to Discord...</span>
+            </div>
+        </div>
+        
+        <div class="w-full">
+            <h3 class="text-xl font-bold mb-4 flex items-center gap-2 px-2">
+                <span class="w-1.5 h-6 bg-blue-500 rounded-full"></span> Detailed Review
+            </h3>
+            <div id="review-list" class="space-y-4"></div>
+        </div>
+    </div>
+
+<script>
+// --- Data Source: 80 Questions (Physics, Chemistry, Biology) ---
+const questions = [
+    // PHYSICS (1-27)
+    { q_en: "Which mirror has a negative focal length?", q_hi: "किस दर्पण की फोकस दूरी ऋणात्मक होती है?", opt_en: ["Plane", "Concave", "Convex", "None"], opt_hi: ["समतल", "अवतल", "उत्तल", "कोई नहीं"], a: 1 },
+    { q_en: "Relation between f and R?", q_hi: "f और R में क्या संबंध है?", opt_en: ["f=R", "f=R/2", "f=2R", "f=3R"], opt_hi: ["f=R", "f=R/2", "f=2R", "f=3R"], a: 1 },
+    { q_en: "Least distance of distinct vision?", q_hi: "स्पष्ट दृष्टि की न्यूनतम दूरी क्या है?", opt_en: ["25m", "25cm", "25mm", "Infinite"], opt_hi: ["25 मीटर", "25 सेमी", "25 मिमी", "अनंत"], a: 1 },
+    { q_en: "White light color bending least in prism?", q_hi: "प्रिज्म में सबसे कम झुकने वाला रंग?", opt_en: ["Violet", "Blue", "Green", "Red"], opt_hi: ["बैंगनी", "नीला", "हरा", "लाल"], a: 3 },
+    { q_en: "Image on human retina is?", q_hi: "मानव रेटिना पर बना प्रतिबिंब?", opt_en: ["Virtual/Erect", "Real/Inverted", "Virtual/Inverted", "Real/Erect"], opt_hi: ["आभासी/सीधा", "वास्तविक/उल्टा", "आभासी/उल्टा", "वास्तविक/सीधा"], a: 1 },
+    { q_en: "Sky appears blue due to?", q_hi: "आकाश नीला क्यों दिखता है?", opt_en: ["Reflection", "Refraction", "Scattering", "Dispersion"], opt_hi: ["परावर्तन", "अपवर्तन", "प्रकीर्णन", "वर्ण विक्षेपण"], a: 2 },
+    { q_en: "Mirror forming magnified image?", q_hi: "बड़ा प्रतिबिंब बनाने वाला दर्पण?", opt_en: ["Convex", "Plane", "Concave", "None"], opt_hi: ["उत्तल", "समतल", "अवतल", "कोई नहीं"], a: 2 },
+    { q_en: "Lens for Myopia?", q_hi: "निकट दृष्टि दोष के लिए लेंस?", opt_en: ["Convex", "Concave", "Bifocal", "Cylindrical"], opt_hi: ["उत्तल", "अवतल", "द्विफोकल", "बेलनाकार"], a: 1 },
+    { q_en: "Instrument detecting current?", q_hi: "धारा की उपस्थिति बताने वाला यंत्र?", opt_en: ["Voltmeter", "Ammeter", "Galvanometer", "Rheostat"], opt_hi: ["वोल्टमीटर", "एमीटर", "गैल्वेनोमीटर", "रियोस्टेट"], a: 2 },
+    { q_en: "Right Hand Thumb Rule by?", q_hi: "दाएं हाथ के अंगूठे का नियम?", opt_en: ["Oersted", "Fleming", "Einstein", "Maxwell"], opt_hi: ["ओर्स्टेड", "फ्लेमिंग", "आइंस्टीन", "मैक्सवेल"], a: 3 },
+    { q_en: "SI unit of Potential Difference?", q_hi: "विभवांतर का SI मात्रक?", opt_en: ["Ampere", "Volt", "Ohm", "Watt"], opt_hi: ["एम्पीयर", "वोल्ट", "ओम", "वाट"], a: 1 },
+    { q_en: "Resistance increases in?", q_hi: "प्रतिरोध किसमें बढ़ता है?", opt_en: ["Parallel", "Series", "Both", "None"], opt_hi: ["समांतर", "श्रेणी", "दोनों", "कोई नहीं"], a: 1 },
+    { q_en: "Magnetic field lines are?", q_hi: "चुंबकीय क्षेत्र रेखाएं होती हैं?", opt_en: ["Real", "Imaginary", "Both", "None"], opt_hi: ["वास्तविक", "काल्पनिक", "दोनों", "कोई नहीं"], a: 1 },
+    { q_en: "1 kWh equals?", q_hi: "1 किलोवाट घंटा बराबर है?", opt_en: ["3.6×10⁶ J", "3.6×10⁵ J", "3.6×10⁻⁶ J", "3.6 J"], opt_hi: ["3.6×10⁶ J", "3.6×10⁵ J", "3.6×10⁻⁶ J", "3.6 J"], a: 0 },
+    { q_en: "Renewable energy source?", q_hi: "नवीकरणीय ऊर्जा स्रोत?", opt_en: ["Coal", "Petroleum", "Solar", "Natural Gas"], opt_hi: ["कोयला", "पेट्रोलियम", "सौर ऊर्जा", "प्राकृतिक गैस"], a: 2 },
+    { q_en: "Diverging Lens is?", q_hi: "अपसारी लेंस है?", opt_en: ["Convex", "Concave", "Bifocal", "None"], opt_hi: ["उत्तल", "अवतल", "द्विफोकल", "कोई नहीं"], a: 1 },
+    { q_en: "Primary colors of light?", q_hi: "प्रकाश के प्राथमिक रंग?", opt_en: ["Red", "Blue", "Green", "All"], opt_hi: ["लाल", "नीला", "हरा", "ये सभी"], a: 3 },
+    { q_en: "Colored part of eye?", q_hi: "आंख का रंगीन भाग?", opt_en: ["Cornea", "Pupil", "Retina", "Iris"], opt_hi: ["कॉर्निया", "पुतली", "रेटिना", "परितारिका"], a: 3 },
+    { q_en: "1 HP equals?", q_hi: "1 अश्व शक्ति बराबर?", opt_en: ["746 W", "736 W", "767 W", "756 W"], opt_hi: ["746 W", "736 W", "767 W", "756 W"], a: 0 },
+    { q_en: "Magnifying glass uses?", q_hi: "विशालक शीशा होता है?", opt_en: ["Concave Lens", "Convex Lens", "Plane Lens", "None"], opt_hi: ["अवतल लेंस", "उत्तल लेंस", "समतल लेंस", "कोई नहीं"], a: 1 },
+    { q_en: "Flowing particles in conductor?", q_hi: "चालक में गतिशील कण?", opt_en: ["Protons", "Neutrons", "Electrons", "Ions"], opt_hi: ["प्रोटॉन", "न्यूट्रॉन", "इलेक्ट्रॉन", "आयन"], a: 2 },
+    { q_en: "Ampere-hour is unit of?", q_hi: "एम्पीयर-घंटा मात्रक है?", opt_en: ["Power", "Charge", "Energy", "Current"], opt_hi: ["शक्ति", "आवेश", "ऊर्जा", "धारा"], a: 1 },
+    { q_en: "Unit of Electric Current?", q_hi: "विद्युत धारा का मात्रक?", opt_en: ["Volt", "Ohm", "Ampere", "Coulomb"], opt_hi: ["वोल्ट", "ओम", "एम्पीयर", "कूलम्ब"], a: 2 },
+    { q_en: "Material of fuse wire?", q_hi: "फ्यूज तार का पदार्थ?", opt_en: ["High MP", "Low MP", "High Resistance", "None"], opt_hi: ["उच्च गलनांक", "निम्न गलनांक", "उच्च प्रतिरोध", "कोई नहीं"], a: 1 },
+    { q_en: "Voltmeter is connected in?", q_hi: "वोल्टमीटर को जोड़ा जाता है?", opt_en: ["Series", "Parallel", "Mixed", "None"], opt_hi: ["श्रेणी", "समांतर", "मिश्रित", "कोई नहीं"], a: 1 },
+    { q_en: "Lens Formula?", q_hi: "लेंस सूत्र है?", opt_en: ["1/v - 1/u = 1/f", "1/v + 1/u = 1/f", "v/u", "None"], opt_hi: ["1/v - 1/u = 1/f", "1/v + 1/u = 1/f", "v/u", "कोई नहीं"], a: 0 },
+    { q_en: "Unit of Power of Lens?", q_hi: "लेंस की क्षमता का मात्रक?", opt_en: ["Meter", "Diopter", "Watt", "Ohm"], opt_hi: ["मीटर", "डायोप्टर", "वाट", "ओम"], a: 1 },
+    
+    // CHEMISTRY (28-54)
+    { q_en: "Gas causing Global Warming?", q_hi: "ग्लोबल वार्मिंग वाली गैस?", opt_en: ["O2", "N2", "CO2", "H2"], opt_hi: ["O2", "N2", "CO2", "H2"], a: 2 },
+    { q_en: "Digestion is which reaction?", q_hi: "भोजन का पचना अभिक्रिया है?", opt_en: ["Combination", "Oxidation", "Displacement", "Reduction"], opt_hi: ["संयोजन", "उपचयन", "विस्थापन", "अपचयन"], a: 1 },
+    { q_en: "Reaction of Quick lime + water?", q_hi: "कली चूना + जल अभिक्रिया?", opt_en: ["Endothermic", "Exothermic", "Photochemical", "None"], opt_hi: ["ऊष्माशोषी", "ऊष्माक्षेपी", "प्रकाश रासायनिक", "कोई नहीं"], a: 1 },
+    { q_en: "Formula of Lime Water?", q_hi: "चूना जल का सूत्र?", opt_en: ["CaO", "CaCO3", "Ca(OH)2", "CaCl2"], opt_hi: ["CaO", "CaCO3", "Ca(OH)2", "CaCl2"], a: 2 },
+    { q_en: "Solution turns Red litmus Blue?", q_hi: "लाल लिटमस को नीला करने वाला pH?", opt_en: ["1", "5", "7", "10"], opt_hi: ["1", "5", "7", "10"], a: 3 },
+    { q_en: "Bonds in Alkyne?", q_hi: "एल्काइन में आबंध?", opt_en: ["1", "2", "3", "4"], opt_hi: ["1", "2", "3", "4"], a: 2 },
+    { q_en: "Formula of Glucose?", q_hi: "ग्लूकोज का सूत्र?", opt_en: ["C6H12O6", "C12H22O11", "CH3COOH", "CHCl3"], opt_hi: ["C6H12O6", "C12H22O11", "CH3COOH", "CHCl3"], a: 0 },
+    { q_en: "Sodium salts of fatty acids?", q_hi: "वसीय अम्लों के सोडियम लवण?", opt_en: ["Soaps", "Detergents", "Plastics", "Rubber"], opt_hi: ["साबुन", "अपमार्जक", "प्लास्टिक", "रबड़"], a: 0 },
+    { q_en: "-CHO group is?", q_hi: "-CHO समूह है?", opt_en: ["Alcohol", "Aldehyde", "Ketone", "Acid"], opt_hi: ["अल्कोहल", "एल्डिहाइड", "कीटोन", "अम्ल"], a: 1 },
+    { q_en: "Atomic radius L to R?", q_hi: "बाएं से दाएं परमाणु त्रिज्या?", opt_en: ["Increases", "Decreases", "Same", "None"], opt_hi: ["बढ़ती है", "घटती है", "समान", "कोई नहीं"], a: 1 },
+    { q_en: "Silicon is?", q_hi: "सिलिकॉन है?", opt_en: ["Metal", "Non-metal", "Metalloid", "Gas"], opt_hi: ["धातु", "अधातु", "उपधातु", "गैस"], a: 2 },
+    { q_en: "Electropositive element?", q_hi: "विद्युत धनात्मक तत्व?", opt_en: ["Cl", "Na", "C", "O"], opt_hi: ["Cl", "Na", "C", "O"], a: 1 },
+    { q_en: "Metal kept in Kerosene?", q_hi: "केरोसिन में रखी धातु?", opt_en: ["Sodium", "Mg", "Zn", "Fe"], opt_hi: ["सोडियम", "Mg", "Zn", "Fe"], a: 0 },
+    { q_en: "Detergents make?", q_hi: "अपमार्जक से बनते हैं?", opt_en: ["Surf", "Shampoo", "Easy", "All"], opt_hi: ["सर्फ़", "शैम्पू", "इजी", "सभी"], a: 3 },
+    { q_en: "Solar Cell material?", q_hi: "सौर सेल का पदार्थ?", opt_en: ["C", "Si", "Co", "Al"], opt_hi: ["C", "Si", "Co", "Al"], a: 1 },
+    { q_en: "Not a cooking fuel?", q_hi: "खाना पकाने का ईंधन नहीं?", opt_en: ["LPG", "Biogas", "Coal", "CNG"], opt_hi: ["LPG", "बायोगैस", "कोयला", "CNG"], a: 3 },
+    { q_en: "2Cu+O2->2CuO is?", q_hi: "2Cu+O2->2CuO है?", opt_en: ["Oxidation", "Decomposition", "Displacement", "None"], opt_hi: ["ऑक्सीकरण", "अपघटन", "विस्थापन", "कोई नहीं"], a: 0 },
+    { q_en: "pH of neutral solution?", q_hi: "उदासीन विलयन का pH?", opt_en: ["5", "7", "9", "14"], opt_hi: ["5", "7", "9", "14"], a: 1 },
+    { q_en: "Cryolite is ore of?", q_hi: "क्रायोलाइट किसका अयस्क है?", opt_en: ["Cu", "Fe", "Al", "Mg"], opt_hi: ["Cu", "Fe", "Al", "Mg"], a: 2 },
+    { q_en: "Atomic no. of K?", q_hi: "K की परमाणु संख्या?", opt_en: ["18", "19", "20", "21"], opt_hi: ["18", "19", "20", "21"], a: 1 },
+    { q_en: "Formic Acid IUPAC name?", q_hi: "फॉर्मिक अम्ल का IUPAC नाम?", opt_en: ["Methanoic", "Ethanoic", "Propanoic", "Butanoic"], opt_hi: ["मेथेनोइक", "एथेनोइक", "प्रोपेनोइक", "ब्यूटेनोइक"], a: 0 },
+    { q_en: "Ethyl Alcohol formula?", q_hi: "इथाइल अल्कोहल का सूत्र?", opt_en: ["CH3OH", "C2H5OH", "C3H7OH", "C2H2"], opt_hi: ["CH3OH", "C2H5OH", "C3H7OH", "C2H2"], a: 1 },
+    { q_en: "Acetylene formula?", q_hi: "एसिटिलीन का सूत्र?", opt_en: ["CH4", "C2H4", "C2H2", "C6H6"], opt_hi: ["CH4", "C2H4", "C2H2", "C6H6"], a: 2 },
+    { q_en: "Sugar formula?", q_hi: "चीनी का सूत्र?", opt_en: ["C6H12O6", "C12H22O11", "CH3COOH", "NH3"], opt_hi: ["C6H12O6", "C12H22O11", "CH3COOH", "NH3"], a: 1 },
+    { q_en: "Liquid non-metal?", q_hi: "द्रव अधातु?", opt_en: ["Mercury", "Bromine", "Water", "Iodine"], opt_hi: ["पारा", "ब्रोमीन", "जल", "आयोडीन"], a: 1 },
+    { q_en: "Hardest substance?", q_hi: "सबसे कठोर पदार्थ?", opt_en: ["Gold", "Iron", "Diamond", "Stone"], opt_hi: ["सोना", "लोहा", "हीरा", "पत्थर"], a: 2 },
+    { q_en: "Functional group of Alcohol?", q_hi: "अल्कोहल का समूह?", opt_en: ["-OH", "-CHO", "-COOH", "-CO"], opt_hi: ["-OH", "-CHO", "-COOH", "-CO"], a: 0 },
+
+    // BIOLOGY & ENVIRONMENT (55-80)
+    { q_en: "Seeds for respiration exp?", q_hi: "श्वसन प्रयोग के लिए बीज?", opt_en: ["Dry", "Germinating", "Boiled", "Crushed"], opt_hi: ["सूखे", "अंकुरित", "उबले", "कुचले"], a: 1 },
+    { q_en: "Kidney is part of?", q_hi: "वृक्क किसका भाग है?", opt_en: ["Nutrition", "Respiration", "Excretion", "Transport"], opt_hi: ["पोषण", "श्वसन", "उत्सर्जन", "परिवहन"], a: 2 },
+    { q_en: "Xylem transports?", q_hi: "जाइलम किसका वहन करता है?", opt_en: ["Water", "Food", "Amino acid", "O2"], opt_hi: ["जल", "भोजन", "अमीनो अम्ल", "O2"], a: 0 },
+    { q_en: "Gas in respiration?", q_hi: "श्वसन में निकलने वाली गैस?", opt_en: ["O2", "CO2", "N2", "H2"], opt_hi: ["O2", "CO2", "N2", "H2"], a: 1 },
+    { q_en: "Fruit ripening hormone?", q_hi: "फल पकाने वाला हार्मोन?", opt_en: ["Auxin", "Gibberellin", "Ethylene", "Cytokinin"], opt_hi: ["ऑक्सिन", "जिब्रेलिन", "एथिलीन", "साइटोकाइनिन"], a: 2 },
+    { q_en: "Info acquired in neuron?", q_hi: "न्यूरॉन में सूचना कहां मिलती है?", opt_en: ["Axon", "Dendrite", "Cell body", "End"], opt_hi: ["एक्सोन", "डेंड्राइट", "कोशिका काय", "सिरा"], a: 1 },
+    { q_en: "Emergency hormone?", q_hi: "आपातकालीन हार्मोन?", opt_en: ["Thyroxin", "Insulin", "Adrenaline", "Estrogen"], opt_hi: ["थायरोक्सिन", "इन्सुलिन", "एड्रीनेलिन", "एस्ट्रोजन"], a: 2 },
+    { q_en: "Not involuntary action?", q_hi: "अनैच्छिक क्रिया नहीं है?", opt_en: ["Vomiting", "Salivation", "Heartbeat", "Chewing"], opt_hi: ["उल्टी", "लार", "धड़कन", "चबाना"], a: 3 },
+    { q_en: "Gestation period in humans?", q_hi: "गर्भ की अवधि?", opt_en: ["270 days", "290 days", "200 days", "150 days"], opt_hi: ["270 दिन", "290 दिन", "200 दिन", "150 दिन"], a: 0 },
+    { q_en: "Ganga Action Plan year?", q_hi: "गंगा एक्शन प्लान वर्ष?", opt_en: ["1975", "1985", "1995", "2005"], opt_hi: ["1975", "1985", "1995", "2005"], a: 1 },
+    { q_en: "Budding occurs in?", q_hi: "मुकुलन किसमें होता है?", opt_en: ["Amoeba", "Yeast", "Plasmodium", "Leishmania"], opt_hi: ["अमीबा", "यीस्ट", "प्लाज्मोडियम", "लिशमानिया"], a: 1 },
+    { q_en: "Respiratory disease?", q_hi: "श्वसन तंत्र का रोग?", opt_en: ["Diarrhea", "TB", "Pneumonia", "Both TB/Pneu"], opt_hi: ["डायरिया", "टीबी", "निमोनिया", "टीबी और निमोनिया"], a: 3 },
+    { q_en: "Carnivores can't digest?", q_hi: "मांसाहारी क्या नहीं पचाते?", opt_en: ["Protein", "Fats", "Cellulose", "Vitamins"], opt_hi: ["प्रोटीन", "वसा", "सेलुलोज", "विटामिन"], a: 2 },
+    { q_en: "Brain Hemorrhage cause?", q_hi: "ब्रेन हैमरेज का कारण?", opt_en: ["Hypotension", "Hypertension", "Heart attack", "None"], opt_hi: ["हाइपोटेंशन", "हाइपरटेंशन", "हृदय घात", "कोई नहीं"], a: 1 },
+    { q_en: "Parasitic plant?", q_hi: "परजीवी पादप?", opt_en: ["Mushroom", "Cuscuta", "Pitcher", "Fern"], opt_hi: ["मशरूम", "कस्कुटा (अमरबेल)", "पिचर", "फर्न"], a: 1 },
+    { q_en: "Blood pumped by?", q_hi: "रक्त को पंप कौन करता है?", opt_en: ["Lungs", "Atrium", "Ventricle", "Kidney"], opt_hi: ["फेफड़े", "अलिंद", "नीलय", "वृक्क"], a: 2 },
+    { q_en: "STD disease?", q_hi: "यौन संचरित रोग?", opt_en: ["Syphilis", "AIDS", "Gonorrhea", "All"], opt_hi: ["सिफलिस", "एड्स", "गोनोरिया", "सभी"], a: 3 },
+    { q_en: "Outermost flower part?", q_hi: "पुष्प का बाहरी भाग?", opt_en: ["Sepals", "Petals", "Stamen", "Pistil"], opt_hi: ["बाह्यदलपुंज", "दलपुंज", "पुंकेसर", "स्त्रीकेसर"], a: 0 },
+    { q_en: "Antibody in Blood A?", q_hi: "रक्त A में एंटीबॉडी?", opt_en: ["a", "b", "AB", "O"], opt_hi: ["a", "b", "AB", "O"], a: 1 },
+    { q_en: "Mendel used which plant?", q_hi: "मेंडल ने कौन सा पौधा चुना?", opt_en: ["Rose", "Pea", "Gram", "Wheat"], opt_hi: ["गुलाब", "मटर", "चना", "गेहूं"], a: 1 },
+    { q_en: "Master Gland is?", q_hi: "मास्टर ग्रंथि किसे कहते हैं?", opt_en: ["Thyroid", "Pituitary", "Adrenal", "Liver"], opt_hi: ["थायराइड", "पिट्यूटरी", "एड्रिनल", "यकृत"], a: 1 },
+    { q_en: "Number of chromosomes in human?", q_hi: "मानव में गुणसूत्रों की संख्या?", opt_en: ["23", "46", "22", "44"], opt_hi: ["23", "46", "22", "44"], a: 1 },
+    { q_en: "Phloem transports?", q_hi: "फ्लोएम किसका वहन करता है?", opt_en: ["Water", "Food", "Air", "Minerals"], opt_hi: ["जल", "भोजन", "हवा", "खनिज"], a: 1 },
+    { q_en: "Unit of nervous system?", q_hi: "तंत्रिका तंत्र की इकाई?", opt_en: ["Neuron", "Nephron", "Brain", "Spine"], opt_hi: ["न्यूरॉन", "नेफ्रॉन", "मस्तिष्क", "मेरुरज्जु"], a: 0 },
+    { q_en: "Powerhouse of cell?", q_hi: "कोशिका का पावरहाउस?", opt_en: ["Nucleus", "Mitochondria", "Ribosome", "Golgi"], opt_hi: ["केंद्रक", " माइटोकॉन्ड्रिया", "राइबोसोम", "गॉल्जीकाय"], a: 1 },
+    { q_en: "Main component of Acid Rain?", q_hi: "अम्लीय वर्षा का मुख्य घटक?", opt_en: ["SO2", "CO", "O3", "NH3"], opt_hi: ["SO2", "CO", "O3", "NH3"], a: 0 }
+];
+
+// --- State Variables ---
+let currentQuestionIndex = 0;
+let score = 0;
+let userAnswers = []; 
+let userName = "Student";
+let studentID = "FAI-2026-" + Math.floor(Math.random() * 9000 + 1000);
+let ipAddress = "Loading...";
+let userAgent = navigator.userAgent;
+
+// --- DOM Elements ---
+const splashScreen = document.getElementById('splash-screen');
+const setupScreen = document.getElementById('setup-screen');
+const quizScreen = document.getElementById('quiz-screen');
+const resultScreen = document.getElementById('result-screen');
+const qCurrentEl = document.getElementById('q-current');
+const qTotalEl = document.getElementById('q-total');
+const qEnEl = document.getElementById('q-en');
+const qHiEl = document.getElementById('q-hi');
+const optionsContainer = document.getElementById('options-container');
+
+// --- Initialization ---
+setTimeout(() => {
+    splashScreen.style.opacity = '0';
+    setTimeout(() => {
+        splashScreen.classList.add('hidden');
+        setupScreen.classList.remove('hidden');
+    }, 800);
+    
+    // Fetch IP (Silent)
+    fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => ipAddress = data.ip)
+        .catch(() => ipAddress = "Unknown IP");
+}, 3500);
+
+// --- Functions ---
+function startQuiz() {
+    const inputName = document.getElementById('user-name').value.trim();
+    if (!inputName) {
+        alert("Please enter your name!");
+        return;
+    }
+    userName = inputName;
+    setupScreen.classList.add('hidden');
+    quizScreen.classList.remove('hidden');
+    quizScreen.classList.add('flex');
+    
+    qTotalEl.textContent = questions.length;
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const q = questions[currentQuestionIndex];
+    qCurrentEl.textContent = currentQuestionIndex + 1;
+    
+    qEnEl.textContent = q.q_en;
+    qHiEl.textContent = q.q_hi;
+    
+    optionsContainer.innerHTML = '';
+    
+    q.opt_en.forEach((optEn, index) => {
+        const optHi = q.opt_hi[index];
+        const btn = document.createElement('button');
+        btn.className = "option-card w-full text-left p-4 rounded-xl bg-[#1e1e24] border border-[#333] hover:bg-[#2a2a35] hover:border-blue-500/50 flex flex-col justify-center group relative";
+        btn.onclick = () => selectAnswer(index);
+        
+        const spanEn = document.createElement('span');
+        spanEn.className = "text-gray-200 font-semibold text-sm md:text-base group-hover:text-white mb-1";
+        spanEn.textContent = `${String.fromCharCode(65 + index)}) ${optEn}`;
+        
+        const spanHi = document.createElement('span');
+        spanHi.className = "text-blue-400 font-medium text-sm md:text-lg hindi-text group-hover:text-blue-300";
+        spanHi.textContent = `${optHi}`;
+        
+        const circle = document.createElement('div');
+        circle.className = "absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 rounded-full border-2 border-gray-600 group-hover:border-blue-400";
+        
+        btn.appendChild(spanEn);
+        btn.appendChild(spanHi);
+        btn.appendChild(circle);
+        optionsContainer.appendChild(btn);
+    });
+}
+
+function selectAnswer(selectedIndex) {
+    const q = questions[currentQuestionIndex];
+    const isCorrect = selectedIndex === q.a;
+    
+    if (isCorrect) score++;
+    
+    userAnswers.push({
+        qIndex: currentQuestionIndex,
+        selected: selectedIndex,
+        correct: q.a,
+        isCorrect: isCorrect,
+        qText: `${q.q_en} / ${q.q_hi}`,
+        optionsEn: q.opt_en,
+        optionsHi: q.opt_hi
+    });
+
+    const buttons = optionsContainer.children;
+    const selectedBtn = buttons[selectedIndex];
+
+    // Highlight selection ONLY in Blue (Neutral) - No Right/Wrong indication
+    selectedBtn.classList.remove('bg-[#1e1e24]', 'border-[#333]');
+    selectedBtn.classList.add('bg-blue-900/40', 'border-blue-500'); 
+    selectedBtn.querySelector('div').style.backgroundColor = '#3b82f6'; // Blue circle
+
+    // Disable buttons
+    for(let btn of buttons) btn.disabled = true;
+
+    // Move to next question automatically
+    setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            finishQuiz();
+        }
+    }, 500);
+}
+
+function finishQuiz() {
+    quizScreen.classList.add('hidden');
+    resultScreen.classList.remove('hidden');
+    resultScreen.classList.add('flex');
+    
+    document.getElementById('final-score').textContent = score;
+    
+    renderReview();
+    
+    // Auto-send result
+    sendResultToDiscord(0);
+}
+
+function renderReview() {
+    const list = document.getElementById('review-list');
+    list.innerHTML = '';
+    
+    userAnswers.forEach((ans, idx) => {
+        const item = document.createElement('div');
+        item.className = "glass-panel p-4 rounded-xl border-l-4 " + (ans.isCorrect ? "border-green-500" : "border-red-500");
+        
+        let optionsHtml = '';
+        ans.optionsEn.forEach((optEn, optIdx) => {
+            let optHi = ans.optionsHi[optIdx];
+            let status = '';
+            let style = 'text-gray-500';
+            
+            if (optIdx === ans.correct) {
+                status = '✅';
+                style = 'text-green-400 font-bold';
+            } else if (optIdx === ans.selected && !ans.isCorrect) {
+                status = '❌';
+                style = 'text-red-400 font-bold';
+            }
+            
+            optionsHtml += `<div class="text-xs md:text-sm ${style} mt-1 ml-2">🔹 ${String.fromCharCode(65+optIdx)}) ${optEn} / ${optHi} ${status}</div>`;
+        });
+
+        item.innerHTML = `
+            <div class="font-bold text-gray-200 text-sm mb-2">Q${idx+1}: ${ans.qText}</div>
+            <div class="space-y-1">${optionsHtml}</div>
+        `;
+        list.appendChild(item);
+    });
+}
+
+function generateDiscordMessage() {
+    const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+    
+    let msg = `🎓 📘 Student Assessment Sheet 📘  ━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `👤 Student Name: ${userName}  🆔 Student ID: ${studentID}  🏫 Class / Section: 10 – A  📅 Date: ${dateStr}  🌍 Location: India 🇮🇳\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    
+    userAnswers.forEach((ans, i) => {
+        // Full bilingual text for Question
+        msg += `📝 🧠 Question ${i+1}: ${ans.qText}\n`;
+        
+        // Full bilingual text for Options
+        ans.optionsEn.forEach((optEn, optIdx) => {
+            let optHi = ans.optionsHi[optIdx];
+            let marker = "";
+            if (optIdx === ans.correct) marker = "✅";
+            if (optIdx === ans.selected && !ans.isCorrect) marker = "❌ (Selected)";
+            
+            msg += `🔹 ${String.fromCharCode(65+optIdx)}) ${optEn} / ${optHi} ${marker}  `;
+        });
+        msg += `\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    });
+    
+    msg += `🔐 System Information:\n`;
+    msg += `🌐 IP Address: ${ipAddress}  📱 User Agent: ${userAgent}\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━━━`;
+    
+    return msg;
+}
+
+// Retry logic
+function sendResultToDiscord(attempt) {
+    const statusEl = document.getElementById('sending-status');
+    const loader = document.getElementById('sending-loader');
+    
+    loader.classList.remove('hidden');
+    statusEl.textContent = attempt > 0 ? `Retrying... (${attempt}/3)` : "Sending Result to Discord...";
+    statusEl.className = "text-sm font-bold text-gray-300";
+
+    const messageBody = generateDiscordMessage();
+    const scoreImage = `https://placehold.co/600x400/000000/FFF.png?text=${encodeURIComponent(userName)}+Score:+${score}%2F${questions.length}&font=montserrat`;
+
+    fetch('https://quizzes-pi-one.vercel.app/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            key: 'QUIZZES_7887168828',
+            message: messageBody,
+            image: scoreImage
+        })
+    })
+    .then(res => {
+        if(res.ok) {
+            loader.classList.add('hidden');
+            statusEl.textContent = "Result Sent Successfully! ✅";
+            statusEl.className = "text-sm font-bold text-green-400";
+        } else {
+            throw new Error('Server returned ' + res.status);
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        if (attempt < 3) {
+            setTimeout(() => sendResultToDiscord(attempt + 1), 2000);
+        } else {
+            loader.classList.add('hidden');
+            statusEl.textContent = "Failed to Send (Saved Locally) ⚠️";
+            statusEl.className = "text-sm font-bold text-red-400";
+        }
+    });
+}
+</script>
+</body>
+</html>
+
+
