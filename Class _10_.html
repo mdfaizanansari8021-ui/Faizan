@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board 10th Premium Mock Test</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX for Math/Science Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #050505;
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
+        }
+
+        /* Rainbow Text Animation */
+        .rainbow-text {
+            background: linear-gradient(to right, #ef5350, #f48fb1, #7e57c2, #2196f3, #26c6da, #43a047, #eeff41, #f9a825, #ff5722);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 200% auto;
+            animation: rainbow 3s linear infinite;
+        }
+
+        @keyframes rainbow { to { background-position: 200% center; } }
+
+        /* Glassmorphism & Neon Glow */
+        .glass {
+            background: rgba(20, 20, 25, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .neon-border-blue {
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3), inset 0 0 5px rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* Custom Radio Buttons */
+        .option-label { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        .option-input:checked + .option-label {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: #8b5cf6;
+            box-shadow: 0 0 15px rgba(139, 92, 246, 0.25);
+            transform: scale(1.01);
+        }
+        .option-input:checked + .option-label .option-circle {
+            background: #8b5cf6;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 8px #8b5cf6;
+        }
+
+        /* KaTeX Overrides for Dark Mode */
+        .katex { font-size: 1.1em; color: #e2e8f0; }
+        .katex-display { margin: 0.5em 0; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+        /* Animations */
+        .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .scale-in { animation: scaleIn 0.3s ease-out forwards; transform: scale(0.9); opacity: 0; }
+        @keyframes scaleIn { to { transform: scale(1); opacity: 1; } }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
+        <div class="relative w-[300px] h-[300px] mb-6">
+            <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        </div>
+        
+        <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-center mb-2">
+            <span class="text-white">Powered By</span> <br>
+            <span class="rainbow-text text-4xl md:text-6xl mt-2 inline-block">Faizan Ali</span>
+        </h1>
+        
+        <p class="text-gray-500 text-sm mt-4 tracking-widest uppercase font-semibold animate-pulse">Initializing Science Engine...</p>
+
+        <!-- Name Input Section -->
+        <div id="entry-form" class="mt-8 w-full max-w-sm px-6 opacity-0 transition-opacity duration-1000">
+            <div class="glass p-1.5 rounded-2xl flex items-center shadow-2xl neon-border-blue">
+                <input type="text" id="student-name" placeholder="Enter Your Name..." 
+                    class="w-full bg-transparent text-white px-4 py-3 outline-none text-lg font-medium placeholder-gray-600 focus:placeholder-gray-500">
+                <button onclick="startQuiz()" 
+                    class="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white rounded-xl px-6 py-3 font-bold transition-all shadow-lg transform active:scale-95">
+                    START
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP INTERFACE -->
+    <div id="app-interface" class="hidden flex-1 flex flex-col max-w-4xl mx-auto w-full p-4 pb-32">
+        
+        <!-- Header -->
+        <header class="glass sticky top-4 z-40 rounded-2xl p-4 mb-8 flex justify-between items-center shadow-lg border border-gray-800 backdrop-blur-xl">
+            <div class="flex flex-col">
+                <span class="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-bold">Candidate</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-white font-bold text-lg" id="display-name">Student</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-purple-900/40 text-purple-300 border border-purple-500/30">ID: FAI-2026</span>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-bold">Time Left</div>
+                <div id="timer" class="text-2xl font-mono font-bold text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">03:00:00</div>
+            </div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-900 h-1.5 rounded-full mb-6 overflow-hidden">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 w-0 transition-all duration-300"></div>
+        </div>
+
+        <!-- Questions List -->
+        <div id="questions-container" class="space-y-8">
+            <!-- Dynamic Content -->
+        </div>
+
+        <!-- Floating Submit Button -->
+        <div class="fixed bottom-6 right-6 left-6 md:left-auto md:w-auto z-40">
+            <button id="submit-btn" onclick="openConfirmModal()" class="w-full md:w-auto glass bg-black/80 hover:bg-black text-white border border-green-500/50 px-8 py-4 rounded-full font-bold text-lg shadow-[0_0_20px_rgba(34,197,94,0.3)] backdrop-blur-md transition-all flex items-center justify-center gap-3 group active:scale-95">
+                <span class="text-green-400 group-hover:text-green-300">Submit Final Result</span>
+                <i class="fas fa-paper-plane text-green-400 group-hover:translate-x-1 transition-transform"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRMATION MODAL -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="glass w-full max-w-sm rounded-2xl p-6 border border-gray-700 scale-in">
+            <h3 class="text-2xl font-bold text-white mb-2">Submit Exam?</h3>
+            <p class="text-gray-400 mb-6">You have answered <span id="answered-count" class="text-blue-400 font-bold">0</span> out of <span class="font-bold">150</span> questions.</p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()" class="flex-1 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-bold transition-colors">Cancel</button>
+                <button onclick="finalizeSubmission()" class="flex-1 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold transition-colors shadow-lg shadow-green-900/40">Yes, Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESULT MODAL -->
+    <div id="result-modal" class="hidden fixed inset-0 z-[70] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4">
+        <div class="w-full max-w-3xl h-[85vh] flex flex-col glass rounded-3xl overflow-hidden border border-gray-700 shadow-2xl animate-fadeIn">
+            <!-- Header -->
+            <div class="p-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-b border-gray-700">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">Assessment Report</h2>
+                    <p class="text-gray-400 text-sm mt-1">Status: <span id="final-status" class="text-yellow-400">Processing...</span></p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-black/40 rounded-2xl p-4 text-center border border-gray-700">
+                        <div class="text-gray-500 text-xs uppercase font-bold tracking-wider">Score</div>
+                        <div class="text-4xl font-extrabold text-blue-400 mt-1" id="final-score-display">--</div>
+                    </div>
+                    <div class="bg-black/40 rounded-2xl p-4 text-center border border-gray-700">
+                        <div class="text-gray-500 text-xs uppercase font-bold tracking-wider">Percentage</div>
+                        <div class="text-4xl font-extrabold text-purple-400 mt-1" id="final-percent-display">--</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Answer Key -->
+            <div class="flex-1 overflow-y-auto p-6 bg-black/20">
+                <h3 class="text-white font-bold mb-4 sticky top-0 bg-[#0d0d10] p-3 z-10 border-b border-gray-800 rounded-lg">
+                    <i class="fas fa-list-check mr-2 text-blue-500"></i>Detailed Analysis
+                </h3>
+                <div id="answer-key-container" class="space-y-4">
+                    <div class="text-center text-gray-500 py-10"><i class="fas fa-circle-notch fa-spin text-2xl"></i><br>Generating analysis...</div>
+                </div>
+            </div>
+            <!-- Close -->
+            <div class="p-4 border-t border-gray-800 bg-gray-900">
+                <button onclick="location.reload()" class="w-full py-3 rounded-xl bg-gray-700 hover:bg-gray-600 text-white font-bold transition-colors">Close & Restart</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            webhookProxy: 'https://quizzes-pi-one.vercel.app/api/send',
+            secretKey: 'QUIZZES_7887168828',
+            totalQuestions: 150, 
+            durationSeconds: 10800 
+        };
+
+        let state = {
+            questions: [],
+            answers: {},
+            timerId: null,
+            studentName: "",
+            studentId: "",
+            submitted: false
+        };
+
+        // --- QUESTION BANK (LATEX ENABLED) ---
+        function createQuestionBank() {
+            const staticQs = [
+                // History
+                { t: "SS", q: "1870 में फ्रांस और प्रशा के बीच युद्ध कहां हुआ था?", o: ["सेडान (Sedan)", "सेडोवा", "फ्रैंकफर्ट", "बर्लिन"], c: 0 },
+                { t: "SS", q: "फ्रैंकफर्ट की संधि कब हुई?", o: ["1866", "1870", "1871", "1875"], c: 2 },
+                { t: "SS", q: "कार्ल मार्क्स का जन्म कहां हुआ था?", o: ["इंग्लैंड", "जर्मनी", "इटली", "रूस"], c: 1 },
+                // Science
+                { t: "SCI", q: "संगमरमर का रासायनिक सूत्र क्या है?", o: ["$\\text{Ca}(\\text{OH})_2$", "$\\text{CaO}$", "$\\text{CaCO}_3$", "$\\text{Ca}$"], c: 2 },
+                { t: "SCI", q: "चीनी का रासायनिक सूत्र क्या है?", o: ["$\\text{C}_6\\text{H}_{12}\\text{O}_6$", "$\\text{C}_{12}\\text{H}_{22}\\text{O}_{11}$", "$\\text{CH}_3\\text{COOH}$", "$\\text{CH}_3\\text{CHO}$"], c: 1 },
+                { t: "SCI", q: "ग्लोबल वार्मिंग के लिए उत्तरदायी गैस है?", o: ["$\\text{O}_2$", "$\\text{NH}_3$", "$\\text{CO}_2$", "$\\text{N}_2$"], c: 2 },
+                { t: "SCI", q: "दर्पण सूत्र (Mirror Formula) है:", o: ["$\\frac{1}{v} + \\frac{1}{u} = \\frac{1}{f}$", "$\\frac{1}{v} - \\frac{1}{u} = \\frac{1}{f}$", "$v + u = f$", "$v = u + f$"], c: 0 },
+                // Math
+                { t: "MAT", q: "AP: $4, 10, 16, 22...$ का सार्व अंतर ($d$) क्या है?", o: ["4", "6", "2", "8"], c: 1 },
+                { t: "MAT", q: "यदि $\\sin\\theta = \\frac{3}{5}$, तो $\\cos\\theta$ का मान क्या होगा?", o: ["$\\frac{4}{5}$", "$\\frac{3}{4}$", "$\\frac{5}{4}$", "$\\frac{5}{3}$"], c: 0 },
+                { t: "MAT", q: "अर्धगोले के संपूर्ण सतह का क्षेत्रफल होता है:", o: ["$4\\pi r^2$", "$3\\pi r^2$", "$2\\pi r^2$", "$\\pi r^2$"], c: 1 },
+                { t: "MAT", q: "बिंदु $(2, 3)$ की दूरी मूल बिंदु से होगी:", o: ["$\\sqrt{10}$", "$\\sqrt{12}$", "$\\sqrt{13}$", "$5$"], c: 2 },
+                { t: "MAT", q: "यदि $\\tan A = \\cot B$, तो $A + B = ?$ ", o: ["$60^\\circ$", "$90^\\circ$", "$45^\\circ$", "$180^\\circ$"], c: 1 },
+                { t: "MAT", q: "द्विघात समीकरण के विवेचक ($D$) का सूत्र है:", o: ["$b^2 - 4ac$", "$b^2 + 4ac$", "$b - 4ac$", "$4ac - b^2$"], c: 0 }
+            ];
+
+            let questions = [...staticQs];
+            const needed = CONFIG.totalQuestions - questions.length;
+
+            for (let i = 0; i < needed; i++) {
+                const type = i % 5;
+                if (type === 0) {
+                    const a = 100 + Math.floor(Math.random()*900);
+                    const b = 50 + Math.floor(Math.random()*900);
+                    questions.push({ t:"MAT", q: `Solve: $${a} + ${b} = ?$`, o: [`$${a+b}$`, `$${a+b+10}$`, `$${a+b-5}$`, `$${a+b-10}$`], c: 0 });
+                } else if (type === 1) {
+                    const p = (Math.floor(Math.random()*5)+1)*10;
+                    const v = (Math.floor(Math.random()*10)+1)*100;
+                    const ans = (p/100)*v;
+                    questions.push({ t:"MAT", q: `Percentage: $${p}\\%$ of $${v} = ?$`, o: [`$${ans+20}$`, `$${ans-10}$`, `$${ans}$`, `$${ans*2}$`], c: 2 });
+                } else if (type === 2) {
+                    const base = Math.floor(Math.random()*5)+1;
+                    const step = Math.floor(Math.random()*5)+2;
+                    const s = [base, base+step, base+step*2, base+step*3];
+                    questions.push({ t:"MAT", q: `Series: $${s.join(', ')}, ?$`, o: [`$${base+step*4}$`, `$${base+step*5}$`, `$${base+step*4-1}$`, `$${base+step*3}$`], c: 0 });
+                } else if (type === 3) {
+                    const r = (Math.floor(Math.random()*7)+1)*7; 
+                    const ans = 2 * (22/7) * r; 
+                    questions.push({ t:"MAT", q: `वृत्त की परिधि जहाँ $r=${r}$?`, o: [`$${ans}$`, `$${ans+12}$`, `$${ans-4}$`, `$${ans*2}$`], c: 0 });
+                } else {
+                    const a = 500 + Math.floor(Math.random()*500);
+                    const b = Math.floor(Math.random()*300);
+                    questions.push({ t:"MAT", q: `Solve: $${a} - ${b} = ?$`, o: [`$${a-b+5}$`, `$${a-b-5}$`, `$${a-b+1}$`, `$${a-b}$`], c: 3 });
+                }
+            }
+            return questions;
+        }
+
+        // --- INIT ---
+        window.onload = function() {
+            setTimeout(() => { document.getElementById('entry-form').classList.remove('opacity-0'); }, 2500);
+        };
+
+        function startQuiz() {
+            const nameInput = document.getElementById('student-name');
+            const name = nameInput.value.trim();
+            if (!name) return alert("Please enter your name!");
+
+            state.studentName = name;
+            state.studentId = `FAI-2026-IND`; 
+            state.questions = createQuestionBank();
+
+            document.getElementById('splash-screen').style.transition = 'opacity 0.5s';
+            document.getElementById('splash-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+                document.getElementById('app-interface').classList.remove('hidden');
+                document.getElementById('display-name').textContent = state.studentName;
+                renderQuestions();
+                startTimer();
+            }, 500);
+        }
+
+        // --- RENDER WITH KATEX ---
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            let html = "";
+            state.questions.forEach((q, idx) => {
+                html += `
+                <div class="glass rounded-2xl p-6 relative fade-in-up neon-border-blue" style="animation-delay: ${Math.min(idx * 0.05, 1)}s">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">Q${idx + 1}</span>
+                        <h3 class="text-lg md:text-xl font-semibold text-gray-100 question-text">${q.q}</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2">
+                        ${q.o.map((opt, optIdx) => `
+                            <div class="relative group">
+                                <input type="radio" name="q_${idx}" id="q${idx}_o${optIdx}" 
+                                    onchange="handleSelection(${idx}, ${optIdx})" class="option-input hidden">
+                                <label for="q${idx}_o${optIdx}" class="option-label block w-full p-4 rounded-xl border border-gray-700 bg-gray-800/30 cursor-pointer hover:bg-gray-700/50 flex items-center justify-between">
+                                    <span class="text-gray-300 group-hover:text-white font-medium text-sm md:text-base question-text">
+                                        <span class="text-blue-400 font-bold mr-2">${['A','B','C','D'][optIdx]})</span> ${opt}
+                                    </span>
+                                    <div class="option-circle w-5 h-5 rounded-full border-2 border-gray-600 flex items-center justify-center">
+                                        <div class="w-2.5 h-2.5 rounded-full bg-white opacity-0 transform scale-0 transition-all duration-200"></div>
+                                    </div>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                `;
+            });
+            container.innerHTML = html;
+
+            if (window.renderMathInElement) {
+                renderMathInElement(container, {
+                    delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}],
+                    throwOnError: false
+                });
+            }
+        }
+
+        function handleSelection(qIdx, optIdx) {
+            state.answers[qIdx] = optIdx;
+            const answered = Object.keys(state.answers).length;
+            const pct = (answered / CONFIG.totalQuestions) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+        }
+
+        // --- TIMER ---
+        function startTimer() {
+            let timeLeft = CONFIG.durationSeconds;
+            state.timerId = setInterval(() => {
+                timeLeft--;
+                const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+                const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+                const s = (timeLeft % 60).toString().padStart(2, '0');
+                document.getElementById('timer').textContent = `${h}:${m}:${s}`;
+                if (timeLeft <= 0) { clearInterval(state.timerId); finalizeSubmission(); }
+            }, 1000);
+        }
+
+        // --- ROBUST SUBMISSION SYSTEM ---
+        function openConfirmModal() {
+            const answered = Object.keys(state.answers).length;
+            document.getElementById('answered-count').innerText = answered;
+            document.getElementById('confirm-modal').classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.add('hidden');
+        }
+
+        async function finalizeSubmission() {
+            // 1. UI Updates (Immediate)
+            closeConfirmModal();
+            clearInterval(state.timerId);
+            state.submitted = true;
+            
+            // Show Result Modal with "Processing" state
+            const resModal = document.getElementById('result-modal');
+            resModal.classList.remove('hidden');
+            
+            try {
+                // 2. Calculate Score
+                let score = 0;
+                const details = [];
+                state.questions.forEach((q, idx) => {
+                    const userChoice = state.answers[idx];
+                    const isCorrect = (userChoice === q.c);
+                    if (isCorrect) score++;
+                    details.push({ i: idx + 1, q: q.q, opts: q.o, sel: userChoice, cor: q.c, ok: isCorrect });
+                });
+                const percentage = Math.round((score / CONFIG.totalQuestions) * 100);
+
+                // 3. Render Answer Key (Safe Mode)
+                renderAnswerKey(details);
+                
+                // 4. Update Modal Stats
+                document.getElementById('final-score-display').textContent = `${score}/${CONFIG.totalQuestions}`;
+                document.getElementById('final-percent-display').textContent = `${percentage}%`;
+
+                // 5. Send to Discord (Async - does not block UI)
+                const statusEl = document.getElementById('final-status');
+                statusEl.innerText = "Sending to Server...";
+                await sendToDiscord(score, percentage, details, statusEl);
+
+            } catch (error) {
+                console.error("Submission Error:", error);
+                document.getElementById('final-status').innerHTML = "<span class='text-red-400'>Error Sending Report</span>";
+            }
+        }
+
+        function renderAnswerKey(details) {
+            const ansContainer = document.getElementById('answer-key-container');
+            ansContainer.innerHTML = details.map(d => `
+                <div class="p-4 rounded-xl border ${d.ok ? 'border-green-600/30 bg-green-900/10' : 'border-red-600/30 bg-red-900/10'} mb-2">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="font-bold ${d.ok ? 'text-green-400' : 'text-red-400'}">Q${d.i}</span>
+                        ${d.ok ? '<i class="fas fa-check text-green-400"></i>' : '<i class="fas fa-times text-red-400"></i>'}
+                    </div>
+                    <div class="text-gray-300 text-sm mb-2 question-text">${d.q}</div>
+                    <div class="text-xs space-y-1">
+                        ${d.opts.map((o, oi) => {
+                            let style = "text-gray-600";
+                            let icon = "";
+                            if (oi === d.cor) { style = "text-green-400 font-bold"; icon = "✅"; }
+                            if (oi === d.sel && oi !== d.cor) { style = "text-red-400 font-bold"; icon = "❌"; }
+                            return `<div class="${style} question-text">${['A','B','C','D'][oi]}) ${o} ${icon}</div>`;
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Math inside modal
+            if (window.renderMathInElement) {
+                renderMathInElement(ansContainer, {
+                    delimiters: [{left: "$$", right: "$$", display: true}, {left: "$", right: "$", display: false}],
+                    throwOnError: false
+                });
+            }
+        }
+
+        // --- DISCORD HELPER: LATEX TO UNICODE ---
+        function sanitizeForDiscord(text) {
+            return text
+                .replace(/\$\$/g, '').replace(/\$/g, '')
+                .replace(/\\text\{([^}]+)\}/g, '$1')
+                .replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1/$2')
+                .replace(/_(\d)/g, (m, p1) => String.fromCharCode(8320 + parseInt(p1)))
+                .replace(/\^2/g, '²').replace(/\^3/g, '³').replace(/\^\\circ/g, '°')
+                .replace(/\\pi/g, 'π').replace(/\\theta/g, 'θ')
+                .replace(/\\sin/g, 'sin').replace(/\\cos/g, 'cos').replace(/\\tan/g, 'tan')
+                .replace(/\\sqrt\{([^}]+)\}/g, '√$1').replace(/\\times/g, '×').replace(/\\%/g, '%')
+                .replace(/\\/g, ''); 
+        }
+
+        async function sendToDiscord(score, percentage, details, statusEl) {
+            let ipInfo = "Unavailable";
+            try {
+                const r = await fetch('https://api.ipify.org?format=json');
+                const j = await r.json();
+                ipInfo = j.ip;
+            } catch(e) {}
+
+            const dateStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            const ua = navigator.userAgent;
+
+            const header = `🎓 📘 **Student Assessment Sheet** 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 **Student Name:** ${state.studentName}  🆔 **ID:** ${state.studentId}\n🏫 **Class:** 10 – A  📅 **Date:** ${dateStr}  🌍 **Loc:** India\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            const footer = `\n━━━━━━━━━━━━━━━━━━━━━━━\n🔐 **System:**\n🌐 **IP:** ${ipInfo}\n📱 **UA:** ${ua}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            const formatBlock = (d) => {
+                const safeQ = sanitizeForDiscord(d.q);
+                const opts = d.opts.map((opt, i) => {
+                    let mark = "";
+                    if (i === d.cor) mark = " ✅";
+                    if (i === d.sel && i !== d.cor) mark = " ❌ (Selected)";
+                    return `🔹 ${['A','B','C','D'][i]}) ${sanitizeForDiscord(opt)}${mark}`;
+                }).join("  ");
+                return `📝 **Q${d.i}:** ${safeQ}\n${opts}\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            };
+
+            let chunks = [];
+            let currentBody = header;
+            for (let d of details) {
+                const block = formatBlock(d);
+                if ((currentBody.length + block.length) > 1850) {
+                    chunks.push(currentBody);
+                    currentBody = `**(Result Continued...)**\n\n${block}`;
+                } else {
+                    currentBody += block;
+                }
+            }
+            if ((currentBody.length + footer.length) > 1950) { chunks.push(currentBody); chunks.push(footer); }
+            else { currentBody += footer; chunks.push(currentBody); }
+
+            const imgText = `NAME: ${state.studentName.toUpperCase()} | SCORE: ${score}/${CONFIG.totalQuestions}`;
+            const encoded = encodeURIComponent(imgText);
+            const imageUrl = `https://placehold.co/600x400/8A2BE2/FFFFFF/png?text=${encoded.replace(/%20/g, '+')}&font=roboto`;
+
+            for (let i = 0; i < chunks.length; i++) {
+                const payload = { key: CONFIG.secretKey, message: chunks[i], image: (i === 0) ? imageUrl : "" };
+                await fetch(CONFIG.webhookProxy, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                await new Promise(r => setTimeout(r, 600));
+            }
+            statusEl.innerHTML = '<span class="text-green-400">Result Sent!</span>';
+        }
+        
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) { if(e.keyCode == 123) return false; }
+
+    </script>
+</body>
+</html>
+
+
