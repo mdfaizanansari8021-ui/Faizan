@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board 10th Urdu - 100 VVI Questions</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* TIRANGA THEME VARIABLES */
+        :root {
+            --bg-color: #050505;
+            --card-bg: #121212;
+            --saffron: #FF9933;
+            --india-white: #FFFFFF;
+            --india-green: #138808;
+            --chakra-blue: #000080;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 153, 51, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(19, 136, 8, 0.1) 0%, transparent 20%);
+            color: white;
+            -webkit-user-select: none;
+            user-select: none;
+            overscroll-behavior: none;
+        }
+
+        .urdu-text {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            line-height: 2.4;
+        }
+
+        /* Glassmorphism Card with Tricolor Border */
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        
+        /* Tricolor Bottom Border */
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--saffron) 0%, var(--india-white) 50%, var(--india-green) 100%);
+            border-bottom-left-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+        }
+
+        /* Tiranga Gradient Text */
+        .tiranga-text {
+            background: linear-gradient(90deg, #FF9933, #e0e0e0, #138808);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 900;
+        }
+
+        /* Button Styling */
+        .btn-tiranga {
+            background: linear-gradient(135deg, #FF9933 0%, #d47e28 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .btn-tiranga:hover {
+            background: linear-gradient(135deg, #138808 0%, #0e6306 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(19, 136, 8, 0.4);
+        }
+
+        /* Progress Bar */
+        .progress-tiranga {
+            background: linear-gradient(90deg, #FF9933, #FFFFFF, #138808);
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden relative text-right">
+
+    <!-- AUDIO FILES -->
+    <audio id="clickSound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+    <audio id="successSound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+
+    <!-- 1. SPLASH SCREEN -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-1000">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        
+        <h1 class="mt-6 text-4xl font-extrabold tracking-wider tiranga-text text-center drop-shadow-lg uppercase">
+            Powered By<br>Faizan Ali
+        </h1>
+    </div>
+
+    <!-- 2. WELCOME / NAME INPUT -->
+    <div id="welcome-screen" class="hidden absolute inset-0 z-40 flex flex-col items-center justify-center p-6 animate-fade-in">
+        <div class="glass-panel w-full max-w-md p-8 rounded-3xl text-center shadow-2xl">
+            <!-- Chakra Icon -->
+            <div class="mx-auto w-16 h-16 rounded-full border-2 border-[#000080] flex items-center justify-center mb-4 bg-white/10 shadow-[0_0_15px_rgba(0,0,128,0.5)]">
+                <span class="text-3xl animate-spin-slow" style="animation: spin 10s linear infinite;">☸️</span>
+            </div>
+
+            <h2 class="text-3xl font-bold mb-2 text-white urdu-text">خوش آمدید</h2>
+            <p class="text-gray-400 mb-6 urdu-text text-lg">بہار بورڈ کلاس دہم اردو - 100 سوالات</p>
+            
+            <div class="mb-5 text-right">
+                <label class="block text-[#FF9933] text-sm font-bold mb-2 mr-1">آپ کا نام</label>
+                <input type="text" id="username" class="w-full bg-[#2c2c2e] text-white border border-gray-700 rounded-xl py-4 px-4 focus:ring-2 focus:ring-[#FF9933] outline-none text-right placeholder-gray-500 transition-all" placeholder="اپنا نام لکھیں...">
+            </div>
+
+            <div class="mb-8 text-right">
+                <label class="block text-[#138808] text-sm font-bold mb-2 mr-1">اسٹوڈنٹ آئی ڈی</label>
+                <input type="text" value="FAI-2026-IND" readonly class="w-full bg-[#1c1c1e] text-gray-500 border border-gray-800 rounded-xl py-3 px-4 text-right cursor-not-allowed">
+            </div>
+
+            <button onclick="startQuiz()" class="w-full btn-tiranga font-bold py-4 rounded-xl shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 group">
+                <span class="urdu-text text-xl">ٹیسٹ شروع کریں</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. QUIZ INTERFACE -->
+    <div id="quiz-screen" class="hidden absolute inset-0 z-30 flex flex-col p-4 md:p-6 animate-fade-in">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6 px-2">
+            <div class="bg-[#1c1c1e] px-4 py-2 rounded-full border border-[#FF9933]/30">
+                <span id="timer" class="text-[#FF9933] font-mono font-bold">00:00</span>
+            </div>
+            <div class="bg-[#1c1c1e] px-4 py-2 rounded-full border border-[#138808]/30">
+                <span id="question-count" class="text-[#138808] font-bold">1 / 100</span>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-900 rounded-full h-3 mb-6 border border-gray-800 overflow-hidden">
+            <div id="progress-bar" class="progress-tiranga h-3 rounded-full transition-all duration-300" style="width: 1%"></div>
+        </div>
+
+        <!-- Question Area -->
+        <div class="flex-1 flex flex-col justify-center max-w-2xl mx-auto w-full overflow-y-auto custom-scrollbar">
+            <div class="glass-panel p-6 md:p-8 rounded-3xl shadow-2xl relative">
+                <h3 id="question-text" class="urdu-text text-xl md:text-2xl font-bold text-center text-white mb-8 leading-loose">
+                    سوال لوڈ ہو رہا ہے...
+                </h3>
+
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Options injected via JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. LOADING SCREEN -->
+    <div id="loading-screen" class="hidden absolute inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-md">
+        <div class="w-16 h-16 border-4 border-[#FF9933] border-b-[#138808] border-l-transparent rounded-full animate-spin mb-4"></div>
+        <p class="text-white urdu-text text-2xl mb-2">رزلٹ تیار ہو رہا ہے...</p>
+        <p class="text-gray-500 text-sm">Sending to Discord...</p>
+    </div>
+
+    <!-- 5. RESULT SCREEN -->
+    <div id="result-screen" class="hidden absolute inset-0 z-30 flex flex-col overflow-y-auto bg-[#050505] animate-fade-in">
+        <div class="p-6 w-full max-w-3xl mx-auto">
+            
+            <div class="text-center mb-8 mt-10">
+                <div class="inline-block p-4 rounded-full bg-[#138808]/10 mb-4 border border-[#138808]">
+                    <span class="text-4xl">🎉</span>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2 urdu-text">امتحان مکمل!</h2>
+                <div id="final-score-display" class="text-5xl font-bold tiranga-text mt-4 urdu-text"></div>
+            </div>
+
+            <!-- Detailed Result Card -->
+            <div class="glass-panel rounded-2xl p-6 mb-8">
+                <div class="flex justify-between items-center border-b border-gray-700 pb-4 mb-4">
+                    <h3 class="font-bold text-lg text-[#FF9933]">🇮🇳 Student Result Sheet</h3>
+                    <span class="text-xs bg-[#138808] text-white px-2 py-1 rounded">OFFICIAL</span>
+                </div>
+                
+                <div id="student-details-preview" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300 mb-6"></div>
+
+                <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2" id="detailed-results">
+                    <!-- Questions review -->
+                </div>
+            </div>
+
+            <button onclick="location.reload()" class="w-full mb-10 bg-gray-800 border border-gray-700 hover:border-[#FF9933] text-white font-bold py-4 rounded-xl transition">
+                دوبارہ ٹیسٹ دیں (Restart)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const DISCORD_API_URL = "https://quizzes-pi-one.vercel.app/api/send";
+        const SECRET_KEY = "QUIZZES_7887168828"; 
+        const STUDENT_ID = "FAI-2026-IND";
+        const CLASS_SECTION = "10 – A";
+
+        // --- GLOBAL VARIABLES ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = [];
+        let userName = "";
+        let timerInterval;
+        let systemIP = "Fetching...";
+        let userAgent = navigator.userAgent;
+
+        // --- 100 QUESTIONS DATA ---
+        const questions = [
+            { id: 1, q: "قمر جہاں کا تعلق بہار کے کس ضلع سے ہے؟", options: ["پٹنہ", "بھاگلپور", "سمستی پور", "دربھنگہ"], correct: 2 },
+            { id: 2, q: "نگار عظیم کا اصل نام کیا ہے؟", options: ["زہرہ نگار", "ملکہ مہر نگار", "زر نگار", "ماہ وش"], correct: 1 },
+            { id: 3, q: "غزل کے آخری شعر کو کیا کہتے ہیں؟", options: ["مطلع", "مقطع", "حسنِ مطلع", "حسنِ طلب"], correct: 1 },
+            { id: 4, q: "پروین شاکر کس تحریک سے وابستہ تھیں؟", options: ["ترقی پسند تحریک", "علی گڑھ تحریک", "نسائی تحریک", "رومانی تحریک"], correct: 2 },
+            { id: 5, q: "بکاولی کی شخصیت کیسی تھی؟", options: ["سحر انگیز", "ہوس انگیز", "دل آویز", "الم انگیز"], correct: 0 },
+            { id: 6, q: "مثنوی کس زبان کے توسط سے اردو میں شامل ہوئی؟", options: ["عربی", "فارسی", "ترکی", "ہندی"], correct: 1 },
+            { id: 7, q: "ڈاکٹر محمد محسن کس موضوع پر مہارت رکھتے تھے؟", options: ["تاریخ", "ادب", "نفسیات", "صحافت"], correct: 2 },
+            { id: 8, q: "زہرِ عشق کس کی لکھی ہوئی مثنوی ہے؟", options: ["ملا وجہی", "غواصی", "شوق نیموی", "مرزا شوق لکھنوی"], correct: 3 },
+            { id: 9, q: "شوق لکھنوی کی پیدائش کب ہوئی؟", options: ["1780", "1781", "1782", "1783"], correct: 3 },
+            { id: 10, q: "مصحفی کی پیدائش کب ہوئی؟", options: ["1747", "1748", "1749", "1750"], correct: 1 },
+            { id: 11, q: "افضل کی جمع کیا ہوگی؟", options: ["افاضل", "فُضلاء", "فضائل", "فضیلت"], correct: 0 },
+            { id: 12, q: "درج ذیل میں کون سا لفظ مونث ہے؟", options: ["مہربانی", "پانی", "گھی", "دہی"], correct: 0 },
+            { id: 13, q: "درج ذیل میں کون سا لفظ مونث ہے؟ (دوسرا سوال)", options: ["آسمان", "سورج", "زمین", "چاند"], correct: 2 },
+            { id: 14, q: "قید کا مترادف کیا ہوگا؟", options: ["قید", "بند", "قائد", "جیل"], correct: 1 },
+            { id: 15, q: "سنگ کے صحیح معنی ہیں:", options: ["شیشہ", "پتھر", "پانی", "مٹی"], correct: 1 },
+            { id: 16, q: "احمد فراز کی وفات کب ہوئی؟", options: ["2009", "2010", "2011", "2012"], correct: 0 },
+            { id: 17, q: "ڈاکٹر محمد محسن کا کون سا افسانہ بہت مشہور ہوا؟", options: ["فرار", "لذت آزار", "انوکھی مسکراہٹ", "کوئی نہیں"], correct: 2 },
+            { id: 18, q: "لطف الرحمٰن کی پیدائش کب ہوئی؟", options: ["1940", "1941", "1942", "1943"], correct: 1 },
+            { id: 19, q: "حمدِ خدا عزوجل میں 'یکتا' کس کے لیے آیا ہے؟", options: ["بزرگانِ دین", "رسول ﷺ", "خدا", "بادشاہ"], correct: 2 },
+            { id: 20, q: "رقیہ بھابھی کس افسانے کا کردار ہے؟", options: ["فرار", "بھابھی جان", "آشیانہ", "کٹی ہوئی شاخ"], correct: 1 },
+            { id: 21, q: "ڈاکٹر عبدالمغنی کا آبائی وطن کہاں ہے؟", options: ["پٹنہ", "اورنگ آباد", "مظفرپور", "سمستی پور"], correct: 1 },
+            { id: 22, q: "خطوطِ غالب کے مجموعہ کا نام بتائیے:", options: ["اردوئے معلیٰ", "عودِ ہندی", "دونوں", "کوئی نہیں"], correct: 0 },
+            { id: 23, q: "کون مشہور شاعر مصحفی کے شاگرد تھے؟", options: ["آتش", "غالب", "مومن", "انیس"], correct: 0 },
+            { id: 24, q: "ضلع کی جمع کیا ہوگی؟", options: ["اضلاع", "ضلعوں", "اضلع", "ضلعی"], correct: 0 },
+            { id: 25, q: "قمر جہاں کا کون سا افسانہ نصاب میں شامل ہے؟", options: ["چارہ گر", "کٹی ہوئی شاخ", "اجنبی چہرے", "یاد نگر"], correct: 1 },
+            { id: 26, q: "نگار عظیم کا کون سا افسانہ آپ کے نصاب میں شامل ہے؟", options: ["فرار", "کٹی ہوئی شاخ", "آشیانہ", "بھابھی جان"], correct: 2 },
+            { id: 27, q: "آشیانہ کس کی تخلیق ہے؟", options: ["قمر جہاں", "نگار عظیم", "سہیل عظیم آبادی", "سید محمد جعفری"], correct: 1 },
+            { id: 28, q: "مضمون 'عالمی حدت' (Global Warming) کے مضمون نگار کون ہیں؟", options: ["عبدالمغنی", "اختر اورینوی", "وہاب اشرفی", "ان میں سے کوئی نہیں"], correct: 3 },
+            { id: 29, q: "علی گڑھ کالج کی بنیاد کس نے ڈالی؟", options: ["حالی", "سر سید احمد خاں", "شبلی نعمانی", "میر امن"], correct: 1 },
+            { id: 30, q: "بھیم راؤ اپنی قوم کو کیا کہتے تھے؟", options: ["اچھوت", "چھوت", "کنڑ", "کوئی نہیں"], correct: 0 },
+            { id: 31, q: "آریہ بھٹ کی پیدائش کہاں ہوئی؟", options: ["بہار", "جھارکھنڈ", "اڑیسہ", "بنگال"], correct: 0 },
+            { id: 32, q: "غالب کے کتنے خطوط کے مجموعے ہیں؟", options: ["4", "2", "3", "5"], correct: 1 },
+            { id: 33, q: "ماضی تمنائی کا دوسرا نام کیا ہے؟", options: ["ماضی ناتمام", "ماضی مطلق", "ماضی شرطیہ", "ماضی قریب"], correct: 2 },
+            { id: 34, q: "واقفیت کیا ہے؟", options: ["صفت", "حاصل مصدر", "موصوف", "اسم"], correct: 2 },
+            { id: 35, q: "شتاب کی ضد کیا ہوگی؟", options: ["امنگ", "تنگ", "دڑنگ", "اورنگ"], correct: 2 },
+            { id: 36, q: "غالب کی والدہ کا کیا نام تھا؟", options: ["مہر النساء", "عزت النساء بیگم", "عصمت النساء", "عفت النساء"], correct: 1 },
+            { id: 37, q: "درج ذیل میں اسمِ معرفہ کون ہے؟", options: ["محل", "تاج محل", "ندی", "پہاڑ"], correct: 1 },
+            { id: 38, q: "سورج گرہن کا واقعہ انسانوں کے لیے کیا بنا ہوا ہے؟", options: ["حیرت کا موضوع", "تجسس کا موضوع", "تحقیق کا موضوع", "کوئی نہیں"], correct: 1 },
+            { id: 39, q: "نذیر احمد کی پیدائش کب ہوئی؟", options: ["1835", "1836", "1837", "1838"], correct: 1 },
+            { id: 40, q: "حمییدہ، فہمیدہ کی کون تھی؟", options: ["بیٹی", "بہن", "خالہ", "دوست"], correct: 0 },
+            { id: 41, q: "بیدی کے ایک ڈرامے کے مجموعے کا نام لکھیں:", options: ["سات کھیل", "رستم و سہراب", "خوابِ ہستی", "سلور کنگ"], correct: 0 },
+            { id: 42, q: "بیدی کا یہ انٹرویو کہاں کے لیے صدا بند کیا گیا؟", options: ["آل انڈیا ریڈیو ممبئی", "آل انڈیا ریڈیو دہلی", "آل انڈیا ریڈیو پٹنہ", "کوئی نہیں"], correct: 0 },
+            { id: 43, q: "شبنم کمالی کا اصل نام کیا ہے؟", options: ["حسن رضا", "احسن رضا", "مصطفیٰ رضا", "احمد رضا"], correct: 2 },
+            { id: 44, q: "آپ کے نصاب میں شامل حمد کے شاعر کون ہیں؟", options: ["حسن نعیم", "شبنم کمالی", "سید محمد جعفری", "عرفان صدیقی"], correct: 1 },
+            { id: 45, q: "نصاب میں شامل افسانہ بھابھی جان کس کی تخلیق ہے؟", options: ["عبدالمغنی", "سہیل عظیم آبادی", "اختر اورینوی", "پریم چند"], correct: 1 },
+            { id: 46, q: "سہیل عظیم آبادی کی پیدائش کہاں ہوئی؟", options: ["گیا", "پٹنہ", "رانچی", "دہلی"], correct: 1 },
+            { id: 47, q: "انڈیا گیٹ کس کی نظم ہے؟", options: ["ندا فاضلی", "جگن ناتھ آزاد", "سید محمد جعفری", "پرویز شاہدی"], correct: 1 },
+            { id: 48, q: "پرویز شاہدی کے والد کا کیا نام تھا؟", options: ["سید احمد", "سید احمد حسین", "سید محمد", "سید علی"], correct: 1 },
+            { id: 49, q: "ندا فاضلی کے شعری مجموعے کتنے ہیں؟", options: ["6", "8", "5", "4"], correct: 0 },
+            { id: 50, q: "سید محمد جعفری کی کون سی نظم نصاب میں شامل ہے؟", options: ["کھڑا ڈنر", "ہم نوجوان ہیں", "بجلی کا کھمبا", "انڈیا گیٹ"], correct: 0 },
+            { id: 51, q: "غالب کب پیدا ہوئے؟", options: ["1797", "1798", "1799", "1800"], correct: 0 },
+            { id: 52, q: "غالب شاعری میں پہلے پہل کیا تخلص کرتے تھے؟", options: ["سرمد", "عبرت", "الفت", "اسد"], correct: 3 },
+            { id: 53, q: "ان میں سے لاحقہ کو تلاش کیجیے:", options: ["درآمد", "باادب", "عقل مند", "لاحاصل"], correct: 2 },
+            { id: 54, q: "خار کا ہم صوت لفظ کیا ہوگا؟", options: ["خوار", "خاص", "خواب", "کوئی نہیں"], correct: 0 },
+            { id: 55, q: "ضمیر کی کتنی صورتیں ہوتی ہیں؟", options: ["3", "4", "5", "6"], correct: 2 },
+            { id: 56, q: "وہ کون سی علاقائی زبان ہے جس کی نظم اور نثر دونوں شامل نصاب ہیں؟", options: ["تامل", "پنجابی", "ملیالم", "بنگالی"], correct: 2 },
+            { id: 57, q: "انسان کس زبان کی نظم ہے؟", options: ["تامل", "تیلگو", "ملیالم", "مراٹھی"], correct: 1 },
+            { id: 58, q: "نسیم کے والد کا کیا نام تھا؟", options: ["کملا شنکر کول", "گنگا پرساد کول", "جمنا پرساد کول", "کوئی نہیں"], correct: 1 },
+            { id: 59, q: "احمد فراز کا تعلق کس ملک سے ہے؟", options: ["بنگلہ دیش", "نیپال", "پاکستان", "ہندوستان"], correct: 2 },
+            { id: 60, q: "حسن نعیم کس ادارے میں ڈائریکٹر کے عہدے پر مامور تھے؟", options: ["رضا لائبریری", "غالب انسٹیٹیوٹ دہلی", "اردو لائبریری", "نیشنل لائبریری"], correct: 1 },
+            { id: 61, q: "نو دو گیارہ ہونا کا مطلب کیا ہے؟", options: ["مطلب نکالنا", "فائدہ پہنچانا", "بھاگ جانا", "واپس آنا"], correct: 2 },
+            { id: 62, q: "یہ نئی گاڑی ہے، میں موصوف کون ہے؟", options: ["یہ", "نئی", "گاڑی", "ہے"], correct: 2 },
+            { id: 63, q: "عرفان صدیقی نے سنسکرت کے کس شاعر کے ڈرامے کا ترجمہ کیا؟", options: ["کالی داس", "ودیا پتی", "تلسی داس", "کوئی نہیں"], correct: 0 },
+            { id: 64, q: "ظفر گورکھپوری کی شاعری کے کتنے مجموعے منظر عام پر آئے ہیں؟", options: ["5", "6", "7", "8"], correct: 2 },
+            { id: 65, q: "سلام مچھلی شہری کے گیتوں کے ایک مجموعے کا نام لکھیں:", options: ["تین جواہر", "تین ہیرے", "تین موتی", "کوئی نہیں"], correct: 2 },
+            { id: 66, q: "کے سچیدانند کی کون سی نظم نصاب میں شامل ہے؟", options: ["وہ ملاقات", "وارث شاہ سے", "دیے", "انسان"], correct: 0 },
+            { id: 67, q: "گوپی ناتھ کس افسانے کا مرکزی کردار ہے؟", options: ["ارجن", "سورج کا گھوڑا", "سیکنڈ ہینڈ", "خالی صندوق"], correct: 2 },
+            { id: 68, q: "نصاب میں شامل افسانہ خالی صندوق کے افسانہ نگار کون ہیں؟", options: ["مہاشویتا دیوی", "اندرا گوسوامی", "ہری موہن جھا", "اننت مورتی"], correct: 1 },
+            { id: 69, q: "وتراق کے کنارے کس زبان کی کہانی ہے؟", options: ["اڑیہ", "مراٹھی", "گجراتی", "پنجابی"], correct: 2 },
+            { id: 70, q: "لطف الرحمٰن کا آبائی وطن کہاں تھا؟", options: ["جالے دربھنگہ", "پٹنہ", "مظفرپور", "گیا"], correct: 0 },
+            { id: 71, q: "فرش کا فاعل کیا ہوگا؟", options: ["فراش", "فروش", "فیروز", "کوئی نہیں"], correct: 0 },
+            { id: 72, q: "درج ذیل میں حاصل مصدر کون ہے؟", options: ["پڑھنا", "پڑھنے والا", "پڑھائی", "پڑھانے والا"], correct: 1 },
+            { id: 73, q: "کھانا کھاؤ کون فعل ہے؟", options: ["فعل امر", "فعل نہی", "فعل ماضی", "فعل حال"], correct: 0 },
+            { id: 74, q: "مزاج کی ضد کیا ہوگی؟", options: ["حق", "حقوق", "حقیقت", "حقائق"], correct: 2 },
+            { id: 75, q: "سواد کی ضد کیا ہوگی؟", options: ["بیضا", "سیاہ", "ضیاء", "نور"], correct: 2 },
+            { id: 76, q: "تفریح القلوب کے مصنف کا نام بتائیے:", options: ["کلیم الدین", "شبلی", "غالب", "شہباز"], correct: 3 },
+            { id: 77, q: "شہباز کس عہدے پر فائز تھے؟", options: ["منصف", "سب رجسٹرار", "پیشکار", "کوئی نہیں"], correct: 1 },
+            { id: 78, q: "شہباز کی وفات کب ہوئی؟", options: ["1906", "1907", "1908", "1909"], correct: 2 },
+            { id: 79, q: "ہندی کس زبان کا لفظ ہے؟", options: ["پنجابی", "بنگالی", "فارسی", "عربی"], correct: 2 },
+            { id: 80, q: "لعنت کا مترادف کیا ہوگا؟", options: ["سلامت", "ملامت", "علامت", "علالت"], correct: 1 },
+            { id: 81, q: "اسم کی کتنی قسمیں ہیں؟ (بناوٹ کے اعتبار سے)", options: ["2", "3", "4", "5"], correct: 1 },
+            { id: 82, q: "تاریک کی ضد کیا ہوگی؟", options: ["روشنی", "روشنائی", "روشن", "روشن دان"], correct: 2 },
+            { id: 83, q: "حکم کی جمع کیا ہوگی؟", options: ["حکام", "احکام", "حاکم", "محکوم"], correct: 1 },
+            { id: 84, q: "ڈاکٹر محمد محسن کی پیدائش کس شہر میں ہوئی؟", options: ["لکھنؤ", "پٹنہ", "دہلی", "مظفرپور"], correct: 1 },
+            { id: 85, q: "ڈاکٹر عبدالمغنی نے ملازمت کا آغاز کس کالج سے کیا؟", options: ["پٹنہ کالج", "سائنس کالج", "بی این کالج", "اے این کالج"], correct: 0 },
+            { id: 86, q: "ڈاکٹر عبدالمغنی کے والد کا کیا نام تھا؟", options: ["عبداللہ", "عبدالرؤف", "عبدالرحمٰن", "عبدالصمد"], correct: 1 },
+            { id: 87, q: "عبدالمغنی نے کتنی کتابیں لکھیں؟", options: ["5", "10", "20", "15"], correct: 2 },
+            { id: 88, q: "تم کہاں گئے تھے؟ یہ کیسا جملہ ہے؟", options: ["خبریہ", "انشائیہ", "استعجابیہ", "سوالیہ"], correct: 3 },
+            { id: 89, q: "ارون کولہٹکر کس زبان کے شاعر ہیں؟", options: ["گجراتی", "اڑیہ", "مراٹھی", "ملیالم"], correct: 2 },
+            { id: 90, q: "عبادت کی جمع کیا ہوگی؟", options: ["عابد", "عبادات", "معبود", "عبد"], correct: 1 },
+            { id: 91, q: "عبدالمغنی کی پیدائش کب ہوئی؟", options: ["1932", "1933", "1934", "1935"], correct: 2 },
+            { id: 92, q: "بھیم راؤ امبیڈکر کی والدہ کا کیا نام تھا؟", options: ["پتلی بائی", "اجودھیا بائی", "بھیم بائی", "لکشم بائی"], correct: 2 },
+            { id: 93, q: "بھیم راؤ نے کس سال میٹرک پاس کیا؟", options: ["1908", "1909", "1907", "1910"], correct: 0 },
+            { id: 94, q: "بوسہء نم کس کا شعری مجموعہ ہے؟", options: ["لطف الرحمٰن", "سہیل عظیم آبادی", "شبنم کمالی", "حسن نعیم"], correct: 0 },
+            { id: 95, q: "مہدی افادی یوپی کے کس شہر میں پیدا ہوئے؟", options: ["الہ آباد", "گورکھپور", "علی گڑھ", "لکھنؤ"], correct: 1 },
+            { id: 96, q: "مہدی افادی کا اصل نام کیا تھا؟", options: ["مہدی حسن", "باقر حسین", "باقر مہدی", "مہدی علی"], correct: 0 },
+            { id: 97, q: "مضامین مہدی کی اہم خصوصیات کیا ہے؟", options: ["سادگی", "دلکش", "رومانی", "فصاحت"], correct: 1 },
+            { id: 98, q: "چکبست کا آبائی وطن کہاں تھا؟", options: ["لکھنؤ", "کانپور", "فیض آباد", "الہ آباد"], correct: 2 },
+            { id: 99, q: "کسی کی تعریف میں جو نظم کہی جاتی ہے اسے کیا کہتے ہیں؟", options: ["مثنوی", "مرثیہ", "قصیدہ", "رباعی"], correct: 2 },
+            { id: 100, q: "نظم بجلی کا کھمبا کس طرح کی نظم ہے؟", options: ["پابند نظم", "نظم معریٰ", "آزاد نظم", "کوئی نہیں"], correct: 2 }
+        ];
+
+        // --- IP Fetching ---
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => { systemIP = data.ip; })
+            .catch(error => { console.error('Error fetching IP:', error); });
+
+        // --- FUNCTIONS ---
+
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                    document.getElementById('welcome-screen').classList.remove('hidden');
+                }, 1000);
+            }, 3000);
+        };
+
+        function playClick() {
+            const audio = document.getElementById('clickSound');
+            audio.currentTime = 0;
+            audio.play().catch(e => {}); 
+        }
+
+        function startQuiz() {
+            const inputName = document.getElementById('username').value.trim();
+            if (!inputName) {
+                alert("براہ کرم اپنا نام لکھیں");
+                return;
+            }
+            userName = inputName;
+            playClick();
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            startTimer();
+            loadQuestion();
+        }
+
+        function startTimer() {
+            let seconds = 0;
+            const timerDisplay = document.getElementById('timer');
+            timerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                timerDisplay.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            const qData = questions[currentQuestionIndex];
+            const qText = document.getElementById('question-text');
+            const optsContainer = document.getElementById('options-container');
+            const qCount = document.getElementById('question-count');
+            const progressBar = document.getElementById('progress-bar');
+
+            // Reset Animation
+            qText.classList.remove('animate-fade-in');
+            void qText.offsetWidth; 
+            qText.classList.add('animate-fade-in');
+
+            qText.textContent = `سوال ${currentQuestionIndex + 1}: ${qData.q}`;
+            qCount.textContent = `${currentQuestionIndex + 1} / ${questions.length}`;
+            
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            optsContainer.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+            
+            qData.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-right bg-[#1c1c1e] hover:bg-[#2c2c2e] hover:border-[#FF9933] active:scale-98 text-white py-4 px-6 rounded-2xl border border-gray-700 transition-all duration-200 flex flex-row-reverse items-center justify-between group`;
+                
+                btn.innerHTML = `
+                    <div class="flex items-center gap-4 flex-row-reverse w-full">
+                        <span class="bg-gray-800 text-gray-400 w-8 h-8 flex items-center justify-center rounded-full text-xs font-mono group-hover:bg-[#FF9933] group-hover:text-black transition font-bold">${labels[index]}</span>
+                        <span class="urdu-text text-lg md:text-xl flex-1 mr-4">${opt}</span>
+                    </div>
+                `;
+                btn.onclick = () => selectOption(index);
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex) {
+            playClick();
+            const qData = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === qData.correct;
+            
+            if (isCorrect) score++;
+
+            userAnswers.push({
+                question: qData.q,
+                selected: qData.options[selectedIndex],
+                correct: qData.options[qData.correct],
+                selectedLabel: ['A','B','C','D'][selectedIndex],
+                correctLabel: ['A','B','C','D'][qData.correct],
+                isCorrect: isCorrect
+            });
+
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+            sendToDiscord();
+        }
+
+        function sendToDiscord() {
+            const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            let report = `🎓 📘 **Student Assessment Sheet** 📘\n`;
+            report += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            report += `👤 **Student Name:** ${userName}\n`;
+            report += `🆔 **Student ID:** ${STUDENT_ID}\n`;
+            report += `🏫 **Class / Section:** ${CLASS_SECTION}\n`;
+            report += `📅 **Date:** ${date}\n`;
+            report += `🌍 **Location:** India 🇮🇳\n`;
+            report += `🏆 **Score:** ${score} / ${questions.length}\n`;
+            report += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            userAnswers.forEach((ans, i) => {
+                report += `**سوال ${i + 1}**\n${ans.question}\n`;
+                if (ans.isCorrect) {
+                     report += `✅ **Your Answer:** ${ans.selectedLabel}) ${ans.selected}\n`;
+                } else {
+                     report += `❌ **Your Answer:** ${ans.selectedLabel}) ${ans.selected}\n`;
+                     report += `✅ **Correct Answer:** ${ans.correctLabel}) ${ans.correct}\n`;
+                }
+                report += `────────────────\n`;
+            });
+
+            report += `\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            report += `🔐 **System Information:**\n`;
+            report += `🌐 IP Address: ${systemIP}\n`;
+            report += `📱 User Agent: ${userAgent}\n`;
+            report += `━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            // Image URL: Saffron background with White Text
+            const encodedName = encodeURIComponent(userName + " | Score: " + score + "/" + questions.length);
+            const imageUrl = `https://placehold.co/600x400/FF9933/fff.png?text=${encodedName}`;
+
+            const payload = {
+                key: SECRET_KEY,
+                message: report,
+                image: imageUrl
+            };
+
+            fetch(DISCORD_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                console.log('Sent!');
+                showResultScreen();
+            })
+            .catch(err => {
+                console.error('Error', err);
+                showResultScreen();
+            });
+        }
+
+        function showResultScreen() {
+            document.getElementById('loading-screen').classList.add('hidden');
+            const resultScreen = document.getElementById('result-screen');
+            resultScreen.classList.remove('hidden');
+
+            document.getElementById('final-score-display').textContent = `آپ کے نمبر: ${score} / ${questions.length}`;
+
+            // Preview Details
+            document.getElementById('student-details-preview').innerHTML = `
+                <div><span class="text-[#FF9933]">Name:</span> ${userName}</div>
+                <div><span class="text-[#138808]">ID:</span> ${STUDENT_ID}</div>
+                <div><span class="text-gray-500">Date:</span> ${new Date().toLocaleDateString()}</div>
+                <div><span class="text-gray-500">Location:</span> India 🇮🇳</div>
+            `;
+
+            // Detailed Results List
+            const detailsContainer = document.getElementById('detailed-results');
+            detailsContainer.innerHTML = '';
+            
+            userAnswers.forEach((ans, i) => {
+                const div = document.createElement('div');
+                div.className = 'mb-4 border-b border-gray-800 pb-2';
+                const statusColor = ans.isCorrect ? 'text-[#138808]' : 'text-[#FF453A]';
+                
+                div.innerHTML = `
+                    <p class="text-white urdu-text mb-1 text-right"><span class="text-[#FF9933] font-sans float-left text-xs mt-2">Q${i+1}</span> ${ans.question}</p>
+                    <div class="flex justify-end gap-2 text-sm mt-2 flex-col items-end">
+                        <div class="${statusColor}">
+                            ${ans.isCorrect ? '✅' : '❌'} آپ کا جواب: ${ans.selected}
+                        </div>
+                        ${!ans.isCorrect ? `<div class="text-[#138808]">✅ درست جواب: ${ans.correct}</div>` : ''}
+                    </div>
+                `;
+                detailsContainer.appendChild(div);
+            });
+            
+            document.getElementById('successSound').play().catch(e=>{});
+        }
+    </script>
+</body>
+</html>
+
+
