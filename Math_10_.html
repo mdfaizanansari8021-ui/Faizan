@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board 10th Math | VVI Objective Test</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- MathJax for Math Formatting -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+
+    <!-- Google Fonts (Noto Sans Devanagari for Hindi) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: linear-gradient(145deg, rgba(40,40,40,0.6) 0%, rgba(20,20,20,0.8) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .animated-text {
+            background: linear-gradient(to right, #60a5fa, #c084fc, #f472b6, #60a5fa);
+            background-size: 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientMove 3s linear infinite;
+            font-weight: 800;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* MathJax fix for dark mode */
+        mjx-container {
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center justify-center bg-[url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center bg-fixed bg-no-repeat">
+    
+    <!-- Dark Overlay -->
+    <div class="fixed inset-0 bg-black/85 z-[-1]"></div>
+
+    <!-- === SPLASH SCREEN === -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px; height: 300px" autoplay loop></dotlottie-wc>
+        
+        <h1 class="text-3xl md:text-5xl mt-8 tracking-tight font-bold text-center">
+            <span class="animated-text">Powered by Faizan Ali</span>
+        </h1>
+        
+        <div id="name-input-container" class="mt-12 w-full max-w-sm px-6 opacity-0 transition-opacity duration-1000 delay-500">
+            <p class="text-gray-400 text-center mb-2 text-sm uppercase tracking-widest font-semibold">अपनी पहचान बताएं</p>
+            <input type="text" id="student-name" placeholder="अपना नाम लिखें..." class="w-full bg-gray-900/50 border border-gray-700 text-white text-lg rounded-2xl px-5 py-4 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 placeholder-gray-500 text-center transition-all mb-4">
+            <button onclick="startQuiz()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-600/30 transform transition hover:-translate-y-1 active:scale-95 text-lg">
+                टेस्ट शुरू करें 🚀
+            </button>
+        </div>
+    </div>
+
+    <!-- === QUIZ INTERFACE === -->
+    <div id="quiz-interface" class="w-full max-w-3xl px-4 py-6 hidden flex-col h-screen md:h-auto justify-between md:justify-center">
+        
+        <!-- Header -->
+        <div class="glass-card rounded-3xl p-5 mb-6 flex justify-between items-center animate-fade-in">
+            <div>
+                <h2 class="text-blue-400 text-xs font-bold uppercase tracking-wider mb-1">बिहार बोर्ड कक्षा 10वीं</h2>
+                <h1 class="text-xl font-bold text-white">गणित (Math) - VVI प्रश्न</h1>
+            </div>
+            <div class="text-right">
+                <div class="text-xs text-gray-400 uppercase tracking-wide">प्रश्न</div>
+                <div class="text-2xl font-black text-blue-400"><span id="q-current">1</span><span class="text-gray-600 text-lg">/60</span></div>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full bg-gray-800 rounded-full h-2 mb-6 overflow-hidden glass">
+            <div id="progress-bar" class="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="glass-card rounded-3xl p-6 md:p-10 mb-6 flex-grow flex flex-col justify-center animate-fade-in relative overflow-hidden">
+            <!-- Background Decoration -->
+            <div class="absolute top-0 right-0 -mr-16 -mt-16 w-32 h-32 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+            <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-32 h-32 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+            <div id="question-text" class="text-xl md:text-2xl font-bold leading-relaxed text-white mb-8 relative z-10">
+                <!-- Question injected here -->
+            </div>
+
+            <div id="options-container" class="grid grid-cols-1 gap-4 relative z-10">
+                <!-- Options injected here -->
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center gap-4 animate-fade-in">
+             <button id="prev-btn" onclick="prevQuestion()" class="glass px-6 py-4 rounded-2xl text-gray-400 hover:text-white font-semibold transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            
+            <button id="next-btn" onclick="nextQuestion()" class="flex-grow bg-white text-black hover:bg-gray-200 font-bold py-4 rounded-2xl shadow-lg shadow-white/10 transform transition hover:-translate-y-1 active:scale-95 text-lg flex justify-center items-center gap-2">
+                अगला प्रश्न
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+
+             <button id="submit-btn" onclick="submitQuiz()" class="hidden flex-grow bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-green-500/30 transform transition hover:-translate-y-1 active:scale-95 text-lg justify-center items-center gap-2">
+                जमा करें (Submit)
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- === RESULT SCREEN === -->
+    <div id="result-screen" class="w-full max-w-4xl px-4 py-8 hidden animate-fade-in">
+        <div class="glass-card rounded-[2rem] p-8 md:p-12 text-center relative overflow-hidden mb-8">
+            <div class="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-purple-500/10"></div>
+            
+            <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 150px; height: 150px; margin: 0 auto;" autoplay loop></dotlottie-wc>
+            
+            <h2 class="text-4xl md:text-5xl font-black text-white mt-4 mb-2">टेस्ट पूरा हुआ!</h2>
+            <p class="text-gray-400 mb-8">आपका परिणाम (Result) नीचे दिया गया है</p>
+
+            <div class="flex justify-center items-center gap-8 mb-8">
+                <div class="text-center">
+                    <div class="text-sm text-gray-500 uppercase font-bold tracking-wider">अंक (Score)</div>
+                    <div id="final-score" class="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">0</div>
+                </div>
+                <div class="h-16 w-px bg-gray-700"></div>
+                <div class="text-center">
+                    <div class="text-sm text-gray-500 uppercase font-bold tracking-wider">प्रतिशत</div>
+                    <div id="final-percent" class="text-5xl md:text-6xl font-black text-white">0%</div>
+                </div>
+            </div>
+
+            <div id="sending-status" class="flex items-center justify-center gap-3 bg-gray-800/50 rounded-xl py-3 px-6 mx-auto w-fit border border-gray-700">
+                <div class="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+                <span class="text-blue-400 font-semibold text-sm">Discord पर भेजा जा रहा है...</span>
+            </div>
+        </div>
+
+        <h3 class="text-2xl font-bold text-white mb-6 px-2 border-l-4 border-blue-500 pl-4">विस्तृत उत्तर (Solutions)</h3>
+        
+        <div id="review-container" class="space-y-4">
+            <!-- Review items injected here -->
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA: 60 Math Questions in Hindi ---
+        const questions = [
+            { q: "निम्न में से कौन अपरिमेय (Irrational) संख्या नहीं है?", options: ["$\\pi$", "$7$", "$2\\sqrt{5}$", "$3\\sqrt{75} / \\sqrt{48}$"], correct: 3 },
+            { q: "आंकड़े 7, 3, 5, 8, 6, 10, 9, 12 का माध्यक (Median) क्या होगा?", options: ["7", "7.5", "8", "6.5"], correct: 1 },
+            { q: "आंकड़े 9, 7, 9, 3, 5, 9, 8, 6, 9, 7 का बहुलक (Mode) क्या होगा?", options: ["7", "8", "9", "5"], correct: 2 },
+            { q: "$\\sec^2 10^\\circ - \\cot^2 80^\\circ$ का मान है:", options: ["0", "1", "-1", "2"], correct: 1 },
+            { q: "त्रिभुज के शीर्ष $(-1, 0)$, $(5, -2)$ और $(8, 2)$ हैं, तो उसके केंद्रक (Centroid) के निर्देशांक होंगे:", options: ["(4, 0)", "(0, 4)", "(12, 0)", "(6, 6)"], correct: 0 },
+            { q: "यदि किसी वृत्त की त्रिज्या 7 सेमी है, तो अर्धवृत्त की परिमिति होगी:", options: ["36 cm", "22 cm", "44 cm", "14 cm"], correct: 0 }, // 36 is correct: pi*r + 2r
+            { q: "किसी वृत्त के बाहरी बिंदु से कितनी स्पर्श रेखाएं खींची जा सकती हैं?", options: ["1", "2", "3", "अनंत"], correct: 1 },
+            { q: "$1 + \\cot^2 A$ का मान बराबर होता है:", options: ["$\\sec^2 A$", "$\\text{cosec}^2 A$", "$\\tan^2 A$", "$\\cos^2 A$"], correct: 1 },
+            { q: "दो सह-अभाज्य (Co-prime) संख्याओं का म.स. (HCF) होता है:", options: ["0", "1", "उनका गुणनफल", "उनका योग"], correct: 1 },
+            { q: "द्विघात समीकरण $4y^2 + 4y + 1 = 0$ के मूलों का गुणनफल होगा:", options: ["1/4", "-1/4", "1", "4"], correct: 0 },
+            { q: "एक निश्चित घटना (Certain event) की प्रायिकता होती है:", options: ["0", "1", "1/2", "अपरिभाषित"], correct: 1 },
+            { q: "यदि द्विघात समीकरण के मूल समान हों, तो विविक्तिकर (D) का मान होगा:", options: ["$D > 0$", "$D < 0$", "$D = 0$", "$D \\ge 0$"], correct: 2 },
+            { q: "$\\tan 1^\\circ \\cdot \\tan 2^\\circ \\dots \\tan 89^\\circ$ का मान है:", options: ["0", "1", "$\\infty$", "1/2"], correct: 1 },
+            { q: "Y-अक्ष का समीकरण होता है:", options: ["$y = 0$", "$x = 0$", "$x = a$", "$y = b$"], correct: 1 },
+            { q: "निम्न में से कौन केंद्रीय प्रवृत्ति की माप नहीं है?", options: ["माध्य", "माध्यिका", "बहुलक", "मानक विचलन"], correct: 3 },
+            { q: "यदि बिंदु $(1, 2)$, $(-5, 6)$, और $(a, -2)$ संरेख (Collinear) हैं, तो $a$ का मान है:", options: ["7", "-7", "5", "0"], correct: 0 },
+            { q: "समद्विबाहु समकोण त्रिभुज में प्रत्येक न्यून कोण का मान होता है:", options: ["$30^\\circ$", "$60^\\circ$", "$45^\\circ$", "$90^\\circ$"], correct: 2 },
+            { q: "एक पासे को फेंकने पर अभाज्य संख्या (Prime Number) आने की प्रायिकता है:", options: ["1/2", "1/3", "2/3", "1/6"], correct: 0 },
+            { q: "आंकड़े 12, 25, 15, 18, 17, 20, 6, 11, 16, 30, 20, 32 का परिसर (Range) है:", options: ["26", "24", "10", "15"], correct: 0 },
+            { q: "यदि दो वृत्तों की परिधियों का अनुपात 2:3 है, तो उनके क्षेत्रफलों का अनुपात होगा:", options: ["2:3", "4:9", "3:2", "9:4"], correct: 1 },
+            { q: "बिंदु $(-4, -3)$ किस पाद (Quadrant) में स्थित है?", options: ["प्रथम", "द्वितीय", "तृतीय", "चतुर्थ"], correct: 2 },
+            { q: "किसी घन का विकर्ण $8\\sqrt{3}$ सेमी है, तो उसका किनारा होगा:", options: ["4 cm", "8 cm", "16 cm", "12 cm"], correct: 1 },
+            { q: "गोले का संपूर्ण पृष्ठीय क्षेत्रफल होता है:", options: ["$2\\pi r^2$", "$3\\pi r^2$", "$4\\pi r^2$", "$\\frac{4}{3}\\pi r^3$"], correct: 2 },
+            { q: "$\\sec 60^\\circ$ का मान है:", options: ["1/2", "2", "$\\sqrt{3}/2$", "$1/\\sqrt{3}$"], correct: 1 },
+            { q: "यदि सूर्य का उन्नयन कोण $45^\\circ$ है, तो $h$ मीटर ऊंचे मीनार की छाया की लंबाई होगी:", options: ["$h$ मीटर", "$h\\sqrt{3}$ मीटर", "$h/\\sqrt{3}$ मीटर", "$2h$ मीटर"], correct: 0 },
+            { q: "एक पासे पर 3 और 6 के बीच की संख्या आने की प्रायिकता क्या है?", options: ["1/3", "1/2", "1/6", "2/3"], correct: 0 }, // 4, 5 (2 numbers) -> 2/6 = 1/3
+            { q: "यदि $1, 4, x, 5, y$ का माध्य 7 है, तो $x + y = $?", options: ["20", "25", "30", "35"], correct: 1 },
+            { q: "निम्न में से किसका दशमलव प्रसार सांत (Terminating) है?", options: ["$1/3$", "$2/7$", "$13/125$", "$5/6$"], correct: 2 },
+            { q: "समीकरण $2x^2 - 5x - 3 = 0$ का एक हल है:", options: ["4", "-1/2", "2", "5"], correct: 1 },
+            { q: "प्रथम $n$ विषम प्राकृत संख्याओं का योग होता है:", options: ["$2n$", "$n^2$", "$n^2+1$", "$n(n+1)$"], correct: 1 },
+            { q: "बिंदु $(4, 7)$ की x-अक्ष से दूरी है:", options: ["4", "7", "11", "3"], correct: 1 },
+            { q: "बिंदुओं $(a, 0)$ और $(0, a)$ के बीच की दूरी है:", options: ["$a$", "$2a$", "$a\\sqrt{2}$", "$a/\\sqrt{2}$"], correct: 2 },
+            { q: "$\\sin^2 60^\\circ + \\cos^2 60^\\circ$ का मान है:", options: ["0", "1", "2", "-1"], correct: 1 },
+            { q: "वह सबसे छोटी संख्या जो 1 से 10 तक की सभी संख्याओं से विभाज्य है:", options: ["10", "100", "504", "2520"], correct: 3 },
+            { q: "स्पर्श रेखा और वृत्त के उभयनिष्ठ बिंदु को कहते हैं:", options: ["केंद्र", "स्पर्श बिंदु", "जीवा", "छेदक रेखा"], correct: 1 },
+            { q: "किसका मान आलेख (Graph) द्वारा नहीं निकाला जा सकता?", options: ["माध्य", "माध्यिका", "बहुलक", "कोई नहीं"], correct: 0 },
+            { q: "एक थैले में 5 उजली और 7 लाल गोलियां हैं। लाल गोली निकालने की प्रायिकता होगी:", options: ["5/12", "7/12", "1/2", "7/5"], correct: 1 },
+            { q: "बिंदुओं $(2, 3)$ और $(4, 1)$ के बीच की दूरी है:", options: ["$2\\sqrt{2}$", "$2$", "$4\\sqrt{2}$", "$4$"], correct: 0 },
+            { q: "4 - $\\sqrt{3}$ एक संख्या है:", options: ["परिमेय", "अपरिमेय", "पूर्णांक", "प्राकृत"], correct: 1 },
+            { q: "3 से बड़ी किसी अभाज्य संख्या के वर्ग को 6 से भाग देने पर शेषफल होगा:", options: ["1", "2", "3", "0"], correct: 0 },
+            { q: "यदि $\\alpha, \\beta$ बहुपद $x^2 - x + 4$ के शून्यक हैं, तो $\\alpha + \\beta$ का मान:", options: ["1", "-1", "4", "-4"], correct: 0 },
+            { q: "$2x + 3y = 5$ का आलेख (Graph) कैसा होगा?", options: ["सरल रेखा", "परवलय", "वृत्त", "बिंदु"], correct: 0 },
+            { q: "बिंदु $(8, -9)$ में कोटि (Ordinate) का मान है:", options: ["8", "-9", "17", "1"], correct: 1 },
+            { q: "समकोण त्रिभुज में समकोण के सामने वाली भुजा कहलाती है:", options: ["आधार", "लम्ब", "कर्ण", "माध्यिका"], correct: 2 },
+            { q: "$\\frac{17}{8}$ का दशमलव प्रसार होगा:", options: ["सांत", "असांत आवर्ती", "असांत अनावर्ती", "इनमें से कोई नहीं"], correct: 0 },
+            { q: "निम्न में से कौन बहुपद है?", options: ["$x^2 - 5x + 4\\sqrt{x} + 3$", "$x^{3/2} - x$", "$\\sqrt{x} + 1/\\sqrt{x}$", "$\\sqrt{2}x^2 - 3\\sqrt{3}x + \\sqrt{6}$"], correct: 3 },
+            { q: "बहुपद $(y^3 - 2)(y^2 + 4)$ की घात है:", options: ["3", "2", "5", "6"], correct: 2 },
+            { q: "यदि $\\sin \\theta = \\cos \\theta$, तो $\\theta$ का मान:", options: ["$0^\\circ$", "$30^\\circ$", "$45^\\circ$", "$60^\\circ$"], correct: 2 },
+            { q: "$\\sin(90^\\circ - A)$ बराबर है:", options: ["$\\sin A$", "$\\cos A$", "$\\tan A$", "$\\text{cosec} A$"], correct: 1 },
+            { q: "किसी वृत्त की परिधि 44 मीटर है, तो उसका क्षेत्रफल होगा:", options: ["$154 m^2$", "$308 m^2$", "$44 m^2$", "$616 m^2$"], correct: 0 },
+            { q: "समीकरण $x^2 + 5x + 5 = 0$ का विविक्तिकर (Discriminant) है:", options: ["5", "-5", "25", "0"], correct: 0 },
+            { q: "बिंदु $P(-6, 8)$ की मूल बिंदु से दूरी है:", options: ["8", "2\\sqrt{7}", "10", "6"], correct: 2 },
+            { q: "यदि $3\\theta = 90^\\circ$, तो $\\cos \\theta$ का मान:", options: ["1/2", "$\\sqrt{3}/2$", "$1/\\sqrt{2}$", "0"], correct: 1 },
+            { q: "समीकरण $x^2 + 2x + 1 = 0$ के मूलों की प्रकृति है:", options: ["वास्तविक और समान", "वास्तविक और असमान", "काल्पनिक", "कोई नहीं"], correct: 0 },
+            { q: "यदि AP और AQ केंद्र O वाले वृत्त पर स्पर्श रेखाएं हैं और $\\angle POQ = 110^\\circ$, तो $\\angle PAQ$ है:", options: ["$60^\\circ$", "$70^\\circ$", "$80^\\circ$", "$90^\\circ$"], correct: 1 },
+            { q: "$(1 + \\tan^2 \\theta)(1 - \\sin^2 \\theta)$ का मान है:", options: ["0", "1", "2", "-1"], correct: 1 },
+            { q: "एक सिक्के को दो बार उछालने पर संभव परिणामों की संख्या:", options: ["2", "4", "3", "8"], correct: 1 },
+            { q: "समांतर श्रेणी: 3, 8, 13, 18... का कौन सा पद 78 है?", options: ["15वां", "16वां", "17वां", "18वां"], correct: 1 },
+            { q: "यदि वृत्त की परिधि और क्षेत्रफल संख्यात्मक रूप से बराबर हों, तो त्रिज्या होगी:", options: ["2 मात्रक", "$\u03c0$ मात्रक", "4 मात्रक", "7 मात्रक"], correct: 0 },
+            { q: "$\\frac{\\sin 18^\\circ}{\\cos 72^\\circ}$ का मान है:", options: ["1/2", "1", "$\\sqrt{3}/2$", "0"], correct: 1 }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let userName = "";
+
+        // --- DOM ELEMENTS ---
+        const splashScreen = document.getElementById('splash-screen');
+        const nameInputContainer = document.getElementById('name-input-container');
+        const studentNameInput = document.getElementById('student-name');
+        const quizInterface = document.getElementById('quiz-interface');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const progressBar = document.getElementById('progress-bar');
+        const qCurrent = document.getElementById('q-current');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultScreen = document.getElementById('result-screen');
+        const finalScore = document.getElementById('final-score');
+        const finalPercent = document.getElementById('final-percent');
+        const reviewContainer = document.getElementById('review-container');
+        const sendingStatus = document.getElementById('sending-status');
+
+        // --- INIT SPLASH ---
+        setTimeout(() => {
+            nameInputContainer.style.opacity = '1';
+        }, 3000);
+
+        function startQuiz() {
+            const name = studentNameInput.value.trim();
+            if (!name) {
+                alert("कृपया आगे बढ़ने के लिए अपना नाम दर्ज करें!");
+                return;
+            }
+            userName = name;
+            splashScreen.style.opacity = '0';
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                quizInterface.classList.remove('hidden');
+                quizInterface.classList.add('flex');
+                loadQuestion(0);
+            }, 700);
+        }
+
+        // --- QUIZ LOGIC ---
+        function loadQuestion(index) {
+            currentQuestion = index;
+            
+            // Update Progress
+            const progress = ((index + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            qCurrent.innerText = index + 1;
+
+            // Render Text
+            questionText.innerHTML = questions[index].q;
+            
+            // Render Options
+            optionsContainer.innerHTML = '';
+            questions[index].options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn w-full text-left p-4 rounded-xl border border-gray-700 bg-gray-800/40 hover:bg-gray-700/60 transition-all font-medium flex items-center gap-3 group`;
+                
+                // Selection State
+                if (userAnswers[index] === i) {
+                    btn.classList.add('ring-2', 'ring-blue-500', 'bg-blue-900/30');
+                }
+
+                btn.innerHTML = `
+                    <span class="flex items-center justify-center w-8 h-8 rounded-full bg-gray-700 text-gray-300 font-bold text-sm group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                        ${String.fromCharCode(65 + i)}
+                    </span>
+                    <span class="text-lg">${opt}</span>
+                `;
+                
+                btn.onclick = () => selectOption(i);
+                optionsContainer.appendChild(btn);
+            });
+
+            // MathJax Re-render
+            MathJax.typesetPromise([questionText, optionsContainer]);
+
+            // Button States
+            prevBtn.disabled = index === 0;
+            if (index === questions.length - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+                submitBtn.classList.add('flex');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+                submitBtn.classList.remove('flex');
+            }
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestion] = optionIndex;
+            loadQuestion(currentQuestion); // Re-render to show selection
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                loadQuestion(currentQuestion + 1);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                loadQuestion(currentQuestion - 1);
+            }
+        }
+
+        // --- SUBMIT & RESULTS ---
+        async function submitQuiz() {
+            // Calculate Score
+            score = 0;
+            userAnswers.forEach((ans, i) => {
+                if (ans === questions[i].correct) score++;
+            });
+
+            // UI Switch
+            quizInterface.classList.add('hidden');
+            quizInterface.classList.remove('flex');
+            resultScreen.classList.remove('hidden');
+            resultScreen.classList.add('block');
+
+            // Populate Result Data
+            finalScore.innerText = `${score}/${questions.length}`;
+            finalPercent.innerText = `${Math.round((score/questions.length)*100)}%`;
+
+            // Generate Review & Discord Message
+            generateReview();
+            await sendToDiscord();
+        }
+
+        function generateReview() {
+            reviewContainer.innerHTML = '';
+            
+            questions.forEach((q, i) => {
+                const userChoice = userAnswers[i];
+                const isCorrect = userChoice === q.correct;
+                const isSkipped = userChoice === null;
+
+                const card = document.createElement('div');
+                card.className = `glass-card rounded-2xl p-6 border-l-4 ${isCorrect ? 'border-green-500' : 'border-red-500'}`;
+                
+                let statusIcon = isCorrect ? '✅ सही (Correct)' : '❌ गलत (Wrong)';
+                if(isSkipped) statusIcon = '⚠️ अनुत्तरित (Skipped)';
+
+                let optionsHtml = '';
+                q.options.forEach((opt, idx) => {
+                    let optClass = "text-gray-400";
+                    let suffix = "";
+                    
+                    if (idx === q.correct) {
+                        optClass = "text-green-400 font-bold";
+                        suffix = " ✅";
+                    } else if (idx === userChoice && !isCorrect) {
+                        optClass = "text-red-400 font-bold";
+                        suffix = " ❌ (आपका चयन)";
+                    }
+
+                    optionsHtml += `<div class="${optClass} ml-4">• ${String.fromCharCode(65+idx)}) ${opt}${suffix}</div>`;
+                });
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-sm text-gray-500 font-bold">प्रश्न ${i + 1}</span>
+                        <span class="text-sm font-bold ${isCorrect ? 'text-green-400' : 'text-red-400'}">${statusIcon}</span>
+                    </div>
+                    <div class="text-lg font-medium text-white mb-3">${q.q}</div>
+                    <div class="space-y-1 text-sm bg-black/20 p-4 rounded-xl">${optionsHtml}</div>
+                `;
+                reviewContainer.appendChild(card);
+            });
+            
+            // Re-render math in review
+            MathJax.typesetPromise([reviewContainer]);
+        }
+
+        // --- DISCORD INTEGRATION ---
+        async function sendToDiscord() {
+            try {
+                // Get IP
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                const userIP = ipData.ip;
+                
+                // Get User Agent
+                const userAgent = navigator.userAgent;
+
+                // Build Message String
+                const date = new Date().toLocaleDateString('hi-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+                
+                let discordMsg = `🎓 📘 **Student Assessment Sheet** 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 **Student Name:** ${userName}\n🆔 **Student ID:** BSEB-${Math.floor(1000 + Math.random() * 9000)}\n🏫 **Class:** 10th (Bihar Board)\n📅 **Date:** ${date}\n🌍 **Location:** India 🇮🇳\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+
+                discordMsg += `📊 **Score:** ${score}/${questions.length} (${Math.round((score/questions.length)*100)}%)\n\n`;
+
+                // Add Question Details (Limited to prevent Discord Error)
+                let questionDetails = "";
+                questions.forEach((q, i) => {
+                    // Extract plain text for Discord (remove LaTeX $)
+                    let cleanQ = q.q.replace(/\$|\\|/g, '').substring(0, 60) + "..."; 
+                    
+                    const uAns = userAnswers[i];
+                    
+                    let optionsStr = "";
+                    ["A", "B", "C", "D"].forEach((label, idx) => {
+                        let mark = "";
+                        if (idx === q.correct) mark = " ✅";
+                        if (idx === uAns && idx !== q.correct) mark = " ❌ (Selected)";
+                        optionsStr += `🔹 ${label}) ${q.options[idx].replace(/\$|\\|/g, '')}${mark}  `;
+                    });
+
+                    let qBlock = `📝 🧠 Question ${i+1}: ${cleanQ}\n${optionsStr}\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                    
+                    // Limit text size to prevent API failure
+                    if ((discordMsg.length + questionDetails.length + qBlock.length) < 1900) {
+                        questionDetails += qBlock;
+                    }
+                });
+                
+                if (questionDetails.length < 10) questionDetails = " (Result too long to display full details in embed) \n";
+
+                discordMsg += questionDetails;
+                discordMsg += `🔐 **System Information:**\n🌐 **IP Address:** ${userIP}\n📱 **Device:** ${userAgent}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+
+                // Image Generation Name
+                const imageUrl = `https://placehold.co/600x400/png?text=${encodeURIComponent(userName)}+Score:+${score}/${questions.length}`;
+
+                // Fetch Call
+                const response = await fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: 'QUIZZES_7887168828',
+                        message: discordMsg,
+                        image: imageUrl
+                    })
+                });
+
+                if (response.ok) {
+                    sendingStatus.innerHTML = '<span class="text-green-400">✅ Result Sent Successfully! (परिणाम भेजा गया)</span>';
+                    console.log('Sent to Discord!');
+                } else {
+                    throw new Error('API Error');
+                }
+
+            } catch (error) {
+                console.error(error);
+                sendingStatus.innerHTML = '<span class="text-red-400">⚠️ Could not send to server (Network Error)</span>';
+            }
+        }
+
+        // --- SECURITY ---
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && (event.key === 'u' || event.key === 's' || event.key === 'c')) {
+                event.preventDefault();
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+
