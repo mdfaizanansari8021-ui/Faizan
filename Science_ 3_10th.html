@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board 10th Science - Secret Exam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --glass-bg: rgba(20, 20, 25, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+
+        body {
+            font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+            background: black;
+            color: white;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            overflow-x: hidden;
+            background: linear-gradient(-45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3);
+            background-size: 400% 400%;
+            animation: rainbowBG 15s ease infinite;
+        }
+
+        @keyframes rainbowBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .glass-panel::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            border-radius: 26px;
+            padding: 2px;
+            background: linear-gradient(45deg, #FF0000, #FF7300, #FFFB00, #48FF00, #00FFD5, #002BFF, #FF00C8, #FF0000);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .text-rainbow {
+            background: linear-gradient(to right, #ef5350, #f48fb1, #7e57c2, #2196f3, #26c6da, #43a047, #eeff41, #f9a825, #ff5722);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: textShine 4s linear infinite;
+        }
+
+        @keyframes textShine { to { background-position: 200% center; } }
+
+        /* Option Cards - Neutral Selection Only */
+        .option-card {
+            background: rgba(40, 40, 50, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+        .option-card:active { transform: scale(0.98); }
+        
+        /* Only one state: SELECTED (Blue/Purple) - No Red/Green hints */
+        .option-card.selected { 
+            background: rgba(10, 132, 255, 0.15); 
+            border-color: #0A84FF; 
+            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3);
+        }
+        .option-card.selected .option-circle {
+            border-color: #0A84FF;
+            background-color: #0A84FF;
+            color: white;
+        }
+
+        .btn-rainbow {
+            background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+            background-size: 400%;
+            color: white;
+            border: none;
+            z-index: 1;
+            position: relative;
+            animation: glowing 20s linear infinite;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+            transition: transform 0.2s;
+        }
+        .btn-rainbow:active { transform: scale(0.95); }
+        @keyframes glowing {
+            0% { background-position: 0 0; }
+            50% { background-position: 400% 0; }
+            100% { background-position: 0 0; }
+        }
+
+        .progress-rainbow {
+            background: linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #9400D3);
+            background-size: 200% 100%;
+            animation: gradientMove 2s linear infinite;
+        }
+        @keyframes gradientMove { 0% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+
+        .anim-entry { animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .loader-ring {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+        }
+        .loader-ring:after {
+            content: " ";
+            display: block;
+            width: 50px;
+            height: 50px;
+            margin: 8px;
+            border-radius: 50%;
+            border: 6px solid #fff;
+            border-color: #fff transparent #fff transparent;
+            animation: loader-ring 1.2s linear infinite;
+        }
+        @keyframes loader-ring { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
+        <div class="absolute inset-0 opacity-30 bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 320px;height: 320px" autoplay loop></dotlottie-wc>
+        <h1 class="mt-8 text-4xl font-extrabold text-rainbow tracking-wider uppercase text-center px-4">
+            Powered by<br><span class="text-5xl">Faizan Ali</span>
+        </h1>
+    </div>
+
+    <!-- Main Container -->
+    <div id="app-container" class="w-full max-w-lg hidden relative">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="glass-panel p-8 text-center anim-entry shadow-2xl">
+            <div class="mb-4 inline-block px-3 py-1 rounded-full border border-white/20 bg-white/10 backdrop-blur-md text-xs font-bold uppercase tracking-widest text-blue-200">
+                Official Model Set
+            </div>
+            <h1 class="text-4xl font-extrabold mb-3 text-white drop-shadow-lg leading-tight">बिहार बोर्ड<br><span class="text-rainbow">विज्ञान (Science)</span></h1>
+            <p class="text-gray-300 mb-8 text-lg font-medium">कक्षा 10वीं • 80 VVI वस्तुनिष्ठ प्रश्न</p>
+            
+            <div class="space-y-6">
+                <div class="relative group">
+                    <input type="text" id="username" placeholder="अपना पूरा नाम दर्ज करें" 
+                        class="w-full bg-black/40 border-2 border-white/10 rounded-2xl px-6 py-5 text-white placeholder-gray-400 focus:border-purple-500 focus:outline-none transition-all text-xl font-bold text-center"
+                        autocomplete="off">
+                </div>
+                <button onclick="startQuiz()" class="btn-rainbow w-full py-5 rounded-2xl font-extrabold text-2xl tracking-wide shadow-lg transform hover:-translate-y-1">
+                    टेस्ट शुरू करें 🚀
+                </button>
+            </div>
+            <div class="mt-8 flex justify-center space-x-4 text-xs text-gray-400 font-mono">
+                <span>🔒 Secure Exam Mode</span>
+                <span>•</span>
+                <span>⚡ No Hints</span>
+            </div>
+        </div>
+
+        <!-- Quiz Interface -->
+        <div id="quiz-screen" class="hidden flex-col h-full justify-between w-full">
+            <div class="glass-panel p-6 mb-5 relative overflow-hidden shadow-2xl">
+                <!-- Header Info -->
+                <div class="flex justify-between items-end mb-4">
+                    <div class="flex flex-col">
+                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">प्रश्न (Question)</span>
+                        <span id="question-counter" class="text-3xl font-black text-white">1<span class="text-gray-500 text-lg">/80</span></span>
+                    </div>
+                    <!-- Score is HIDDEN in Exam Mode -->
+                    <div class="flex flex-col items-end opacity-50">
+                        <span class="text-xs text-gray-400 font-bold uppercase tracking-wider mb-1">मोड (Mode)</span>
+                        <span class="text-sm font-bold text-yellow-400 border border-yellow-400/30 px-2 py-0.5 rounded">परीक्षा (Exam)</span>
+                    </div>
+                </div>
+
+                <!-- Rainbow Progress Bar -->
+                <div class="h-2 w-full bg-gray-800 rounded-full mb-6 overflow-hidden border border-white/10">
+                    <div id="progress-bar" class="h-full progress-rainbow transition-all duration-300 rounded-full" style="width: 0%"></div>
+                </div>
+                
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold text-white leading-relaxed mb-2 drop-shadow-md font-hindi">
+                    प्रश्न लोड हो रहा है...
+                </h2>
+            </div>
+
+            <!-- Options Area -->
+            <div id="options-container" class="space-y-4 mb-6">
+                <!-- Options injected via JS -->
+            </div>
+
+            <button id="next-btn" onclick="nextQuestion()" class="btn-rainbow w-full py-5 rounded-2xl font-bold text-xl text-white opacity-50 cursor-not-allowed shadow-xl" disabled>
+                अगला प्रश्न (Next) ➔
+            </button>
+        </div>
+
+        <!-- Sending Loader -->
+        <div id="sending-screen" class="hidden glass-panel p-10 text-center flex flex-col items-center justify-center min-h-[400px]">
+            <div class="loader-ring mb-6"></div>
+            <h2 class="text-3xl font-extrabold text-rainbow mb-2">रिजल्ट जमा हो रहा है</h2>
+            <p class="text-gray-300 text-lg">कृपया प्रतीक्षा करें, आपकी उत्तर पुस्तिका Discord पर भेजी जा रही है...</p>
+            <div id="send-progress" class="mt-6 text-xl font-mono text-blue-400 font-bold">0%</div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden glass-panel p-6 text-center anim-entry">
+            <div class="mb-8 relative">
+                <div class="absolute inset-0 bg-blue-500 blur-3xl opacity-20 rounded-full"></div>
+                <div class="w-28 h-28 bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 rounded-full mx-auto flex items-center justify-center mb-4 shadow-2xl border-4 border-white/20 relative z-10">
+                    <span class="text-5xl">🏆</span>
+                </div>
+                <h2 class="text-4xl font-black text-white mb-1">टेस्ट पूर्ण हुआ!</h2>
+                <p id="final-name" class="text-rainbow font-bold text-2xl"></p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-black/40 p-5 rounded-2xl border border-white/10 backdrop-blur-md">
+                    <div class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">कुल स्कोर</div>
+                    <div id="final-score" class="text-3xl font-black text-white">0/80</div>
+                </div>
+                <div class="bg-black/40 p-5 rounded-2xl border border-white/10 backdrop-blur-md">
+                    <div class="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">प्रतिशत</div>
+                    <div id="final-percentage" class="text-3xl font-black text-green-400">0%</div>
+                </div>
+            </div>
+
+            <div class="bg-white/5 rounded-xl p-5 mb-6 text-left border border-white/5">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                    <h3 class="text-sm font-bold text-gray-200">सबमिशन की स्थिति</h3>
+                </div>
+                <p class="text-xs text-gray-400 ml-5">रिजल्ट Discord पर भेजा गया ✅</p>
+                <p class="text-xs text-gray-400 ml-5 mt-1">IP: <span id="user-ip" class="font-mono text-blue-300">Tracking...</span></p>
+            </div>
+
+            <button onclick="location.reload()" class="w-full py-4 rounded-xl font-bold text-white bg-white/10 border border-white/10 hover:bg-white/20 transition backdrop-blur-md">
+                पुनः प्रयास करें (Retake) 🔄
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const DISCORD_API_URL = 'https://quizzes-pi-one.vercel.app/api/send';
+        const API_KEY = 'QUIZZES_7887168828';
+        
+        // --- Data: 80 Hindi Questions ---
+        const questions = [
+            { q: "डायनेमो से किस प्रकार की धारा प्राप्त होती है?", o: ["दिष्ट धारा (DC)", "प्रत्यावर्ती धारा (AC)", "दोनों धाराएं", "इनमें से कोई नहीं"], a: 2 },
+            { q: "निम्न में से कौन बायोगैस ईंधन का स्रोत नहीं है?", o: ["लकड़ी", "गोबर गैस", "नाभिकीय ऊर्जा", "कोयला"], a: 2 },
+            { q: "हाइड्रा में प्रजनन किस विधि से होता है?", o: ["द्विखंडन", "मुकुलन", "लैंगिक जनन", "इनमें सभी"], a: 1 },
+            { q: "स्पेक्ट्रम में किस रंग की किरण का झुकाव अधिक होता है?", o: ["लाल", "हरा", "पीला", "बैंगनी"], a: 3 },
+            { q: "हीलियम कैसा तत्व है?", o: ["अक्रिय", "क्रियाशील", "सक्रिय", "उदासीन"], a: 0 },
+            { q: "विकासीय दृष्टिकोण से हमारी किससे अधिक समानता है?", o: ["चीन के विद्यार्थी", "चिम्पांजी", "मकड़ी", "जीवाणु"], a: 1 },
+            { q: "मुकुलन द्वारा अलैंगिक जनन होता है?", o: ["अमीबा में", "यीस्ट में", "प्लाज्मोडियम में", "लेशमानिया में"], a: 1 },
+            { q: "सामान्य दृष्टि के वयस्क के लिए सुस्पष्ट दर्शन की अल्पतम दूरी होती है?", o: ["25 मीटर", "2.5 सेमी", "25 सेमी", "2.5 मीटर"], a: 2 },
+            { q: "लोहे की परमाणु संख्या है?", o: ["23", "26", "25", "24"], a: 1 },
+            { q: "-CHO अभिक्रिया मूलक को क्या कहते हैं?", o: ["एल्डिहाइड", "अल्कोहल", "कीटोन", "इनमें से कोई नहीं"], a: 0 },
+            { q: "कौन सा पद विद्युत परिपथ में विद्युत शक्ति को निरूपित नहीं करता?", o: ["I²R", "IR²", "VI", "V²/R"], a: 1 },
+            { q: "कौन जैव मात्रा ऊर्जा स्रोत का उदाहरण नहीं है?", o: ["लकड़ी", "गोबर गैस", "नाभिकीय ऊर्जा", "कोयला"], a: 2 },
+            { q: "एथेन (C2H6) में कितने सहसंयोजक बंधन होते हैं?", o: ["6", "7", "8", "9"], a: 1 },
+            { q: "ओजोन के अणु में ऑक्सीजन के परमाणुओं की संख्या होती है?", o: ["1", "2", "3", "4"], a: 2 },
+            { q: "जब NaOH, जिंक (Zn) से अभिक्रिया करता है तो कौन सा उत्पाद बनता है?", o: ["Na2ZnO + H2", "NaZnO2 + H2", "NaOZ2 + H2", "Na2ZnO2 + H2"], a: 3 },
+            { q: "किसी भी उदासीन विलयन का pH मान होता है?", o: ["5", "7", "14", "0"], a: 1 },
+            { q: "मैग्नीशियम पाया जाता है?", o: ["क्लोरोफिल में", "लाल रक्त कण में", "वर्णी लवक में", "श्वेत रक्त कण में"], a: 0 },
+            { q: "फूल में नर प्रजनन अंग होता है?", o: ["पुंकेसर", "अंडप", "वर्तिकाग्र", "वर्तिका"], a: 0 },
+            { q: "ग्लोबल वार्मिंग के लिए उत्तरदायी गैस है?", o: ["O2", "NH3", "CO2", "N2"], a: 2 },
+            { q: "किसी वस्तु का प्रतिबिंब आंख के किस भाग पर पड़ता है?", o: ["कॉर्निया", "रेटिना", "पुतली", "आयरिस"], a: 1 },
+            { q: "विद्युत चुंबकीय प्रेरण की खोज किसने की थी?", o: ["फैराडे ने", "मैक्सवेल ने", "एम्पियर ने", "फ्लेमिंग ने"], a: 0 },
+            { q: "निम्न में से कौन विजातीय यौगिक है?", o: ["चूना पत्थर", "खड़िया", "संगमरमर", "प्लास्टर ऑफ पेरिस"], a: 3 },
+            { q: "pH का कौन सा मान क्षारक विलयन का मान देता है?", o: ["2", "7", "6", "13"], a: 3 },
+            { q: "सीसा और टिन की मिश्रधातु को कहते हैं?", o: ["शोल्डर", "स्टील", "गन मेटल", "उपधातु"], a: 0 },
+            { q: "किसे आप उपभोक्ता की श्रेणी में रखेंगे?", o: ["हरे पौधे", "नील हरित शैवाल", "जंगली जानवर", "फूल और पत्ते"], a: 2 },
+            { q: "मानव में डायलिसिस थैली है?", o: ["नेफ्रॉन", "न्यूरॉन", " माइटोकॉन्ड्रिया", "कोई नहीं"], a: 0 },
+            { q: "100W का विद्युत बल्ब 250V के विद्युत मेन से जोड़ा जाता है, धारा का मान होगा?", o: ["0.1 A", "0.2 A", "0.3 A", "0.4 A"], a: 3 },
+            { q: "पवन विद्युत जनित्र में पवन की चाल कम से कम कितनी होनी चाहिए?", o: ["15 km/h", "150 km/h", "1.5 km/h", "1500 km/h"], a: 0 },
+            { q: "कौन सबसे अधिक अभिक्रियाशील है?", o: ["Cu", "Hg", "Ag", "Au"], a: 0 },
+            { q: "प्रकृति में पृथ्वी पर ऊर्जा का मुख्य स्रोत है?", o: ["कोयला", "सूर्य", "पानी", "लकड़ी"], a: 1 },
+            { q: "कीटो के पंख और चमगादड़ के पंख किस तरह के अंग हैं?", o: ["समजात अंग", "अवशेषी अंग", "समवृत्ति अंग", "कोई नहीं"], a: 2 },
+            { q: "कौन एक उभयलिंगी जंतु है?", o: ["केंचुआ", "मछली", "शेर", "बकरी"], a: 0 },
+            { q: "किसी बल्ब से 1 मिनट में 120 कूलम्ब आवेश प्रवाहित हो रहा है, धारा का मान?", o: ["1 A", "2 A", "3 A", "4 A"], a: 1 },
+            { q: "परिपथ में विद्युत धारा की माप किससे की जाती है?", o: ["वोल्टमीटर", "एमीटर", "गैल्वेनोमीटर", "कोई नहीं"], a: 1 },
+            { q: "किस उपकरण में धन (+) और ऋण (-) का चिन्ह नहीं होता है?", o: ["एमीटर", "वोल्टमीटर", "कुंडली", "विद्युत सेल"], a: 2 },
+            { q: "निम्न में कौन लवण (Salt) है?", o: ["HCl", "NaOH", "K2SO4", "NH4OH"], a: 2 },
+            { q: "नाइट्रोजन अणु (N2) में कितने सहसंयोजक बंधन होते हैं?", o: ["1", "2", "3", "4"], a: 2 },
+            { q: "संगमरमर का रासायनिक सूत्र क्या है?", o: ["CaCO3", "MgCO3", "Ca(HCO3)2", "Mg(HCO3)2"], a: 0 },
+            { q: "वन संपदा का एक उदाहरण है?", o: ["मिट्टी", "लकड़ी", "तांबा", "एलुमिनियम"], a: 1 },
+            { q: "खुला परिसंचरण तंत्र किस में पाया जाता है?", o: ["मनुष्य", "कॉकरोच", "घोड़ा", "ऊंट"], a: 1 },
+            { q: "यूरो II (Euro II) का संबंध है?", o: ["वायु प्रदूषण से", "जल प्रदूषण से", "मृदा प्रदूषण से", "कोई नहीं"], a: 0 },
+            { q: "क्लोरोफिल वर्णक का रंग होता है?", o: ["हरा", "नीला", "लाल", "सफेद"], a: 0 },
+            { q: "लघुपथन (Short Circuit) के समय परिपथ में विद्युत धारा का मान?", o: ["बहुत अधिक", "बहुत कम", "3 A", "4 A"], a: 0 },
+            { q: "प्रकाश के परावर्तन के कितने नियम हैं?", o: ["1", "2", "3", "4"], a: 1 },
+            { q: "विभवांतर का SI मात्रक होता है?", o: ["वाट", "एम्पियर", "वोल्ट", "ओम"], a: 2 },
+            { q: "कार्बोनिल समूह को सूचित किया जाता है?", o: ["-CHO", "-COOH", "-CO-", "-COCl2"], a: 2 },
+            { q: "आवर्त सारणी के शून्य समूह का तत्व है?", o: ["H", "He", "CO2", "Cl2"], a: 1 },
+            { q: "मिथेन में कितने सहसंयोजक बंधन होते हैं?", o: ["2", "4", "6", "8"], a: 1 },
+            { q: "निम्न में कौन ऑक्सीकारक है?", o: ["H2", "CO", "H2S", "O2"], a: 3 },
+            { q: "इथाइल अल्कोहल किस प्रकार के श्वसन में बनता है?", o: ["वायवीय", "अवायवीय", "दोनों", "कोई नहीं"], a: 1 },
+            { q: "परागकोष में पाया जाता है?", o: ["दलपुंज", "परागकण", "स्टिग्मा", "कोई नहीं"], a: 1 },
+            { q: "ग्वाइटर (Goiter) अथवा घेंघा पनपता है?", o: ["चीनी की कमी से", "आयोडीन की कमी से", "रक्त की कमी से", "मोटापा से"], a: 1 },
+            { q: "द ओरिजिन ऑफ स्पीशीज (The Origin of Species) नामक पुस्तक किसने लिखी?", o: ["डार्विन", "ओपेरिन", "लमार्क", "कोई नहीं"], a: 0 },
+            { q: "बैटरी से किस प्रकार की धारा प्राप्त होती है?", o: ["AC", "DC", "AC और DC", "कोई नहीं"], a: 1 },
+            { q: "निम्न में कौन विद्युत का सर्वोत्तम सुचालक है?", o: ["Cu", "Ag (चांदी)", "Al", "Fe"], a: 1 },
+            { q: "शुक्राणु बनता है?", o: ["वृषण में", "मूत्राशय में", "गर्भाशय में", "अंडाशय में"], a: 0 },
+            { q: "मानव नेत्र में किस प्रकार का लेंस पाया जाता है?", o: ["उत्तल", "अवतल", "वलयाकार", "बाइफोकल"], a: 0 },
+            { q: "पीतल उदाहरण है?", o: ["धातु का", "अधातु का", "मिश्रधातु का", "उपधातु का"], a: 2 },
+            { q: "पादप हार्मोन का उदाहरण है?", o: ["पेप्सिन", "एड्रीनलीन", "ऑक्सिन", "टेस्टोस्टेरोन"], a: 2 },
+            { q: "विद्युत धारा उत्पन्न करने की युक्ति को कहते हैं?", o: ["जनित्र", "गैल्वेनोमीटर", "एमीटर", "मोटर"], a: 0 },
+            { q: "ताप बढ़ने से चालक का प्रतिरोध?", o: ["बढ़ता है", "घटता है", "बढ़ता घटता नहीं", "कोई नहीं"], a: 0 },
+            { q: "नर युग्मक कौन सा है?", o: ["शुक्राणु", "अंडाणु", "योनि", "फैलोपियन नलिका"], a: 0 },
+            { q: "पादप में फ्लोएम उत्तरदायी है?", o: ["जल संवहन", "भोजन संवहन", "अमीनो अम्ल", "ऑक्सीजन"], a: 1 },
+            { q: "दो तंत्रिका कोशिका के मध्य खाली स्थान को कहते हैं?", o: ["द्रुमिका", "सिनेप्स", "एक्सॉन", "आवेग"], a: 1 },
+            { q: "प्रकाश की किरणें गमन करती है?", o: ["सीधी रेखा में", "टेढ़ी रेखा में", "किसी भी दिशा में", "कोई नहीं"], a: 0 },
+            { q: "किस ईंधन का उपयोग खाना बनाने में नहीं होता?", o: ["CNG", "LPG", "बायोगैस", "कोयला"], a: 0 },
+            { q: "डायनेमो यांत्रिक ऊर्जा को किस ऊर्जा में बदलता है?", o: ["ध्वनि ऊर्जा", "विद्युत ऊर्जा", "सौर ऊर्जा", "कोई नहीं"], a: 1 },
+            { q: "एक अणु सूत्र परंतु विभिन्न संरचना सूत्र वाले यौगिक?", o: ["बहुलक", "अपररूप", "समावयवी", "कोई नहीं"], a: 2 },
+            { q: "कौन प्रबल अम्ल है?", o: ["H2SO4", "HCl", "HNO3", "सभी"], a: 3 },
+            { q: "रक्त का थक्का बनाने में सहायक होता है?", o: ["लाल रक्त कोशिका", "श्वेत रक्त कोशिका", "रक्त बिंबाणु (Platelets)", "कोई नहीं"], a: 2 },
+            { q: "एक वयस्क मनुष्य के कितने दांत होते हैं?", o: ["28", "30", "32", "34"], a: 2 },
+            { q: "बॉक्साइट किस धातु का महत्वपूर्ण अयस्क है?", o: ["तांबा", "जस्ता", "एलुमिनियम", "लोहा"], a: 2 },
+            { q: "विद्युत अपघटनी परिष्करण में अशुद्ध धातु को बनाया जाता है?", o: ["एनोड", "कैथोड", "अपघट्य", "सभी"], a: 0 },
+            { q: "अष्टक सिद्धांत को किसने स्थापित किया था?", o: ["डोबेराइनर", "न्यूलैंड्स", "मेंडलीव", "मोजले"], a: 1 },
+            { q: "जड़ का अधोगामी वृद्धि है?", o: ["प्रकाशानुवर्तन", "गुरुत्वानुवर्तन", "जलानुवर्तन", "रसायनानुवर्तन"], a: 1 },
+            { q: "लेंस की क्षमता का SI मात्रक होता है?", o: ["डायोप्टर", "ल्यूमेन", "लक्स", "एंगस्ट्रॉम"], a: 0 },
+            { q: "सौर कुकर के लिए कौन सा दर्पण सर्वाधिक उपयुक्त होता है?", o: ["समतल", "उत्तल", "अवतल", "सभी"], a: 2 },
+            { q: "चिपको आंदोलन का मुख्य उद्देश्य क्या था?", o: ["मिट्टी बचाना", "वृक्ष बचाना", "जल बचाना", "बिजली बचाना"], a: 1 },
+            { q: "वायुमंडल में CO2 की मात्रा है?", o: ["0.01%", "0.05%", "0.03%", "0.02%"], a: 2 }
+        ];
+
+        // --- State ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userName = "";
+        let userResponses = []; 
+        let userIP = "Loading...";
+        let userAgent = navigator.userAgent;
+
+        // --- Elements ---
+        const splashScreen = document.getElementById('splash-screen');
+        const appContainer = document.getElementById('app-container');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const sendingScreen = document.getElementById('sending-screen');
+        
+        // --- Init ---
+        setTimeout(() => {
+            splashScreen.style.opacity = '0';
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+                appContainer.classList.remove('hidden');
+                fetchIP();
+            }, 700);
+        }, 3000);
+
+        async function fetchIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                userIP = data.ip;
+                document.getElementById('user-ip').innerText = userIP;
+            } catch (e) {
+                userIP = "Unavailable";
+            }
+        }
+
+        function startQuiz() {
+            const input = document.getElementById('username');
+            if (!input.value.trim()) {
+                alert("कृपया अपना नाम दर्ज करें!");
+                return;
+            }
+            userName = input.value.trim();
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizScreen.classList.add('flex');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const qData = questions[currentQuestionIndex];
+            document.getElementById('question-counter').innerHTML = `${currentQuestionIndex + 1}<span class="text-gray-500 text-lg">/80</span>`;
+            document.getElementById('question-text').innerText = `${currentQuestionIndex + 1}. ${qData.q}`;
+            
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = `${((currentQuestionIndex) / questions.length) * 100}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            qData.o.forEach((opt, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-card p-5 rounded-xl cursor-pointer flex items-center mb-3 anim-entry relative overflow-hidden group';
+                btn.style.animationDelay = `${index * 0.1}s`;
+                btn.onclick = () => selectOption(index, btn);
+                btn.innerHTML = `
+                    <div class="w-10 h-10 rounded-full border-2 border-white/20 flex items-center justify-center mr-5 text-sm font-bold text-gray-400 option-circle bg-black/20 z-10 transition-colors">
+                        ${String.fromCharCode(65 + index)}
+                    </div>
+                    <span class="text-white font-medium text-lg z-10 leading-tight">${opt}</span>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = true;
+            nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.innerText = "टेस्ट समाप्त करें (Finish) ➔";
+            } else {
+                nextBtn.innerText = "अगला प्रश्न (Next) ➔";
+            }
+        }
+
+        function selectOption(selectedIndex, btnElement) {
+            // Unselect previous
+            const prevSelected = document.querySelector('.option-card.selected');
+            if (prevSelected) {
+                prevSelected.classList.remove('selected');
+                prevSelected.querySelector('.option-circle').classList.replace('border-blue-500', 'border-white/20');
+                prevSelected.querySelector('.option-circle').classList.remove('bg-blue-500', 'text-white');
+            }
+
+            // Select new
+            btnElement.classList.add('selected');
+            const circle = btnElement.querySelector('.option-circle');
+            circle.classList.replace('border-white/20', 'border-blue-500'); // Blue Color for Selection
+            circle.classList.add('bg-blue-500', 'text-white');
+
+            const qData = questions[currentQuestionIndex];
+            const isCorrect = selectedIndex === qData.a;
+            
+            // NOTE: We do NOT increment score here to avoid double counting if they switch answers.
+            // We save the "current choice" into a temp variable or update the array index.
+            
+            // Save/Update Response for this specific index
+            userResponses[currentQuestionIndex] = {
+                q: qData.q,
+                options: qData.o,
+                selected: selectedIndex,
+                correct: qData.a,
+                isCorrect: isCorrect
+            };
+
+            // Enable Next
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                renderQuestion();
+            } else {
+                calculateFinalScore();
+                finishQuiz();
+            }
+        }
+
+        function calculateFinalScore() {
+            score = 0;
+            userResponses.forEach(response => {
+                if (response && response.isCorrect) {
+                    score++;
+                }
+            });
+        }
+
+        async function finishQuiz() {
+            quizScreen.classList.add('hidden');
+            sendingScreen.classList.remove('hidden');
+
+            const date = new Date().toLocaleDateString('hi-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const finalPercent = Math.round((score / questions.length) * 100);
+            
+            const imageUrl = `https://placehold.co/600x400/000000/ffffff/png?text=${encodeURIComponent(userName)}%0AScore:${score}/${questions.length}`;
+
+            const headerMessage = `🎓 📘 **छात्र मूल्यांकन शीट (Student Report)** 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 **नाम:** ${userName}\n🆔 **ID:** FAI-2026-IND\n🏫 **कक्षा:** 10 – विज्ञान (Science)\n📅 **दिनांक:** ${date}\n🌍 **IP:** ${userIP}\n━━━━━━━━━━━━━━━━━━━━━━━\n**स्कोर:** ${score}/${questions.length} (${finalPercent}%)\n━━━━━━━━━━━━━━━━━━━━━━━\n👇 **पूर्ण रिपोर्ट नीचे है** 👇`;
+
+            const formatQuestion = (r, index) => {
+                let optsString = "";
+                r.options.forEach((opt, i) => {
+                    let mark = "";
+                    if (i === r.correct) mark = " ✅";
+                    if (i === r.selected && i !== r.correct) mark = " ❌ (चयनित)";
+                    optsString += `🔹 ${String.fromCharCode(65+i)}) ${opt}${mark}  `;
+                });
+                return `**प्रश्न ${index + 1}:** ${r.q}\n${optsString}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+            };
+
+            const questionChunks = [];
+            let currentChunk = "";
+            
+            userResponses.forEach((r, i) => {
+                const qBlock = formatQuestion(r, i);
+                if ((currentChunk.length + qBlock.length) > 1800) {
+                    questionChunks.push(currentChunk);
+                    currentChunk = qBlock + "\n";
+                } else {
+                    currentChunk += qBlock + "\n";
+                }
+            });
+            if(currentChunk) questionChunks.push(currentChunk);
+
+            // Send Header
+            await sendToDiscord(headerMessage, imageUrl);
+            updateProgress(20);
+
+            // Send Chunks
+            for (let i = 0; i < questionChunks.length; i++) {
+                await sendToDiscord(questionChunks[i], null);
+                updateProgress(20 + ((i + 1) / questionChunks.length) * 60);
+            }
+
+            // Send Footer
+            const footerMessage = `🔐 **सिस्टम जानकारी:**\n🌐 IP: ${userIP}\n📱 Device: ${userAgent}\n✅ **टेस्ट सफलतापूर्वक संपन्न हुआ**`;
+            await sendToDiscord(footerMessage, null);
+            updateProgress(100);
+
+            // Show Result
+            setTimeout(() => {
+                sendingScreen.classList.add('hidden');
+                resultScreen.classList.remove('hidden');
+                document.getElementById('final-name').innerText = userName;
+                document.getElementById('final-score').innerText = `${score}/${questions.length}`;
+                document.getElementById('final-percentage').innerText = `${finalPercent}%`;
+            }, 500);
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('send-progress').innerText = `${Math.round(percent)}% भेजा गया`;
+        }
+
+        function sendToDiscord(msg, imgUrl) {
+            return fetch(DISCORD_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: API_KEY,
+                    message: msg,
+                    image: imgUrl || ""
+                })
+            }).then(res => console.log('Chunk sent')).catch(e => console.error(e));
+        }
+
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) || (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) || (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0))) {
+                return false;
+            }
+        };
+    </script>
+</body>
+</html>
+
+
