@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="hi" class="select-none">
+<head>
+    <meta charset="UTF-8">
+    <!-- Updated Viewport: Allowed zooming (user-scalable=yes) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Non Hindi Quiz (100 प्रश्न)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            /* Allow default touch actions for scrolling/zooming */
+        }
+
+        /* iOS Glassmorphism */
+        .glass {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(40, 40, 40, 0.4);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes gradientText { 
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
+        .animate-pop { animation: pop 0.3s ease-out; }
+        
+        .animated-text {
+            background: linear-gradient(270deg, #ff3b30, #ff9500, #ffcc00, #4cd964, #5ac8fa, #007aff, #5856d6, #ff2d55);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientText 3s ease infinite;
+        }
+
+        /* Colorful Gradient for Selected Option */
+        .option-selected {
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%) !important;
+            border-color: transparent !important;
+            color: white !important;
+            transform: scale(1.02);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+        
+        .option-selected .option-circle {
+            background-color: white !important;
+            color: #8b5cf6 !important;
+            border-color: white !important;
+        }
+
+        /* Utility */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        /* Zoom Transition */
+        .zoom-transition {
+            transition: font-size 0.2s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+    </style>
+</head>
+<body class="h-screen w-full overflow-hidden flex flex-col items-center justify-center relative no-select" oncontextmenu="return false;">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px; height: 300px;" autoplay loop></dotlottie-wc>
+        <h1 class="mt-8 text-3xl font-bold tracking-tight animated-text text-center px-4">Powered by Faizan Ali</h1>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="w-full max-w-md h-full flex flex-col p-4 hidden opacity-0 transition-opacity duration-700">
+        
+        <!-- Welcome / Name Input Section -->
+        <div id="welcome-section" class="flex-1 flex flex-col justify-center items-center w-full animate-fade-in">
+            <div class="w-24 h-24 bg-gradient-to-tr from-blue-500 to-purple-600 rounded-full mb-8 shadow-2xl flex items-center justify-center text-4xl">🎓</div>
+            <h2 class="text-3xl font-bold mb-2 text-center text-white">Non Hindi Quiz</h2>
+            <p class="text-gray-400 mb-8 text-center">मूल्यांकन शुरू करने के लिए कृपया अपना विवरण दर्ज करें।</p>
+            
+            <div class="w-full glass rounded-2xl p-6">
+                <label class="block text-sm font-medium text-gray-300 mb-2">पूरा नाम</label>
+                <input type="text" id="student-name" class="w-full bg-neutral-800/50 border border-neutral-700 rounded-xl px-4 py-4 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-lg" placeholder="जैसे: मो० फैज़ान अंसारी">
+                <button onclick="startQuiz()" class="w-full mt-6 bg-white text-black font-bold py-4 rounded-xl text-lg hover:bg-gray-100 transition-colors shadow-lg transform active:scale-95">जारी रखें</button>
+            </div>
+            <p class="mt-4 text-xs text-gray-500">कुल प्रश्न: 100 | समय: असीमित</p>
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="quiz-section" class="hidden flex-1 flex flex-col w-full h-full pt-4">
+            <!-- Header with Zoom Controls -->
+            <div class="flex justify-between items-center mb-4 bg-neutral-900/50 p-3 rounded-xl backdrop-blur-md border border-white/10">
+                <div class="flex flex-col">
+                    <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Non Hindi Quiz</span>
+                    <span class="text-xl font-bold text-white"><span id="current-question-num">1</span><span class="text-gray-500 text-sm">/100</span></span>
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <!-- Zoom Controls -->
+                    <button onclick="changeZoom(-1)" class="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-600 flex items-center justify-center text-white hover:bg-neutral-700 active:scale-90 transition-all" aria-label="Zoom Out">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8z"/>
+                        </svg>
+                    </button>
+                    <span class="text-xs text-gray-500 font-mono">Aa</span>
+                    <button onclick="changeZoom(1)" class="w-8 h-8 rounded-full bg-neutral-800 border border-neutral-600 flex items-center justify-center text-white hover:bg-neutral-700 active:scale-90 transition-all" aria-label="Zoom In">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-800 h-2 rounded-full mb-6 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-500 ease-out" style="width: 1%"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div id="question-container" class="flex-1 overflow-y-auto pb-20 px-1">
+                <h3 id="question-text" class="zoom-transition text-xl md:text-2xl font-bold leading-relaxed mb-6 text-white">प्रश्न लोड हो रहा है...</h3>
+                
+                <div id="options-container" class="space-y-3 zoom-transition">
+                    <!-- Options injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading / Sending Result Screen -->
+        <div id="sending-screen" class="hidden fixed inset-0 z-40 bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+            <p class="text-xl font-medium animate-pulse">परिणाम जमा किया जा रहा है...</p>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result-section" class="hidden flex-1 flex flex-col w-full h-full pt-10 overflow-y-auto">
+            <div class="text-center mb-8 animate-fade-in">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-500/20 text-green-500 text-4xl mb-4 border border-green-500/50">
+                    ✅
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Non Hindi Quiz पूर्ण</h2>
+                <p class="text-gray-400">आपका परिणाम सफलतापूर्वक भेज दिया गया है।</p>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 mb-6 animate-slide-in">
+                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4 border-b border-gray-700 pb-2">छात्र प्रोफ़ाइल</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between"><span class="text-gray-400">नाम:</span> <span id="res-name" class="font-semibold text-white"></span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">आईडी:</span> <span id="res-id" class="font-mono text-blue-400"></span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">स्कोर:</span> <span id="res-score" class="font-bold text-green-400"></span></div>
+                    <div class="flex justify-between"><span class="text-gray-400">स्थिति:</span> <span class="text-green-500">Discord पर भेजा गया</span></div>
+                </div>
+            </div>
+
+            <div class="glass-card rounded-2xl p-6 animate-slide-in" style="animation-delay: 0.1s;">
+                <h3 class="text-sm uppercase tracking-widest text-gray-500 font-bold mb-4 border-b border-gray-700 pb-2">विस्तृत रिपोर्ट</h3>
+                <div id="result-details" class="space-y-6 text-sm">
+                    <!-- Detailed Q&A injected here -->
+                </div>
+            </div>
+            
+            <div class="h-10 w-full"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const API_URL = 'https://quizzes-pi-one.vercel.app/api/send';
+        const SECRET_KEY = 'QUIZZES_7887168828';
+        
+        // --- 100 QUESTIONS DATA ---
+        const questions = [
+            // 1-10
+            { q: "ईदगाह कहानी का मुख्य पात्र कौन है?", o: ["महमूद", "हामिद", "मोहसिन", "नूरे"], a: 1 },
+            { q: "हामिद ने मेले से क्या खरीदा?", o: ["मिठाई", "खिलौना", "चिमटा", "गुब्बारा"], a: 2 },
+            { q: "बालगोबिन भगत क्या थे?", o: ["साधु", "गृहस्थ", "भिखारी", "सेठ"], a: 1 },
+            { q: "हुंडरू का जलप्रपात कहाँ स्थित है?", o: ["रांची", "पटना", "गया", "मुजफ्फरपुर"], a: 0 },
+            { q: "'ठेस' कहानी के लेखक कौन हैं?", o: ["फणीश्वरनाथ रेणु", "प्रेमचंद", "निराला", "दिनकर"], a: 0 },
+            { q: "सिरचन को लोग क्या समझते थे?", o: ["चोर", "बेगार", "कलाकार", "ईमानदार"], a: 1 },
+            { q: "अशोक का शस्त्र-त्याग किस विधा की रचना है?", o: ["कहानी", "एकांकी", "निबंध", "जीवनी"], a: 1 },
+            { q: "ईर्ष्या तू न गई मेरे मन से - के लेखक कौन हैं?", o: ["रामधारी सिंह दिनकर", "प्रेमचंद", "कबीर", "बिहारी"], a: 0 },
+            { q: "विक्रमशिला विश्वविद्यालय किस राज्य में था?", o: ["उत्तर प्रदेश", "बिहार", "बंगाल", "उड़ीसा"], a: 1 },
+            { q: "संजू को डायरी लिखने की प्रेरणा किससे मिली?", o: ["दीदी से", "माँ से", "गांधीजी से", "पिताजी से"], a: 2 },
+            // 11-20
+            { q: "पीपल कविता के कवि कौन हैं?", o: ["गोपाल सिंह नेपाली", "निराला", "पंत", "दिनकर"], a: 0 },
+            { q: "झाँसी की रानी कविता किसने लिखी है?", o: ["महादेवी वर्मा", "सुभद्रा कुमारी चौहान", "निराला", "पंत"], a: 1 },
+            { q: "कबीर किस काल के कवि हैं?", o: ["आदिकाल", "भक्तिकाल", "रीतिकाल", "आधुनिक काल"], a: 1 },
+            { q: "सुदामा चरित्र किस भाषा में लिखा गया है?", o: ["अवधी", "ब्रजभाषा", "खड़ी बोली", "मैथिली"], a: 1 },
+            { q: "खुशबू रचते हैं हाथ - का क्या अर्थ है?", o: ["फूल बनाना", "अगरबत्ती बनाना", "इत्र बनाना", "सफाई करना"], a: 1 },
+            { q: "कर्पूरी ठाकुर बिहार के क्या बने थे?", o: ["राज्यपाल", "मुख्यमंत्री", "शिक्षा मंत्री", "राष्ट्रपति"], a: 1 },
+            { q: "खेमा कहानी किस विषय पर आधारित है?", o: ["बाल मजदूरी", "नारी शिक्षा", "दहेज प्रथा", "बेरोजगारी"], a: 0 },
+            { q: "दीनबंधु निराला किस प्रकार की रचना है?", o: ["कहानी", "जीवनी", "निबंध", "संस्मरण"], a: 2 },
+            { q: "चिकित्सा का चक्कर पाठ के लेखक कौन हैं?", o: ["बेढब बनारसी", "प्रेमचंद", "रेनू", "निराला"], a: 0 },
+            { q: "लेखक को दंत चिकित्सक ने एक दाँत तोड़ने की फीस कितनी बताई?", o: ["2 रुपये", "3 रुपये", "4 रुपये", "5 रुपये"], a: 1 },
+            // 21-30
+            { q: "हिंदी में स्वर वर्णों की संख्या कितनी है?", o: ["10", "11", "12", "13"], a: 1 },
+            { q: "'क' का उच्चारण स्थान क्या है?", o: ["कंठ", "तालु", "मुर्धा", "दंत"], a: 0 },
+            { q: "संज्ञा के कितने भेद होते हैं?", o: ["3", "4", "5", "6"], a: 2 },
+            { q: "सर्वनाम के कितने भेद होते हैं?", o: ["4", "5", "6", "7"], a: 2 },
+            { q: "विशेषण के कितने भेद होते हैं?", o: ["3", "4", "5", "2"], a: 1 },
+            { q: "क्रिया के मुख्य रूप से कितने भेद हैं (कर्म के आधार पर)?", o: ["2", "3", "4", "5"], a: 0 },
+            { q: "'विद्यालय' का संधि विच्छेद क्या है?", o: ["विद्या + आलय", "विद्य + आलय", "विद्या + लय", "विद + आलय"], a: 0 },
+            { q: "'महेश' का संधि विच्छेद क्या है?", o: ["महा + ईश", "मही + ईश", "महि + ईश", "महा + एश"], a: 0 },
+            { q: "'कमल' का पर्यायवाची शब्द क्या है?", o: ["जलज", "अनल", "पवन", "गगन"], a: 0 },
+            { q: "'आग' का पर्यायवाची शब्द कौन सा है?", o: ["अनिल", "अनल", "वारि", "समीर"], a: 1 },
+            // 31-40
+            { q: "'दिन' का विलोम शब्द क्या है?", o: ["सुबह", "शाम", "रात", "दोपहर"], a: 2 },
+            { q: "'अंधकार' का विलोम शब्द क्या है?", o: ["तम", "अंधेरा", "प्रकाश", "रोशनी"], a: 2 },
+            { q: "जो सब कुछ जानता हो, उसे क्या कहते हैं?", o: ["अल्पज्ञ", "बहुज्ञ", "सर्वज्ञ", "अज्ञ"], a: 2 },
+            { q: "जिसका कोई शत्रु न हो, उसे क्या कहते हैं?", o: ["अजातशत्रु", "मित्र", "शत्रुघ्न", "वीर"], a: 0 },
+            { q: "'ईद का चाँद होना' मुहावरे का अर्थ क्या है?", o: ["बहुत दिनों बाद दिखाई देना", "सुंदर होना", "त्योहार मनाना", "चाँद देखना"], a: 0 },
+            { q: "'नौ दो ग्यारह होना' मुहावरे का अर्थ क्या है?", o: ["गिनती करना", "भाग जाना", "लड़ाई करना", "जीत जाना"], a: 1 },
+            { q: "'आँख का तारा' मुहावरे का अर्थ है?", o: ["दुश्मन", "बहुत प्यारा", "दोस्त", "तारा"], a: 1 },
+            { q: "'हाथ मलना' मुहावरे का अर्थ है?", o: ["हाथ धोना", "पछताना", "खुश होना", "सर्दी लगना"], a: 1 },
+            { q: "समास के कितने भेद होते हैं?", o: ["4", "5", "6", "7"], a: 2 },
+            { q: "'राजपुत्र' में कौन सा समास है?", o: ["तत्पुरुष", "कर्मधारय", "द्वंद्व", "द्विगु"], a: 0 },
+            // 41-50
+            { q: "'नीलकंठ' में कौन सा समास है?", o: ["बहुव्रीहि", "द्विगु", "द्वंद्व", "तत्पुरुष"], a: 0 },
+            { q: "'चौराहा' में कौन सा समास है?", o: ["द्विगु", "द्वंद्व", "कर्मधारय", "अव्ययीभाव"], a: 0 },
+            { q: "'यथाशक्ति' में कौन सा समास है?", o: ["अव्ययीभाव", "तत्पुरुष", "कर्मधारय", "बहुव्रीहि"], a: 0 },
+            { q: "'नदी' शब्द का बहुवचन क्या है?", o: ["नदियाँ", "नदियों", "नदीएं", "नदियां"], a: 0 },
+            { q: "'लड़का' का भाववाचक संज्ञा क्या है?", o: ["लड़काई", "लड़कपन", "लड़कापन", "लड़की"], a: 1 },
+            { q: "'बुढ़ापा' कौन सी संज्ञा है?", o: ["जातिवाचक", "व्यक्तिवाचक", "भाववाचक", "समूहवाचक"], a: 2 },
+            { q: "'सोना' (धातु) कौन सी संज्ञा है?", o: ["द्रव्यवाचक", "समूहवाचक", "जातिवाचक", "भाववाचक"], a: 0 },
+            { q: "'सेना' कौन सी संज्ञा है?", o: ["समूहवाचक", "जातिवाचक", "व्यक्तिवाचक", "भाववाचक"], a: 0 },
+            { q: "कारक के कितने भेद होते हैं?", o: ["6", "7", "8", "9"], a: 2 },
+            { q: "'ने' किस कारक का चिह्न है?", o: ["कर्ता", "कर्म", "करण", "संप्रदान"], a: 0 },
+            // 51-60
+            { q: "'को' किस कारक का चिह्न है?", o: ["कर्ता", "कर्म", "अपादान", "संबध"], a: 1 },
+            { q: "'पेड़ से पत्ते गिरते हैं' - इसमें 'से' किस कारक का चिह्न है?", o: ["करण", "अपादान", "संबध", "अधिकरण"], a: 1 },
+            { q: "काल के कितने भेद होते हैं?", o: ["2", "3", "4", "5"], a: 1 },
+            { q: "भविष्यत काल के कितने भेद होते हैं?", o: ["2", "3", "4", "5"], a: 1 },
+            { q: "'रामायण' के रचयिता कौन हैं?", o: ["वाल्मीकि", "तुलसीदास", "वेद व्यास", "कालिदास"], a: 0 },
+            { q: "'रामचरितमानस' किसकी रचना है?", o: ["तुलसीदास", "वाल्मीकि", "कबीर", "सूरदास"], a: 0 },
+            { q: "'गोदान' किसकी रचना है?", o: ["प्रेमचंद", "प्रसाद", "निराला", "पंत"], a: 0 },
+            { q: "इनमें से संयुक्त व्यंजन कौन सा है?", o: ["क", "च", "क्ष", "प"], a: 2 },
+            { q: "'प' का उच्चारण स्थान क्या है?", o: ["ओष्ठ", "दंत", "कंठ", "तालु"], a: 0 },
+            { q: "'च' वर्ग का उच्चारण स्थान क्या है?", o: ["तालु", "कंठ", "ओष्ठ", "मुर्धा"], a: 0 },
+            // 61-70
+            { q: "'स्वागत' का संधि विच्छेद है?", o: ["सु + आगत", "स्व + आगत", "स + आगत", "सु + गत"], a: 0 },
+            { q: "'इत्यादि' का संधि विच्छेद है?", o: ["इति + आदि", "इत + आदि", "इती + आदि", "इत + यदि"], a: 0 },
+            { q: "इनमें से शुद्ध शब्द कौन सा है?", o: ["उज्वल", "उज्ज्वल", "उजवल", "उज्जल"], a: 1 },
+            { q: "इनमें से शुद्ध शब्द कौन सा है?", o: ["आशीर्वाद", "आशिर्वाद", "आसीर्वाद", "आरशीवाद"], a: 0 },
+            { q: "इनमें से शुद्ध शब्द कौन सा है?", o: ["कवित्री", "कवयित्री", "कवियत्री", "कवीयत्री"], a: 1 },
+            { q: "'घोड़ा' का तत्सम रूप क्या है?", o: ["घोटक", "अश्व", "तुरंग", "हय"], a: 0 },
+            { q: "'आम' का तत्सम रूप क्या है?", o: ["आम्र", "अमिय", "रसाल", "पिक"], a: 0 },
+            { q: "'दूध' का तत्सम रूप क्या है?", o: ["दुग्ध", "दधि", "क्षीर", "पय"], a: 0 },
+            { q: "'भाई' का विलोम क्या है?", o: ["बहन", "शत्रु", "मित्र", "सखा"], a: 0 },
+            { q: "'आस्तिक' का विलोम क्या है?", o: ["नास्तिक", "सास्तिक", "वास्तविक", "काल्पनिक"], a: 0 },
+            // 71-80
+            { q: "'उपकार' का विलोम क्या है?", o: ["अपकार", "परोपकार", "सदाचार", "अनाचार"], a: 0 },
+            { q: "'आकाश' का पर्यायवाची नहीं है?", o: ["गगन", "नभ", "अंबर", "पावक"], a: 3 },
+            { q: "'पानी' का पर्यायवाची है?", o: ["नीर", "क्षीर", "दधि", "घृत"], a: 0 },
+            { q: "'हवा' का पर्यायवाची है?", o: ["समीर", "अनल", "पावक", "सलिल"], a: 0 },
+            { q: "लिंग की दृष्टि से 'दही' क्या है?", o: ["पुल्लिंग", "स्त्रीलिंग", "उभयलिंग", "इनमें से कोई नहीं"], a: 0 },
+            { q: "लिंग की दृष्टि से 'नदी' क्या है?", o: ["पुल्लिंग", "स्त्रीलिंग", "उभयलिंग", "इनमें से कोई नहीं"], a: 1 },
+            { q: "'नाक का बाल होना' का अर्थ है?", o: ["बहुत प्यारा होना", "परेशान करना", "सजा देना", "भाग जाना"], a: 0 },
+            { q: "'श्री गणेश करना' का अर्थ है?", o: ["कार्य आरंभ करना", "कार्य समाप्त करना", "पूजा करना", "भाग जाना"], a: 0 },
+            { q: "वर्णों के सार्थक समूह को क्या कहते हैं?", o: ["शब्द", "वाक्य", "वर्णमाला", "पद"], a: 0 },
+            { q: "शब्दों के सार्थक समूह को क्या कहते हैं?", o: ["वाक्य", "शब्द", "वर्ण", "पदबंध"], a: 0 },
+            // 81-90
+            { q: "रचना की दृष्टि से वाक्य के कितने भेद हैं?", o: ["3", "4", "5", "2"], a: 0 },
+            { q: "अर्थ की दृष्टि से वाक्य के कितने भेद हैं?", o: ["8", "7", "6", "5"], a: 0 },
+            { q: "'प्रतिदिन' में कौन सा उपसर्ग है?", o: ["प्रति", "प्र", "दिन", "प"], a: 0 },
+            { q: "'अपमान' में कौन सा उपसर्ग है?", o: ["अप", "अ", "मान", "प"], a: 0 },
+            { q: "'पढ़ाकू' में कौन सा प्रत्यय है?", o: ["आकू", "कू", "पढ", "आ"], a: 0 },
+            { q: "'लिखावट' में कौन सा प्रत्यय है?", o: ["आवट", "वट", "ट", "लिख"], a: 0 },
+            { q: "'मिठास' में कौन सा प्रत्यय है?", o: ["आस", "स", "मीठा", "ठस"], a: 0 },
+            { q: "हिंदी की लिपि क्या है?", o: ["देवनागरी", "रोमन", "गुरुमुखी", "फारसी"], a: 0 },
+            { q: "भाषा की सबसे छोटी इकाई क्या है?", o: ["वर्ण", "शब्द", "वाक्य", "पद"], a: 0 },
+            { q: "स्वर संधि के कितने भेद हैं?", o: ["5", "4", "3", "2"], a: 0 },
+            // 91-100
+            { q: "व्यंजन संधि का उदाहरण है?", o: ["दिगंबर", "महेश", "विद्याल", "सूर्योदय"], a: 0 },
+            { q: "विसर्ग संधि का उदाहरण है?", o: ["मनोरथ", "हिमालय", "गजानन", "स्वागत"], a: 0 },
+            { q: "'अन्वेषण' का संधि विच्छेद है?", o: ["अनु + एषण", "अनु + ऐषण", "अन + वेषण", "अन्य + एषण"], a: 0 },
+            { q: "'यद्यपि' का संधि विच्छेद है?", o: ["यदि + अपि", "यद + अपि", "यदा + अपि", "यदि + आपि"], a: 0 },
+            { q: "इनमें से कौन सा शब्द देशज है?", o: ["लोटा", "अग्नि", "स्टेशन", "कागज"], a: 0 },
+            { q: "इनमें से कौन सा शब्द विदेशज है?", o: ["अस्पताल", "खेत", "आम", "पत्ता"], a: 0 },
+            { q: "'कलम' तोड़ना मुहावरे का अर्थ है?", o: ["बहुत अच्छा लिखना", "कलम खराब करना", "लिखना बंद करना", "लड़ाई करना"], a: 0 },
+            { q: "'गाल बजाना' मुहावरे का अर्थ है?", o: ["डींग हाँकना", "गाना गाना", "बात करना", "चुप रहना"], a: 0 },
+            { q: "कवि का स्त्रीलिंग रूप है?", o: ["कवयित्री", "कवियत्री", "कविानी", "कवाइन"], a: 0 },
+            { q: "विद्वान का स्त्रीलिंग रूप है?", o: ["विदुषी", "विद्वानी", "विद्वानि", "विद्योत्मा"], a: 0 }
+        ];
+
+        // --- STATE ---
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let studentName = "";
+        let score = 0;
+        let ipAddress = "उपलब्ध नहीं";
+        let userAgent = navigator.userAgent;
+
+        // Zoom State
+        let currentFontSize = 100; // Percentage
+
+        // --- INITIALIZATION ---
+        window.addEventListener('load', async () => {
+            // Fetch IP silently
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                ipAddress = data.ip;
+            } catch (e) {
+                console.log("IP fetch failed");
+            }
+
+            // Splash Screen Timer
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                const app = document.getElementById('app-container');
+                
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    app.classList.remove('hidden');
+                    // Small delay to trigger CSS transition
+                    setTimeout(() => app.style.opacity = '1', 50);
+                }, 700);
+            }, 3000);
+        });
+
+        // --- FUNCTIONS ---
+        
+        // Zoom Functionality
+        function changeZoom(direction) {
+            // direction: 1 for increase, -1 for decrease
+            if (direction === 1 && currentFontSize < 150) {
+                currentFontSize += 10;
+            } else if (direction === -1 && currentFontSize > 80) {
+                currentFontSize -= 10;
+            }
+            
+            // Apply scale
+            const scale = currentFontSize / 100;
+            
+            // Apply to question
+            const qText = document.getElementById('question-text');
+            if (qText) {
+                qText.style.fontSize = `${1.25 * scale}rem`; // Base 1.25rem (text-xl)
+                qText.style.lineHeight = `${1.6 * scale}`;
+            }
+            
+            // Apply to options text
+            const optTexts = document.querySelectorAll('#options-container span');
+            optTexts.forEach(el => {
+                el.style.fontSize = `${1.125 * scale}rem`; // Base 1.125rem (text-lg)
+            });
+        }
+
+        function startQuiz() {
+            const input = document.getElementById('student-name');
+            if (!input.value.trim()) {
+                input.classList.add('ring-2', 'ring-red-500');
+                setTimeout(() => input.classList.remove('ring-2', 'ring-red-500'), 500);
+                return;
+            }
+            studentName = input.value.trim();
+            
+            // Transition UI
+            document.getElementById('welcome-section').classList.add('hidden');
+            document.getElementById('quiz-section').classList.remove('hidden');
+            
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentQuestionIndex];
+            
+            // Update Progress
+            document.getElementById('current-question-num').innerText = currentQuestionIndex + 1;
+            const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            // Update Content
+            const container = document.getElementById('question-container');
+            container.classList.remove('animate-fade-in');
+            void container.offsetWidth; // Trigger reflow
+            container.classList.add('animate-fade-in');
+
+            const qText = document.getElementById('question-text');
+            qText.innerText = `प्रश्न ${currentQuestionIndex + 1}. ${q.q}`;
+            
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+
+            q.o.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left bg-neutral-800/60 hover:bg-neutral-700/80 border border-neutral-700 p-3 rounded-xl transition-all duration-300 flex items-center group active:scale-[0.98]";
+                
+                // Note: We use arrow function to pass 'this' (the button) manually
+                btn.onclick = function() { selectAnswer(idx, this); };
+                
+                const letter = String.fromCharCode(65 + idx); // A, B, C, D
+                btn.innerHTML = `
+                    <div class="option-circle w-8 h-8 rounded-full bg-neutral-700 group-hover:bg-blue-600 flex items-center justify-center text-sm font-bold mr-4 transition-colors text-white border border-neutral-600 group-hover:border-blue-500 shrink-0">${letter}</div>
+                    <span class="text-gray-200 font-medium text-lg leading-snug">${opt}</span>
+                `;
+                optsContainer.appendChild(btn);
+            });
+            
+            // Re-apply zoom settings to new elements
+            changeZoom(0); // 0 means just apply current, don't change
+        }
+
+        function selectAnswer(selectedIndex, btnElement) {
+            // Disable all buttons to prevent double click
+            const buttons = document.querySelectorAll('#options-container button');
+            buttons.forEach(b => b.disabled = true);
+
+            // 1. MAKE IT COLORFUL!
+            // Remove default neutral classes
+            btnElement.classList.remove('bg-neutral-800/60', 'hover:bg-neutral-700/80', 'border-neutral-700');
+            // Add colorful gradient class defined in CSS
+            btnElement.classList.add('option-selected', 'animate-pop');
+
+            userAnswers.push(selectedIndex);
+            if (selectedIndex === questions[currentQuestionIndex].a) {
+                score++;
+            }
+
+            // 2. Wait a bit so user sees the color
+            setTimeout(() => {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion();
+                    // Auto scroll to top for new question
+                    document.getElementById('question-container').scrollTop = 0;
+                } else {
+                    finishQuiz();
+                }
+            }, 600); // 600ms delay
+        }
+
+        async function finishQuiz() {
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('sending-screen').classList.remove('hidden');
+
+            // Generate Data
+            const studentID = `FAI-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+            const dateStr = new Date().toLocaleDateString('hi-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+            
+            // Construct Discord Message
+            // We'll limit detailed answers in Discord msg to avoid 2000 char limit
+            // But we will show FULL details on the website result screen.
+            
+            let header = `🎓 📘 Non Hindi Quiz Result 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 नाम: ${studentName}\n🆔 आईडी: ${studentID}\n🏫 कक्षा: 10 – A\n📅 दिनांक: ${dateStr}\n🌍 स्थान: India 🇮🇳\n🎯 स्कोर: ${score}/100\n━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            
+            let resultBody = "";
+            let incorrectCount = 0;
+
+            questions.forEach((q, i) => {
+                const userChoice = userAnswers[i];
+                if (userChoice !== q.a) {
+                    incorrectCount++;
+                    const letterUser = String.fromCharCode(65 + userChoice);
+                    const letterCorrect = String.fromCharCode(65 + q.a);
+                    // Only adding incorrect ones to Discord message to save space
+                    resultBody += `Q${i+1}: ${letterUser} ❌ (सही: ${letterCorrect})\n`;
+                }
+            });
+            
+            if (incorrectCount === 0) {
+                resultBody = "सभी उत्तर सही हैं! अद्भुत प्रदर्शन! 🌟\n";
+            } else if (resultBody.length > 1000) {
+                 resultBody = `गलत उत्तरों की संख्या: ${incorrectCount}\n(विस्तृत रिपोर्ट वेबसाइट पर देखें)\n`;
+            } else {
+                 resultBody = "\n-- गलत उत्तर --\n" + resultBody;
+            }
+
+            let footer = `\n━━━━━━━━━━━━━━━━━━━━━━━\n🔐 सिस्टम जानकारी:\n🌐 IP: ${ipAddress}\n📱 एजेंट: ${userAgent.substring(0, 50)}...\n━━━━━━━━━━━━━━━━━━━━━━━`;
+            
+            let fullMessage = header + resultBody + footer;
+
+            // Image URL
+            const scoreText = `Score: ${score}/100`;
+            const imageText = `${studentName} | ${scoreText}`;
+            const encodedText = encodeURIComponent(imageText);
+            const imageUrl = `https://placehold.co/600x400/1a1a1a/ffffff.png?text=${encodedText}&font=roboto`;
+
+            // Send to API
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: SECRET_KEY,
+                        message: fullMessage,
+                        image: imageUrl
+                    })
+                });
+                console.log('Result sent to Discord!');
+            } catch (error) {
+                console.error('Error sending result:', error);
+            }
+
+            // Show Result Screen
+            document.getElementById('sending-screen').classList.add('hidden');
+            document.getElementById('result-section').classList.remove('hidden');
+            
+            // Populate Result UI
+            document.getElementById('res-name').innerText = studentName;
+            document.getElementById('res-id').innerText = studentID;
+            document.getElementById('res-score').innerText = `${score} / 100`;
+
+            // Render Detailed HTML Result
+            const detailsContainer = document.getElementById('result-details');
+            questions.forEach((q, i) => {
+                const userChoice = userAnswers[i];
+                const correctChoice = q.a;
+                
+                const qDiv = document.createElement('div');
+                qDiv.className = "mb-6 border-b border-gray-800 pb-4 last:border-0";
+                
+                let html = `<p class="font-bold text-white mb-2 text-base">प्र० ${i+1}. ${q.q}</p><ul class="space-y-1">`;
+                
+                q.o.forEach((opt, optIdx) => {
+                    const letter = String.fromCharCode(65 + optIdx);
+                    let colorClass = "text-gray-400";
+                    let icon = "";
+                    
+                    if (optIdx === correctChoice) {
+                        colorClass = "text-green-400 font-semibold";
+                        icon = "✅";
+                    } else if (optIdx === userChoice && optIdx !== correctChoice) {
+                        colorClass = "text-red-400";
+                        icon = "❌";
+                    }
+
+                    html += `<li class="${colorClass}">${letter}. ${opt} ${icon}</li>`;
+                });
+                html += `</ul>`;
+                qDiv.innerHTML = html;
+                detailsContainer.appendChild(qDiv);
+            });
+        }
+        
+        document.addEventListener('copy', function(e) {
+            e.preventDefault();
+            return false;
+        });
+    </script>
+</body>
+</html>
+
+
