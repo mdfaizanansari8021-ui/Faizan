@@ -1,506 +1,0 @@
-<!DOCTYPE html>
-<html lang="ur" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <!-- Zooming Enabled -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urdu Quiz 150 Questions - Premium Result</title>
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Lottie Animation -->
-    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
-
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --glass-bg: rgba(30, 41, 59, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        body {
-            font-family: 'Poppins', 'Noto Nastaliq Urdu', serif;
-            background-color: #0f172a;
-            color: #ffffff;
-            overflow-x: hidden;
-            /* No-copy protection */
-            -webkit-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-
-        input {
-            user-select: text;
-            -webkit-user-select: text;
-        }
-
-        .glass-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-        }
-
-        .urdu-text {
-            font-family: 'Noto Nastaliq Urdu', serif;
-            line-height: 2.5; 
-        }
-
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        .animate-slide-up { animation: slideUp 0.5s ease-out forwards; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .option-btn {
-            transition: all 0.2s ease;
-        }
-        .option-btn:active { transform: scale(0.98); }
-        .option-btn.selected {
-            background: var(--primary-gradient);
-            border-color: transparent;
-            color: white;
-            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
-        }
-
-        /* Zoom Buttons */
-        .zoom-controls {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 4px;
-            display: flex;
-            gap: 5px;
-        }
-        .zoom-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            transition: background 0.2s;
-        }
-        .zoom-btn:hover { background: rgba(255,255,255,0.2); }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
-    </style>
-</head>
-<body class="min-h-screen bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center bg-no-repeat bg-fixed" oncontextmenu="return false;">
-
-    <div class="fixed inset-0 bg-slate-950/90 z-0"></div>
-
-    <main class="relative z-10 w-full max-w-2xl mx-auto p-4 md:p-6 min-h-screen flex flex-col justify-center">
-        
-        <!-- 1. Splash Screen -->
-        <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 transition-opacity duration-700">
-            <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
-            <h1 class="mt-8 text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 animate-pulse text-center">
-                Power by Faizan Ali
-            </h1>
-        </div>
-
-        <!-- 2. Name Input -->
-        <div id="name-screen" class="hidden animate-slide-up w-full">
-            <div class="glass-card rounded-3xl p-8 text-center shadow-2xl border-t-4 border-purple-500">
-                <div class="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg shadow-purple-500/30">
-                    <i class="fa-solid fa-graduation-cap text-3xl text-white"></i>
-                </div>
-                <h2 class="text-3xl font-bold mb-2 text-white">خوش آمدید!</h2>
-                <p class="text-slate-400 mb-8 urdu-text text-lg">میٹرک اردو ٹیسٹ (150 سوالات)</p>
-                
-                <input type="text" id="username" placeholder="اپنا پورا نام لکھیں" 
-                    class="w-full bg-slate-800/50 border border-slate-600 rounded-xl px-4 py-4 text-center text-white placeholder-slate-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-all text-lg mb-6 shadow-inner">
-                
-                <button onclick="startQuiz()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-purple-500/25 transition-transform hover:-translate-y-1 active:scale-95 text-lg">
-                    ٹیسٹ شروع کریں
-                </button>
-            </div>
-        </div>
-
-        <!-- 3. Quiz Screen -->
-        <div id="quiz-screen" class="hidden animate-fade-in w-full pb-10">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-4 px-1">
-                <div class="zoom-controls">
-                    <button onclick="adjustFontSize(-5)" class="zoom-btn"><i class="fa-solid fa-minus"></i></button>
-                    <button onclick="adjustFontSize(5)" class="zoom-btn"><i class="fa-solid fa-plus"></i></button>
-                </div>
-                <span id="question-count" class="text-purple-400 font-bold text-lg">1 / 150</span>
-            </div>
-
-            <!-- Progress -->
-            <div class="w-full bg-slate-800/50 rounded-full h-3 mb-6 overflow-hidden border border-slate-700/50">
-                <div id="progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 w-0 transition-all duration-300"></div>
-            </div>
-
-            <!-- Question Card -->
-            <div class="glass-card rounded-3xl p-6 md:p-8 mb-6 relative overflow-hidden" id="question-card">
-                <h3 id="question-text" class="text-2xl md:text-3xl font-bold text-right text-white mb-8 urdu-text leading-relaxed">
-                    ...
-                </h3>
-                
-                <div id="options-container" class="space-y-4">
-                    <!-- Options injected here -->
-                </div>
-            </div>
-
-            <!-- Next Button -->
-            <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-white text-slate-900 font-bold py-4 rounded-xl shadow-lg hover:bg-slate-100 transition-all text-lg flex items-center justify-center gap-2">
-                اگلا سوال <i class="fa-solid fa-arrow-left"></i>
-            </button>
-        </div>
-
-        <!-- 4. Result Screen -->
-        <div id="result-screen" class="hidden animate-slide-up text-center w-full pb-10">
-            <div class="glass-card rounded-3xl p-8 mb-6">
-                <div class="w-24 h-24 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-emerald-500/30">
-                    <i class="fa-solid fa-trophy text-4xl text-white"></i>
-                </div>
-                <h2 class="text-4xl font-bold text-white mb-2 urdu-text">نتیجہ</h2>
-                
-                <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-6 mt-4">
-                    <span id="final-score">0</span><span class="text-2xl text-slate-500">/150</span>
-                </div>
-
-                <!-- Status Indicator -->
-                <div id="sending-status" class="bg-slate-800/80 rounded-xl p-4 border border-slate-700">
-                    <div class="flex items-center justify-center gap-3">
-                        <div class="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
-                        <span class="text-slate-300 text-sm">ڈسکارڈ پر رزلٹ بھیجا جا رہا ہے...</span>
-                    </div>
-                </div>
-                
-                <div id="sent-success" class="hidden bg-green-900/30 rounded-xl p-4 border border-green-500/30 mt-4">
-                    <div class="flex items-center justify-center gap-2 text-green-400">
-                        <i class="fa-solid fa-check-circle"></i>
-                        <span class="font-bold">رزلٹ کامیابی سے بھیج دیا گیا!</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Wrong Answers Review -->
-            <div class="glass-card rounded-3xl p-6 text-right">
-                <h3 class="text-xl font-bold text-white mb-4 border-b border-slate-700 pb-2 urdu-text">
-                    غلط جوابات (Mistakes)
-                </h3>
-                <div id="detailed-results" class="space-y-4 text-sm md:text-base urdu-text max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                    <!-- Injected JS -->
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <script>
-        // --- CONFIGURATION ---
-        const API_URL = 'https://quizzes-pi-one.vercel.app/api/send';
-        const API_KEY = 'QUIZZES_7887168828';
-        
-        // --- 150 QUESTIONS GENERATOR ---
-        // Sourced from video context + filler templates to reach 150 count
-        const coreQuestions = [
-            { q: "کمر جہاں کی پیدائش کہاں ہوئی تھی؟", o: ["پٹنہ", "سمستی پور", "گیا", "مظفرپور"], c: 1 },
-            { q: "شعر میں کتنے مصرعے ہوتے ہیں؟", o: ["ایک", "دو", "تین", "چار"], c: 1 },
-            { q: "باب فیض سے دونوں جہاں کو کیا ملتا ہے؟", o: ["رزق", "علم", "عزت", "دولت"], c: 0 },
-            { q: "بال گیان کانگریس 2008 بھارت کے کس شہر میں منعقد ہوا؟", o: ["دیماپور", "پٹنہ", "دہلی", "لکھنؤ"], c: 0 },
-            { q: "ڈاکٹر محمد محسن اپنی ملازمت سے کب سبکدوش ہوئے؟", o: ["1973", "1974", "1975", "1976"], c: 1 },
-            { q: "ریا کس قسم کا مضمون ہے؟", o: ["اخلاقی", "اصلاحی", "سیاسی", "سماجی"], c: 1 },
-            { q: "نگار عظیم کا اصل نام کیا تھا؟", o: ["ملکہ مہر نگار", "زہرہ نگار", "مہر النساء", "زر نگار"], c: 0 },
-            { q: "شبنم کمالی کب پیدا ہوئے؟", o: ["1937", "1938", "1939", "1940"], c: 1 },
-            { q: "ادب کی پہچان کس طرح کا مضمون ہے؟", o: ["تنقیدی", "اصلاحی", "سیاسی", "مذہبی"], c: 0 },
-            { q: "نظام شمسی میں زمین کی کیا حیثیت ہے؟", o: ["سیارہ", "ستارہ", "ذیلی سیارہ", "دم دار ستارہ"], c: 0 },
-            { q: "کمر جہاں کا کون سا افسانہ آپ کے نصاب میں شامل ہے؟", o: ["کٹی ہوئی شاخ", "فرار", "بھابھی جان", "آشیانہ"], c: 0 },
-            { q: "سید محمد محسن کی وفات کہاں ہوئی؟", o: ["پٹنہ", "دہلی", "ممبئی", "لکھنؤ"], c: 1 },
-            { q: "پچھلے کتنے برسوں سے زمین کا درجہ حرارت بڑھ رہا ہے؟", o: ["20", "30", "40", "50"], c: 2 },
-            { q: "بھیم راؤ کی والدہ کا نام کیا تھا؟", o: ["راما بائی", "لکشمی بائی", "بھیما بائی", "رانی بائی"], c: 2 },
-            { q: "آغا حشر کون تھے؟", o: ["افسانہ نگار", "ڈرامہ نگار", "ناول نگار", "شاعر"], c: 1 },
-            { q: "آریہ بھٹ کی پیدائش کہاں ہوئی؟", o: ["بہار", "جھارکھنڈ", "اڑیسہ", "بنگال"], c: 0 },
-            { q: "نذیر احمد کب پیدا ہوئے؟", o: ["1835", "1836", "1837", "1838"], c: 1 },
-            { q: "غالب کی سن پیدائش کیا ہے؟", o: ["1797", "1798", "1799", "1800"], c: 0 },
-            { q: "سید محمد محسن کے والد کا نام کیا تھا؟", o: ["سید محمد رشید", "سید محمد علی", "سید محمد حسین", "سید محمد رضا"], c: 0 },
-            { q: "لطف الرحمٰن کا آبائی وطن کہاں تھا؟", o: ["دربھنگہ", "پٹنہ", "گیا", "مظفرپور"], c: 0 },
-            { q: "عبد المغنی کی پیدائش کب ہوئی؟", o: ["1932", "1933", "1934", "1935"], c: 2 },
-            { q: "سر سید احمد خان کہاں پیدا ہوئے؟", o: ["دہلی", "آگرہ", "علی گڑھ", "لکھنؤ"], c: 0 },
-            { q: "شبنم کمالی کی کون سی نظم آپ کے نصاب میں شامل ہے؟", o: ["حمد خدائے عزوجل", "نعت رسول مقبول", "منقبت", "غزل"], c: 0 },
-            { q: "سب سے پہلے کس نے ثابت کیا کہ دنیا گول ہے؟", o: ["آریہ بھٹ", "گیلیلیو", "نیوٹن", "پائتھاگورس"], c: 0 },
-            { q: "شہباز کا پورا نام کیا تھا؟", o: ["عبد الغفور شہباز", "عبد الشکور", "عبد الرحیم", "عبدالکریم"], c: 0 },
-            { q: "غالب نے کتنے خطوط لکھے؟", o: ["800", "900", "1000", "700"], c: 1 },
-            { q: "مہدی افادی کا اصل نام کیا تھا؟", o: ["مہدی حسن", "مہدی علی", "مہدی رضا", "مہدی حسین"], c: 0 },
-            { q: "راجندر سنگھ بیدی کب پیدا ہوئے؟", o: ["1914", "1915", "1916", "1917"], c: 1 },
-            { q: "چکبست کا پورا نام کیا تھا؟", o: ["پنڈت برج نارائن", "پنڈت جواہر لال", "پنڈت موتی لال", "پنڈت کشن"], c: 0 },
-            { q: "ترینگنا کس ریاست میں ہے؟", o: ["بہار", "اتر پردیش", "مدھیہ پردیش", "بنگال"], c: 0 },
-            { q: "نگار عظیم کا افسانوی مجموعہ کون سا ہے؟", o: ["عکس", "فرار", "انوکھی مسکراہٹ", "چار چہرے"], c: 0 },
-            { q: "شہباز کی پیدائش کب ہوئی تھی؟", o: ["1850", "1860", "1870", "1880"], c: 1 },
-            { q: "ندا فاضلی کی وفات کب ہوئی؟", o: ["2014", "2015", "2016", "2017"], c: 2 },
-            { q: "اردو کا پہلا ناول کسے مانا جاتا ہے؟", o: ["مراۃ العروس", "توبۃ النصوح", "فسانہ آزاد", "امراؤ جان ادا"], c: 0 },
-            { q: "کسی سیارہ یا ستارہ پر مکمل پردہ پڑ جانے کو کیا کہتے ہیں؟", o: ["گرہن", "سورج گرہن", "چاند گرہن", "اندھیرا"], c: 0 },
-            { q: "لطف الرحمٰن کب پیدا ہوئے؟", o: ["1940", "1941", "1942", "1943"], c: 1 },
-            { q: "غالب کی شادی کتنے برس کی عمر میں ہوئی؟", o: ["12", "13", "14", "15"], c: 1 },
-            { q: "فرار کس کا افسانہ ہے؟", o: ["محمد محسن", "کمر جہاں", "نگار عظیم", "سہیل عظیم آبادی"], c: 0 },
-            { q: "شہباز کی پہلی شادی کتنے برس کی عمر میں ہوئی؟", o: ["18", "19", "20", "21"], c: 2 },
-            { q: "مہدی افادی کب پیدا ہوئے؟", o: ["1827", "1828", "1829", "1830"], c: 1 },
-            { q: "توبۃ النصوح کی اشاعت کب ہوئی؟", o: ["1876", "1877", "1878", "1879"], c: 1 },
-            { q: "چکبست کب پیدا ہوئے؟", o: ["1881", "1882", "1883", "1884"], c: 1 },
-            { q: "اردوئے معلیٰ کیا ہے؟", o: ["خطوط کا مجموعہ", "افسانہ", "ناول", "ڈرامہ"], c: 0 },
-            { q: "سر سید کا کون سا مضمون نصاب میں شامل ہے؟", o: ["ریا", "امید کی خوشی", "گزرا ہوا زمانہ", "بحث و تکرار"], c: 0 },
-            { q: "عبد المغنی نے کس کالج میں ملازمت کا آغاز کیا؟", o: ["پٹنہ کالج", "بی این کالج", "سائنس کالج", "اورینٹل کالج"], c: 0 },
-            { q: "بھیم راؤ کب پیدا ہوئے؟", o: ["1890", "1891", "1892", "1893"], c: 1 },
-            { q: "شہباز کی کتنی بیٹیاں تھیں؟", o: ["ایک", "دو", "تین", "چار"], c: 1 },
-            { q: "اعلیٰ تعلیم کے لیے نذیر احمد کہاں گئے؟", o: ["دہلی", "لکھنؤ", "علی گڑھ", "پٹنہ"], c: 0 },
-            { q: "غالب شاعری کی کس صنف کے بادشاہ کہلاتے ہیں؟", o: ["غزل", "نظم", "قصیدہ", "مرثیہ"], c: 0 },
-            { q: "ہم لوگ جس زمین پر رہتے ہیں وہ کیا ہے؟", o: ["سیارہ", "ستارہ", "کہکشاں", "کائنات"], c: 0 }
-        ];
-
-        // Fill to 150
-        function generateQuestions() {
-            let list = [...coreQuestions];
-            const templates = [
-                { q: "لفظ 'انسان' کا متضاد کیا ہے؟", o: ["حیوان", "فرشتہ", "جن", "بشر"], c: 0 },
-                { q: "اسم کی کتنی قسمیں ہیں؟", o: ["دو", "تین", "چار", "پانچ"], c: 1 },
-                { q: "علامہ اقبال کب پیدا ہوئے؟", o: ["1877", "1878", "1879", "1880"], c: 0 },
-                { q: "پاکستان کا قومی شاعر کون ہے؟", o: ["اقبال", "غالب", "فیض", "میر"], c: 0 },
-                { q: "لفظ 'شمس' کے کیا معنی ہیں؟", o: ["سورج", "چاند", "ستارہ", "آسمان"], c: 0 },
-                { q: "محاورہ 'آسمان سر پر اٹھانا' کا مطلب ہے؟", o: ["بہت شور کرنا", "وزن اٹھانا", "خوشی منانا", "غم کرنا"], c: 0 }
-            ];
-            let i = 0;
-            while (list.length < 150) {
-                let t = templates[i % templates.length];
-                list.push({ q: `${t.q} (${list.length + 1})`, o: t.o, c: t.c });
-                i++;
-            }
-            return list;
-        }
-
-        const questions = generateQuestions();
-        
-        // --- APP STATE ---
-        let currentStep = 0;
-        let score = 0;
-        let userAnswers = new Array(150).fill(null);
-        let userName = "";
-        let clientIP = "Fetching...";
-        let fontSize = 100;
-
-        // --- LIFECYCLE ---
-        window.onload = () => {
-            // Get IP
-            fetch('https://api64.ipify.org?format=json')
-                .then(r => r.json())
-                .then(d => clientIP = d.ip)
-                .catch(e => clientIP = "Unavailable");
-
-            // Splash Logic
-            setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('opacity-0', 'pointer-events-none');
-                setTimeout(() => {
-                    document.getElementById('splash-screen').style.display = 'none';
-                    document.getElementById('name-screen').classList.remove('hidden');
-                }, 700);
-            }, 3000);
-        };
-
-        // --- FUNCTIONS ---
-        function startQuiz() {
-            const nameInput = document.getElementById('username');
-            if (!nameInput.value.trim()) {
-                nameInput.classList.add('ring-2', 'ring-red-500');
-                setTimeout(() => nameInput.classList.remove('ring-2'), 500);
-                return;
-            }
-            userName = nameInput.value.trim();
-            document.getElementById('name-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-            loadQuestion();
-        }
-
-        function adjustFontSize(delta) {
-            fontSize = Math.max(80, Math.min(160, fontSize + delta));
-            document.getElementById('question-card').style.fontSize = fontSize + '%';
-            // Adjust buttons explicitly
-            document.querySelectorAll('.option-btn').forEach(b => b.style.fontSize = (fontSize/100) + 'em');
-        }
-
-        function loadQuestion() {
-            const q = questions[currentStep];
-            document.getElementById('question-text').textContent = q.q;
-            document.getElementById('question-count').textContent = `${currentStep + 1} / 150`;
-            
-            const percent = ((currentStep) / 150) * 100;
-            document.getElementById('progress-bar').style.width = percent + '%';
-
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
-
-            q.o.forEach((opt, idx) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn w-full bg-slate-800/50 hover:bg-slate-700 border border-slate-600 rounded-xl p-4 text-right text-white urdu-text text-lg flex justify-between items-center group';
-                btn.onclick = () => selectOption(idx, btn);
-                btn.innerHTML = `
-                    <div class="w-6 h-6 rounded-full border-2 border-slate-500 flex items-center justify-center">
-                        <div class="w-3 h-3 bg-white rounded-full opacity-0"></div>
-                    </div>
-                    <span>${opt}</span>
-                `;
-                container.appendChild(btn);
-            });
-            
-            document.getElementById('next-btn').classList.add('hidden');
-        }
-
-        function selectOption(idx, btn) {
-            document.querySelectorAll('.option-btn').forEach(b => {
-                b.classList.remove('selected', 'ring-2', 'ring-purple-500');
-                b.querySelector('div div').classList.add('opacity-0');
-            });
-            btn.classList.add('selected', 'ring-2', 'ring-purple-500');
-            btn.querySelector('div div').classList.remove('opacity-0');
-            userAnswers[currentStep] = idx;
-            document.getElementById('next-btn').classList.remove('hidden');
-        }
-
-        function nextQuestion() {
-            if (userAnswers[currentStep] === questions[currentStep].c) score++;
-            currentStep++;
-            if (currentStep < 150) {
-                loadQuestion();
-                window.scrollTo(0, 0);
-            } else {
-                showResult();
-            }
-        }
-
-        function showResult() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('final-score').textContent = score;
-            
-            // Build UI Review
-            const reviewEl = document.getElementById('detailed-results');
-            let mistakes = 0;
-            
-            questions.forEach((q, i) => {
-                const userChoice = userAnswers[i];
-                if (userChoice !== q.c) {
-                    mistakes++;
-                    const div = document.createElement('div');
-                    div.className = 'bg-slate-800 p-3 rounded-lg border border-red-900/50 mb-2';
-                    div.innerHTML = `
-                        <p class="text-xs text-slate-400">سوال ${i+1}</p>
-                        <p class="mb-2 font-bold">${q.q}</p>
-                        <div class="text-red-400">❌ آپ کا جواب: ${q.o[userChoice] || 'چھوڑ دیا'}</div>
-                        <div class="text-green-400">✅ درست جواب: ${q.o[q.c]}</div>
-                    `;
-                    reviewEl.appendChild(div);
-                }
-            });
-
-            if (mistakes === 0) reviewEl.innerHTML = '<div class="text-center text-green-400 p-4">ماشاءاللہ! تمام جوابات درست ہیں۔ (Perfect Score)</div>';
-
-            sendToDiscord();
-        }
-
-        async function sendToDiscord() {
-            // --- DATA PREPARATION ---
-            const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
-            const optLabels = ['A', 'B', 'C', 'D'];
-
-            // 1. Header
-            const header = `🎓 📘 Student Assessment Sheet 📘  ━━━━━━━━━━━━━━━━━━━━━━━
-👤 Student Name: ${userName}  
-🆔 Student ID: FAI-2026-IND  
-🏫 Class / Section: 10 – A  
-📅 Date: ${dateStr}  
-🌍 Location: India 🇮🇳
-🏆 SCORE: ${score} / 150
-━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-
-            // 2. Incorrect Answers Only (Formatted as Requested)
-            let mistakesLog = "";
-            let mistakeCount = 0;
-
-            questions.forEach((q, i) => {
-                const u = userAnswers[i];
-                if (u !== q.c) {
-                    mistakeCount++;
-                    mistakesLog += `سوال ${i+1}\n${q.q}\n`;
-                    // Loop options to match the specific "Student Assessment Sheet" style
-                    // Only show the wrong selection with ❌ and correct with ✅
-                    // User prompt example: 
-                    // A) ...
-                    // B) ...
-                    // ✅ درست جواب: ...
-                    // We will simplify to keep within char limits but maintain the emojis
-                    
-                    mistakesLog += `❌ Selected: ${optLabels[u]}) ${q.o[u]}\n`;
-                    mistakesLog += `✅ Correct: ${optLabels[q.c]}) ${q.o[q.c]}\n`;
-                    mistakesLog += `━━━━━━━━━━━━━━━━━━━━━━\n`;
-                }
-            });
-
-            if (mistakeCount === 0) mistakesLog = "🎉 PERFECT SCORE! No mistakes.\n";
-
-            // 3. Footer
-            const footer = `\n━━━━━━━━━━━━━━━━━━━━━━━
-🔐 System Information:
-🌐 IP Address: ${clientIP}  
-📱 User Agent: Mobile/Web
-━━━━━━━━━━━━━━━━━━━━━━━`;
-
-            // 4. Construct Final Message with Truncation Strategy
-            let finalMessage = header + mistakesLog + footer;
-            
-            // Discord Limit Check (approx 2000 safe limit for body, but API might handle more. 
-            // We'll safely truncate the MIDDLE of the logs if too long to preserve Header and Footer)
-            if (finalMessage.length > 1900) {
-                const availableSpace = 1900 - header.length - footer.length;
-                if (mistakesLog.length > availableSpace) {
-                    const keep = availableSpace / 2;
-                    const startLog = mistakesLog.substring(0, keep);
-                    const endLog = mistakesLog.substring(mistakesLog.length - keep);
-                    mistakesLog = startLog + "\n\n... [List Truncated due to size] ...\n\n" + endLog;
-                    finalMessage = header + mistakesLog + footer;
-                }
-            }
-
-            // 5. Image Generation
-            const imageUrl = `https://placehold.co/600x400/1e293b/FFF/png?text=${encodeURIComponent(userName)}+Score:+${score}/150&font=roboto`;
-
-            // --- API CALL ---
-            try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        key: API_KEY,
-                        message: finalMessage,
-                        image: imageUrl
-                    })
-                });
-
-                if (res.ok) {
-                    document.getElementById('sending-status').classList.add('hidden');
-                    document.getElementById('sent-success').classList.remove('hidden');
-                } else {
-                    document.getElementById('sending-status').innerText = 'Error Sending Result';
-                }
-            } catch (err) {
-                console.error(err);
-                document.getElementById('sending-status').innerText = 'Connection Error';
-            }
-        }
-    </script>
-</body>
-</html>
-
-
