@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="hi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board SST Model Paper 2026</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans Devanagari', 'sans-serif'],
+                    },
+                    colors: {
+                        ios: {
+                            bg: '#000000',
+                            card: '#1C1C1E',
+                            card2: '#2C2C2E',
+                            accent: '#0A84FF',
+                            success: '#30D158',
+                            danger: '#FF453A',
+                            text: '#FFFFFF',
+                            subtext: '#8E8E93'
+                        }
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 3s ease infinite',
+                        'fade-in': 'fadeIn 0.4s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': { 'background-size': '200% 200%', 'background-position': 'left center' },
+                            '50%': { 'background-size': '200% 200%', 'background-position': 'right center' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.98)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #000000;
+            color: #FFFFFF;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .glass {
+            background: rgba(28, 28, 30, 0.8);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .rainbow-text {
+            background: linear-gradient(to right, #FF453A, #FF9F0A, #FFD60A, #30D158, #0A84FF, #5E5CE6, #BF5AF2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% 300%;
+            animation: gradient-x 3s ease infinite;
+        }
+
+        .ios-input {
+            background: #2C2C2E;
+            border: none;
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .ios-input:focus {
+            background: #3A3A3C;
+            box-shadow: 0 0 0 2px #0A84FF;
+        }
+
+        .ios-btn {
+            background: #0A84FF;
+            color: white;
+            font-weight: 600;
+            padding: 16px;
+            border-radius: 14px;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.1s active;
+        }
+        .ios-btn:active { transform: scale(0.97); }
+
+        .option-card {
+            background: #2C2C2E;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .option-card:hover { background: #3A3A3C; }
+        .option-card.selected {
+            background: rgba(10, 132, 255, 0.15);
+            border-color: #0A84FF;
+        }
+        
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #3A3A3C;
+            color: #EBEBF5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 14px;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .option-card.selected .option-letter {
+            background: #0A84FF;
+            color: white;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1C1C1E; }
+        ::-webkit-scrollbar-thumb { background: #48484A; border-radius: 3px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Screen 1: Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-700">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 280px; height: 280px;" autoplay loop></dotlottie-wc>
+        <h1 class="mt-6 text-3xl font-bold tracking-tight text-center">
+            <span class="text-gray-400 text-lg font-medium">Model Paper 2026</span><br>
+            <span class="text-white">Powered by</span><br>
+            <span class="rainbow-text text-5xl mt-2 block font-extrabold">Faizan Ali</span>
+        </h1>
+    </div>
+
+    <!-- Screen 2: User Input -->
+    <div id="welcome-screen" class="hidden w-full max-w-md animate-slide-up">
+        <div class="glass p-8 rounded-[32px] text-center shadow-2xl">
+            <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span class="text-3xl">📝</span>
+            </div>
+            <h2 class="text-3xl font-bold mb-2">Student Login</h2>
+            <p class="text-ios-subtext mb-8 text-sm">Bihar Board Class 10 Social Science<br>Official Model Paper Solution</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="username" class="ios-input" placeholder="Enter Student Name" autocomplete="off">
+                <button onclick="startQuiz()" class="ios-btn text-lg shadow-lg shadow-blue-500/20">
+                    Start Exam
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen 3: Quiz Interface -->
+    <div id="quiz-screen" class="hidden w-full max-w-md animate-fade-in pb-8">
+        <!-- Header -->
+        <div class="flex justify-between items-end mb-4 px-1">
+            <div>
+                <span class="text-ios-subtext text-xs font-semibold tracking-wider uppercase">Question</span>
+                <div class="text-3xl font-bold font-mono"><span id="q-current">1</span><span class="text-gray-600 text-xl">/80</span></div>
+            </div>
+            <div class="text-right">
+                <span class="text-xs text-blue-400 font-semibold uppercase tracking-wider">Social Science</span>
+            </div>
+        </div>
+
+        <!-- Progress -->
+        <div class="w-full bg-gray-800 h-2 rounded-full mb-6 overflow-hidden">
+            <div id="progress-bar" class="bg-gradient-to-r from-blue-500 to-purple-500 h-full rounded-full transition-all duration-500 ease-out" style="width: 0%"></div>
+        </div>
+
+        <!-- Question Card -->
+        <div class="glass p-6 rounded-3xl mb-5 shadow-xl min-h-[160px] flex items-center">
+            <h2 id="question-text" class="text-xl font-medium leading-relaxed text-gray-100">Loading...</h2>
+        </div>
+
+        <!-- Options -->
+        <div id="options-container" class="space-y-3"></div>
+
+        <!-- Navigation -->
+        <div class="flex gap-3 mt-8">
+            <button onclick="prevQuestion()" id="prev-btn" class="ios-btn bg-gray-700 text-gray-300 w-1/3 hidden">Back</button>
+            <button onclick="nextQuestion()" id="next-btn" class="ios-btn shadow-lg shadow-blue-500/20 w-full opacity-50 cursor-not-allowed" disabled>
+                Next Question
+            </button>
+        </div>
+    </div>
+
+    <!-- Screen 4: Loading -->
+    <div id="loading-screen" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-xl">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-6"></div>
+        <h3 class="text-2xl font-bold text-white mb-2">Processing Results</h3>
+        <p class="text-ios-subtext text-center px-4">Generating Assessment Sheet &<br>Sending to Discord Server...</p>
+    </div>
+
+    <!-- Screen 5: Result -->
+    <div id="result-screen" class="hidden w-full max-w-2xl animate-slide-up pb-10">
+        <div class="glass p-6 rounded-[32px] shadow-2xl border border-gray-800">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-green-500/10 rounded-full mb-4 border border-green-500/20">
+                    <span class="text-5xl">✅</span>
+                </div>
+                <h2 class="text-3xl font-bold text-white">Exam Submitted</h2>
+                <p id="final-score-display" class="text-2xl font-bold text-blue-400 mt-2">Score: --/80</p>
+                <p class="text-gray-500 text-sm mt-1">Report successfully sent to Discord</p>
+            </div>
+
+            <div class="bg-[#202225] rounded-xl p-4 overflow-hidden border border-[#2f3136]">
+                <div class="flex justify-between items-center mb-3 border-b border-gray-700 pb-2">
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Discord Preview</span>
+                    <span class="text-[10px] bg-green-900 text-green-300 px-2 py-0.5 rounded">SENT 200 OK</span>
+                </div>
+                <pre id="discord-output" class="whitespace-pre-wrap font-sans text-gray-300 text-sm leading-relaxed h-96 overflow-y-auto pr-2 custom-scroll"></pre>
+            </div>
+
+            <div class="mt-6">
+                <button onclick="location.reload()" class="ios-btn bg-gray-800 hover:bg-gray-700 text-gray-300">
+                    Take New Exam
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logic -->
+    <script>
+        // --- 80 Questions Database ---
+        const questions = [
+            { q: "द्वितीयक क्षेत्र की गतिविधियों में किसे शामिल किया जाता है?", options: ["कृषि", "पशुपालन", "विनिर्माण", "मत्स्य पालन"], correct: 2 },
+            { q: "भारत में कार्यशील जनसंख्या का बड़ा हिस्सा किस क्षेत्र पर निर्भर है?", options: ["प्राथमिक क्षेत्र", "द्वितीयक क्षेत्र", "तृतीयक क्षेत्र", "चतुर्थ क्षेत्र"], correct: 0 },
+            { q: "ब्रूडलैंड आयोग का संबंध किससे है?", options: ["समावेशी विकास", "आर्थिक विकास", "आधारभूत संरचना", "सतत विकास"], correct: 3 },
+            { q: "आर्थिक नियोजन हेतु राज्य सरकार से तालमेल बनाने के लिए किस संस्था का गठन किया गया?", options: ["योजना आयोग", "नीति आयोग", "राष्ट्रीय विकास परिषद", "वित्त आयोग"], correct: 2 },
+            { q: "भारत के प्रथम मानव विकास रिपोर्ट (2002) के अनुसार किसकी उपभोक्ता व्यय क्षमता बढ़ी?", options: ["ग्रामीण", "नगरीय", "जनजातीय", "इनमें से कोई नहीं"], correct: 1 },
+            { q: "इनमें से कौन कृषि आधारित उद्योग है?", options: ["चीनी उद्योग", "सूती वस्त्र", "खाद्य प्रसंस्करण", "इनमें से सभी"], correct: 3 },
+            { q: "प्रोफेसर कीन्स के अनुसार राष्ट्रीय आय क्या है?", options: ["उपभोग + विनियोग", "उपभोग - विनियोग", "बचत + आय", "इनमें से कोई नहीं"], correct: 0 },
+            { q: "शुद्ध राष्ट्रीय उत्पाद (NNP) की गणना में किसे घटाया जाता है?", options: ["कच्चा माल", "घिसावट व्यय", "मजदूरी", "लाभ"], correct: 1 },
+            { q: "इनमें से कौन वाणिज्यिक बैंक नहीं है?", options: ["SBI", "PNB", "RBI", "Canara Bank"], correct: 2 },
+            { q: "सहकारिता प्रांतीय सरकारों का हस्तांतरित विषय कब बनी?", options: ["1919", "1929", "1935", "1947"], correct: 0 },
+            { q: "गरीबी के कुचक्र की धारणा किसने दी?", options: ["रेगनर नर्क्स", "मार्शल", "कीन्स", "अमर्त्य सेन"], correct: 0 },
+            { q: "किस साधन का पारिश्रमिक 'ब्याज' होता है?", options: ["भूमि", "श्रम", "पूंजी", "साहस"], correct: 2 },
+            { q: "केंद्रीय सहकारी बैंक किस स्तर पर काम करता है?", options: ["ग्राम स्तर", "जिला स्तर", "राज्य स्तर", "राष्ट्रीय स्तर"], correct: 1 },
+            { q: "भारत विश्व व्यापार संगठन (WTO) का सदस्य कब बना?", options: ["1995", "1991", "2001", "2005"], correct: 0 },
+            { q: "उपभोक्ता राष्ट्रीय फोरम के आदेश के विरुद्ध कितने दिनों में सुप्रीम कोर्ट जा सकता है?", options: ["15 दिन", "30 दिन", "45 दिन", "60 दिन"], correct: 1 },
+            { q: "मेजनी का संबंध किस संगठन से था?", options: ["कार्बोनरी", "लाल सेना", "डायट", "जालवेराइन"], correct: 0 },
+            { q: "कार्ल्सबाद के आदेश किसने जारी किए?", options: ["बिस्मार्क", "मेटरनिक", "नेपोलियन", "लुई फिलिप"], correct: 1 },
+            { q: "साम्यवादी शासन का पहला प्रयोग कहां हुआ?", options: ["रूस", "जापान", "चीन", "क्यूबा"], correct: 0 },
+            { q: "रूस की मार्च क्रांति के बाद किसके नेतृत्व में सरकार बनी?", options: ["लेनिन", "स्टालिन", "केरेंस्की", "जार निकोलस"], correct: 2 },
+            { q: "चेका (Cheka) क्या था?", options: ["सेना की टुकड़ी", "गुप्त पुलिस संगठन", "मजदूर संघ", "धार्मिक दल"], correct: 1 },
+            { q: "प्रथम यूटोपियन समाजवादी कौन था?", options: ["सेंट साइमन", "चार्ल्स फूरियर", "लुई ब्लां", "रॉबर्ट ओवेन"], correct: 0 },
+            { q: "बाओदायी की सरकार को किसका समर्थन प्राप्त था?", options: ["रूस", "चीन", "फ्रांस", "ब्रिटेन"], correct: 2 },
+            { q: "जेनेवा समझौता आयोग में कौन देश शामिल नहीं था?", options: ["भारत", "कनाडा", "पोलैंड", "चीन"], correct: 3 },
+            { q: "स्वराज का लक्ष्य कांग्रेस के किस अधिवेशन में पारित हुआ?", options: ["लाहौर (1929)", "कलकत्ता", "बम्बई", "लखनऊ"], correct: 0 },
+            { q: "तिनकठिया व्यवस्था समाप्त करने की सिफारिश किसने की?", options: ["गांधीजी", "चंपारण एग्रेरियन कमेटी", "राजकुमार शुक्ल", "अंग्रेज सरकार"], correct: 1 },
+            { q: "जलियांवाला बाग हत्याकांड की जांच के लिए कौन सी समिति बनी?", options: ["हंटर समिति", "साइमन कमीशन", "क्रिप्स मिशन", "कैबिनेट मिशन"], correct: 0 },
+            { q: "हिंद स्वराज पुस्तक के लेखक कौन हैं?", options: ["तिलक", "गांधीजी", "नेहरू", "सावरकर"], correct: 1 },
+            { q: "1920 में ताशकंद में भारतीय कम्युनिस्ट पार्टी की स्थापना किसने की?", options: ["एम.एन. रॉय", "सत्यभगत", "मुजफ्फर अहमद", "डांगे"], correct: 0 },
+            { q: "वामपंथी शब्द का प्रथम प्रयोग किस क्रांति में हुआ?", options: ["रूसी क्रांति", "फ्रांसीसी क्रांति", "अमेरिकी क्रांति", "औद्योगिक क्रांति"], correct: 1 },
+            { q: "चार्टिस्ट आंदोलन कहां हुआ?", options: ["फ्रांस", "ऑस्ट्रिया", "इंग्लैंड (लंदन)", "हंगरी"], correct: 2 },
+            { q: "पराजित तुर्की के साथ कौन सी संधि हुई?", options: ["सेवर्स की संधि", "एड्रियानोपुल की संधि", "लौसाने की संधि", "वर्षाय की संधि"], correct: 1 },
+            { q: "गांधीजी ने किस गोलमेज सम्मेलन में भाग लिया?", options: ["प्रथम", "द्वितीय", "तृतीय", "इनमें से सभी"], correct: 1 },
+            { q: "राष्ट्रीय श्रम आयोग की स्थापना कब हुई?", options: ["1948", "1952", "1962", "1965"], correct: 2 },
+            { q: "अलेक्जेंड्रिया नामक व्यापारिक केंद्र की स्थापना किसने की?", options: ["सिकंदर", "नेपोलियन", "सीजर", "बिस्मार्क"], correct: 0 },
+            { q: "विश्व बैंक को और किस नाम से जाना जाता है?", options: ["IMF", "IBRD", "WTO", "UNO"], correct: 1 },
+            { q: "मार्टिन लूथर का जन्म कहां हुआ था?", options: ["इंग्लैंड", "जर्मनी", "फ्रांस", "इटली"], correct: 1 },
+            { q: "प्रेस स्थापित करने से पहले लाइसेंस अनिवार्य किसने किया?", options: ["लॉर्ड लिटन", "जॉन एडम्स", "मटकाफ", "रिपन"], correct: 1 },
+            { q: "मोतीलाल नेहरू ने किस समाचार पत्र का संपादन किया?", options: ["इंडिपेंडेंट", "केसरी", "मराठा", "यंग इंडिया"], correct: 0 },
+            { q: "टीपू सुल्तान किस फ्रांसीसी क्लब के सदस्य बने?", options: ["जैकोबिन क्लब", "जिरांडिस्ट", "रॉयल क्लब", "इनमें से कोई नहीं"], correct: 0 },
+            { q: "प्रोटेस्टेंट धर्म सुधार आंदोलन की शुरुआत किसने की?", options: ["काल्विन", "मार्टिन लूथर", "ज्विंगली", "इरास्मस"], correct: 1 },
+            { q: "अन्नामलाई बाघ अभयारण्य कहां स्थित है?", options: ["केरल", "कर्नाटक", "तमिलनाडु", "आंध्र प्रदेश"], correct: 2 },
+            { q: "निम्नलिखित में से किसमें जीवाश्म होते हैं?", options: ["आग्नेय चट्टान", "अवसादी चट्टान", "कायांतरित चट्टान", "ज्वालामुखी चट्टान"], correct: 1 },
+            { q: "तांबा खनन के लिए प्रसिद्ध 'खेतड़ी' कहां है?", options: ["मध्य प्रदेश", "झारखंड", "राजस्थान", "उड़ीसा"], correct: 2 },
+            { q: "गोंडवाना कोयला क्षेत्र किस नदी घाटी में है?", options: ["दामोदर घाटी", "सोन घाटी", "महानदी घाटी", "उपर्युक्त सभी"], correct: 3 },
+            { q: "इनमें से कौन नकदी फसल है?", options: ["गन्ना", "रबर", "तंबाकू", "इनमें से सभी"], correct: 3 },
+            { q: "भारत में पहली चीनी मिल (1903) कहां स्थापित हुई?", options: ["उत्तर प्रदेश", "बिहार", "महाराष्ट्र", "पंजाब"], correct: 1 },
+            { q: "आकस्मिक प्रबंधन का प्रमुख घटक कौन है?", options: ["स्थानीय प्रशासन", "स्वयंसेवी संगठन", "गांव के लोग", "इनमें से सभी"], correct: 3 },
+            { q: "सरदार सरोवर बांध किस नदी पर है?", options: ["नर्मदा", "ताप्ती", "कावेरी", "कृष्णा"], correct: 0 },
+            { q: "निम्नलिखित में कौन मानव जनित आपदा है?", options: ["बाढ़", "भूकंप", "सांप्रदायिक दंगे", "सुनामी"], correct: 2 },
+            { q: "भूकंप संभावित क्षेत्रों में भवनों की आकृति कैसी होनी चाहिए?", options: ["अंडाकार", "त्रिभुजाकार", "आयताकार", "वर्गाकार"], correct: 2 },
+            { q: "कांडला विशेष आर्थिक क्षेत्र (SEZ) कहां है?", options: ["महाराष्ट्र", "गुजरात", "केरल", "पश्चिम बंगाल"], correct: 1 },
+            { q: "भारतीय डाक विभाग की स्थापना कब हुई?", options: ["1837", "1854", "1880", "1905"], correct: 1 },
+            { q: "भारत में ग्रैंड ट्रंक रोड (GT Road) की अनुमानित लंबाई?", options: ["1500 किमी", "2000 किमी", "2500 किमी", "3000 किमी"], correct: 2 },
+            { q: "भारत में बिजली उत्पादन में सर्वाधिक हिस्सा किसका है?", options: ["जल विद्युत", "तापीय विद्युत", "परमाणु विद्युत", "सौर ऊर्जा"], correct: 1 },
+            { q: "पुरानी जलोढ़ मिट्टी को क्या कहा जाता है?", options: ["बांगर", "खादर", "रेगुर", "लेटराइट"], correct: 0 },
+            { q: "तांबा गलाने का पहला कारखाना कहां खुला?", options: ["खेतड़ी", "घाटशिला", "मऊभंडार", "जमशेदपुर"], correct: 1 },
+            { q: "काजू की खेती के लिए उपयुक्त मिट्टी कौन सी है?", options: ["काली मिट्टी", "जलोढ़ मिट्टी", "लेटराइट मिट्टी", "लाल मिट्टी"], correct: 2 },
+            { q: "सिंदरी उर्वरक संयंत्र कहां स्थित है?", options: ["बिहार", "झारखंड", "उड़ीसा", "पश्चिम बंगाल"], correct: 1 },
+            { q: "भद्रावती इस्पात संयंत्र को लौह अयस्क कहां से मिलता है?", options: ["केन्दुझर", "बाबा बुदन की पहाड़ी", "बैलाडीला", "नोआमुंडी"], correct: 1 },
+            { q: "भू-क्षरण (मृदा अपरदन) का कारण क्या है?", options: ["वनोन्मूलन", "खनन", "अतिपशुचारण", "इनमें से सभी"], correct: 3 },
+            { q: "मोनाजाइट भारत के किस राज्य में पाया जाता है?", options: ["केरल", "तमिलनाडु", "उड़ीसा", "आंध्र प्रदेश"], correct: 0 },
+            { q: "भारत में सर्वाधिक विस्तृत भू-आकृति कौन सी है?", options: ["पर्वत", "पठार", "मैदान", "तटीय क्षेत्र"], correct: 2 },
+            { q: "बिहार में जल दोहन से किस तत्व का संकेंद्रण बढ़ा है?", options: ["फ्लोराइड", "आर्सेनिक", "लोहा", "मैंगनीज"], correct: 1 },
+            { q: "कावर झील बिहार के किस जिले में है?", options: ["दरभंगा", "बेगूसराय", "मुजफ्फरपुर", "भागलपुर"], correct: 1 },
+            { q: "मैंग्रोव वन का विस्तार सबसे अधिक कहां है?", options: ["अंडमान", "सुंदरवन", "पश्चिमी घाट", "ओडिशा तट"], correct: 1 },
+            { q: "किस खनिज को उद्योगों की जननी कहा जाता है?", options: ["सोना", "तांबा", "लोहा", "एल्युमिनियम"], correct: 2 },
+            { q: "पूर्वोत्तर रेलवे का मुख्यालय कहां है?", options: ["हाजीपुर", "गोरखपुर", "गुवाहाटी", "कोलकाता"], correct: 1 },
+            { q: "बिहार में नहरों द्वारा सर्वाधिक सिंचाई किस जिले में होती है?", options: ["रोहतास", "भोजपुर", "गया", "पटना"], correct: 0 },
+            { q: "पंचायत समिति का कार्यकाल कितना होता है?", options: ["3 वर्ष", "4 वर्ष", "5 वर्ष", "6 वर्ष"], correct: 2 },
+            { q: "नगर निकाय को किस संशोधन द्वारा संवैधानिक दर्जा मिला?", options: ["73वां", "74वां", "42वां", "44वां"], correct: 1 },
+            { q: "समवर्ती सूची पर कानून बनाने का अधिकार किसे है?", options: ["केवल केंद्र", "केवल राज्य", "केंद्र और राज्य दोनों", "इनमें से कोई नहीं"], correct: 2 },
+            { q: "ग्राम पंचायत में किसके लिए सीटें आरक्षित हैं?", options: ["महिला", "अनुसूचित जाति", "पिछड़ा वर्ग", "इनमें से सभी"], correct: 3 },
+            { q: "निम्नलिखित में से कौन केंद्र शासित प्रदेश है?", options: ["केरल", "छत्तीसगढ़", "चंडीगढ़", "झारखंड"], correct: 2 },
+            { q: "पंचायत समिति का प्रधान कौन होता है?", options: ["मुखिया", "प्रमुख", "सरपंच", "BDO"], correct: 1 },
+            { q: "नेपाल में लोकतंत्र की वापसी कब हुई?", options: ["2002", "2004", "2006", "2008"], correct: 2 },
+            { q: "कितनी जनसंख्या पर जिला परिषद के एक सदस्य का चुनाव होता है?", options: ["10,000", "25,000", "50,000", "75,000"], correct: 2 },
+            { q: "नगर निगम का मुख्य कार्यपालक अधिकारी कौन होता है?", options: ["महापौर", "नगर आयुक्त", "पार्षद", "जिलाधिकारी"], correct: 1 },
+            { q: "लोकतंत्र का प्राण किसे कहा जाता है?", options: ["संविधान", "न्यायपालिका", "राजनीतिक दल", "प्रेस"], correct: 2 },
+            { q: "बंबई राज्य का विभाजन कर कौन से दो राज्य बने?", options: ["महाराष्ट्र-गोवा", "महाराष्ट्र-गुजरात", "गुजरात-राजस्थान", "महाराष्ट्र-कर्नाटक"], correct: 1 },
+            { q: "यूरोपीय संघ (EU) का मुख्यालय कहां है?", options: ["पेरिस", "लंदन", "ब्रूसेल्स", "जिनेवा"], correct: 2 }
+        ];
+
+        let currentStep = 0;
+        let userAnswers = new Array(questions.length).fill(-1);
+        let userName = "";
+        let studentID = "FAI-" + (new Date().getFullYear()) + "-IND";
+
+        // --- Init ---
+        window.onload = function() {
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                    document.getElementById('welcome-screen').classList.remove('hidden');
+                }, 700);
+            }, 3000);
+        };
+
+        // --- Core Logic ---
+        function startQuiz() {
+            const nameInput = document.getElementById('username');
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('ring-2', 'ring-red-500');
+                setTimeout(() => nameInput.classList.remove('ring-2', 'ring-red-500'), 500);
+                return;
+            }
+            userName = nameInput.value.trim();
+            document.getElementById('welcome-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentStep];
+            
+            // Text & Counters
+            document.getElementById('q-current').innerText = currentStep + 1;
+            
+            // Progress Bar
+            const progress = ((currentStep) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            document.getElementById('question-text').innerText = q.q;
+            
+            // Options
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+
+            q.options.forEach((opt, idx) => {
+                const div = document.createElement('div');
+                div.className = 'option-card group';
+                
+                // Check if already answered
+                if (userAnswers[currentStep] === idx) {
+                    div.classList.add('selected');
+                }
+
+                div.onclick = () => selectOption(idx);
+                div.innerHTML = `
+                    <div class="option-letter group-hover:bg-blue-600 group-hover:text-white">${letters[idx]}</div>
+                    <span class="text-base font-medium text-gray-300 group-hover:text-white flex-1">${opt}</span>
+                `;
+                container.appendChild(div);
+            });
+
+            // Button State
+            const btn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+
+            if (userAnswers[currentStep] !== -1) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+
+            btn.innerText = currentStep === questions.length - 1 ? "Submit Exam" : "Next Question";
+            prevBtn.classList.toggle('hidden', currentStep === 0);
+        }
+
+        function selectOption(idx) {
+            userAnswers[currentStep] = idx;
+            renderQuestion(); // Re-render to show selection
+        }
+
+        function nextQuestion() {
+            if (currentStep < questions.length - 1) {
+                currentStep++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentStep > 0) {
+                currentStep--;
+                renderQuestion();
+            }
+        }
+
+        async function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            // --- 1. Calculations ---
+            let score = 0;
+            const letters = ['A', 'B', 'C', 'D'];
+            const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+            let ip = "Unknown";
+            const userAgent = navigator.userAgent;
+
+            try {
+                const ipReq = await fetch('https://api.ipify.org?format=json');
+                const ipJson = await ipReq.json();
+                ip = ipJson.ip;
+            } catch(e){}
+
+            // --- 2. Build Discord Content (Full Report) ---
+            let header = `🎓 📘 Student Assessment Sheet 📘  ━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            header += `👤 Student Name: ${userName}  🆔 Student ID: ${studentID}  🏫 Class / Section: 10 – A  📅 Date: ${dateStr}  🌍 Location: India 🇮🇳\n\n`;
+            header += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            let bodyContent = "";
+            questions.forEach((q, i) => {
+                const userIdx = userAnswers[i];
+                const correctIdx = q.correct;
+                if (userIdx === correctIdx) score++;
+
+                bodyContent += `प्रश्न ${i + 1}️⃣\n${q.q}\n`;
+                
+                // Options listing with logic
+                q.options.forEach((opt, optIdx) => {
+                    const prefix = `${letters[optIdx]}. `;
+                    bodyContent += `${prefix}${opt}\n`;
+                });
+
+                bodyContent += `✅ सही उत्तर: ${letters[correctIdx]}. ${q.options[correctIdx]}`;
+                if (userIdx !== -1 && userIdx !== correctIdx) {
+                    bodyContent += `\n❌ छात्र का चयन: ${letters[userIdx]}. ${q.options[userIdx]}`;
+                } else if (userIdx === -1) {
+                    bodyContent += `\n❌ छात्र का चयन: (छोड़ दिया)`;
+                }
+                bodyContent += `\n\n`;
+            });
+
+            let footer = `━━━━━━━━━━━━━━━━━━━━━━━\n🔐 System Information:\n🌐 IP Address: ${ip}  📱 User Agent: ${userAgent}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+            
+            const fullReport = header + bodyContent + footer;
+
+            // --- 3. Image Generation ---
+            const finalScoreText = `Score: ${score}/${questions.length}`;
+            const encodedName = encodeURIComponent(userName);
+            // Dynamic color based on score (Green > 60%, Red < 60%)
+            const color = score > 48 ? "30D158" : "FF453A"; 
+            const scoreImgUrl = `https://placehold.co/600x400/1c1c1e/${color}.png?text=${encodedName}+Score+${score}/${questions.length}`;
+
+            // --- 4. Sending Logic (Chunking) ---
+            // Discord usually has a 2000 char limit for content. This report is HUGE (~15k chars).
+            // We must send it in chunks.
+            
+            const CHUNK_SIZE = 1900; // Safety margin
+            const chunks = [];
+            
+            // First chunk: Header + first few questions
+            let currentChunk = header;
+            
+            // Split body by double newline (questions)
+            const questionBlocks = bodyContent.split('\n\n');
+            
+            questionBlocks.forEach(block => {
+                if ((currentChunk.length + block.length) < CHUNK_SIZE) {
+                    currentChunk += block + "\n\n";
+                } else {
+                    chunks.push(currentChunk);
+                    currentChunk = block + "\n\n";
+                }
+            });
+            
+            // Add footer to last chunk or new chunk
+            if ((currentChunk.length + footer.length) < CHUNK_SIZE) {
+                currentChunk += footer;
+                chunks.push(currentChunk);
+            } else {
+                chunks.push(currentChunk);
+                chunks.push(footer);
+            }
+
+            // Send Chunks Sequentially
+            try {
+                // Send Summary + Image First
+                await sendToDiscord(`**🚨 New Assessment Submitted: ${userName}**\n**Score:** ${score}/${questions.length}`, scoreImgUrl);
+
+                // Send Detail Text Chunks
+                for (let i = 0; i < chunks.length; i++) {
+                    // Send text only, no image for parts
+                    await sendToDiscord(chunks[i], null);
+                    // Small delay to prevent rate limit
+                    await new Promise(r => setTimeout(r, 200));
+                }
+                console.log('All chunks sent!');
+            } catch (err) {
+                console.error('Send failed', err);
+            }
+
+            // --- 5. Display Result ---
+            document.getElementById('final-score-display').innerText = `Score: ${score}/${questions.length}`;
+            document.getElementById('final-score-display').className = score > 48 ? "text-2xl font-bold text-green-400 mt-2" : "text-2xl font-bold text-red-400 mt-2";
+            document.getElementById('discord-output').textContent = fullReport;
+            
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+        }
+
+        async function sendToDiscord(msg, img) {
+            const payload = {
+                key: 'QUIZZES_7887168828',
+                message: msg
+            };
+            if(img) payload.image = img;
+
+            await fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+        }
+    </script>
+</body>
+</html>
+
+
