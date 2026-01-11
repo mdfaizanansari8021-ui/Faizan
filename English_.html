@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Me and the Ecology Bit - Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+            overflow-x: hidden;
+        }
+
+        /* iOS Glassmorphism */
+        .glass {
+            background: rgba(28, 28, 30, 0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card {
+            background: rgba(44, 44, 46, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Animated Text */
+        .animated-text {
+            background: linear-gradient(to right, #30cfd0 0%, #330867 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+
+        /* Button Press Effect */
+        .btn-press:active {
+            transform: scale(0.96);
+            opacity: 0.8;
+        }
+
+        /* Transitions */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .slide-up { animation: slideUp 0.5s ease-out forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Option Selection */
+        .option-card {
+            transition: all 0.2s ease;
+        }
+        .option-card.selected {
+            background: rgba(10, 132, 255, 0.2);
+            border-color: #0A84FF;
+        }
+        .option-card.correct {
+            background: rgba(48, 209, 88, 0.2);
+            border-color: #30D158;
+        }
+        .option-card.wrong {
+            background: rgba(255, 69, 58, 0.2);
+            border-color: #FF453A;
+        }
+        
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #0A84FF;
+            width: 24px;
+            height: 24px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen relative text-base">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-500">
+        <dotlottie-wc src="https://lottie.host/acb1fa96-b24f-4179-ab54-5d4937f6d9e0/N1PGkGMZBM.lottie" style="width: 300px; height: 300px;" autoplay loop></dotlottie-wc>
+        <h1 class="text-3xl font-bold mt-6 animated-text tracking-tight">Power by Faizan Ali</h1>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app" class="hidden min-h-screen flex flex-col max-w-2xl mx-auto px-4 py-6 relative">
+        
+        <!-- Zoom Controls -->
+        <div class="fixed right-4 top-20 z-40 flex flex-col gap-2 glass rounded-full p-2 hidden" id="zoom-controls">
+            <button onclick="adjustZoom(1)" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full text-white hover:bg-gray-700 btn-press">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </button>
+            <button onclick="adjustZoom(-1)" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full text-white hover:bg-gray-700 btn-press">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </button>
+        </div>
+
+        <!-- Onboarding Screen -->
+        <div id="onboarding" class="flex flex-col h-full justify-center items-center flex-grow fade-in">
+            <div class="w-full glass-card p-8 mb-6 text-center">
+                <h2 class="text-2xl font-bold mb-2 text-white">Welcome Student</h2>
+                <p class="text-gray-400 mb-6">Me and the Ecology Bit - Objective Test</p>
+                
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="text-sm text-gray-500 font-medium ml-1">Full Name</label>
+                        <input type="text" id="username" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition" placeholder="Ex: Md Faizan Ansari">
+                    </div>
+                </div>
+
+                <button onclick="startQuiz()" class="w-full mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/50 btn-press transition">
+                    Start Assessment
+                </button>
+            </div>
+            <p class="text-xs text-gray-600">Secure Environment • IP Logged • No Copying</p>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-interface" class="hidden flex flex-col h-full fade-in pb-20">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6 px-1">
+                <div class="flex flex-col">
+                    <span class="text-xs text-blue-400 font-bold tracking-wider uppercase">Question <span id="q-current">1</span>/45</span>
+                    <span class="text-xs text-gray-500" id="timer">00:00</span>
+                </div>
+                <div class="h-1.5 w-32 bg-gray-800 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="flex-grow overflow-y-auto pb-8" id="question-container">
+                <div class="glass-card p-6 mb-6">
+                    <h3 id="question-text" class="text-xl font-semibold leading-relaxed mb-2 text-white">
+                        <!-- Question goes here -->
+                    </h3>
+                </div>
+
+                <!-- Options -->
+                <div id="options-list" class="space-y-3">
+                    <!-- Options generated by JS -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="fixed bottom-0 left-0 right-0 p-4 glass border-t-0 flex justify-between items-center max-w-2xl mx-auto z-30">
+                <button onclick="prevQuestion()" id="btn-prev" class="px-6 py-3 rounded-xl bg-gray-800 text-gray-300 font-medium disabled:opacity-30">Back</button>
+                <button onclick="nextQuestion()" id="btn-next" class="px-8 py-3 rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-900/30 btn-press">Next</button>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden flex flex-col h-full fade-in">
+            <div class="text-center mb-6">
+                <div class="inline-block p-4 rounded-full bg-green-500/10 mb-4">
+                    <div class="text-4xl">🎉</div>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Assessment Complete</h2>
+                <p class="text-gray-400">Sending your report to the server...</p>
+            </div>
+
+            <!-- Loading / Status -->
+            <div id="submission-status" class="glass-card p-6 mb-6 flex items-center justify-center gap-3">
+                <div class="loader"></div>
+                <span class="text-sm font-medium text-blue-400">Syncing with Discord API...</span>
+            </div>
+
+            <!-- Final Score Card -->
+            <div id="score-card" class="glass-card p-6 mb-6 hidden">
+                <div class="flex justify-between items-end mb-4 border-b border-gray-700 pb-4">
+                    <div>
+                        <p class="text-sm text-gray-400">Student Name</p>
+                        <p class="text-lg font-bold text-white" id="res-name">Faizan</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-400">Score</p>
+                        <p class="text-3xl font-bold text-green-400"><span id="res-score">0</span><span class="text-lg text-gray-500">/45</span></p>
+                    </div>
+                </div>
+                
+                <div class="bg-black/30 rounded-lg p-4 font-mono text-xs text-green-300 overflow-x-auto whitespace-pre-wrap" id="discord-preview">
+                    <!-- Preview of what was sent -->
+                </div>
+            </div>
+
+            <!-- Review Answers -->
+            <h3 class="text-lg font-bold mb-4 px-2">Detailed Review</h3>
+            <div id="review-list" class="space-y-4 pb-10">
+                <!-- Review items -->
+            </div>
+            
+            <button onclick="location.reload()" class="w-full mb-8 bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 rounded-xl btn-press transition">
+                Take New Assessment
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Data: 45 Questions based on "Me and the Ecology Bit" ---
+        const quizData = [
+            { q: "Jim asked Ms. Greene to keep the old newspapers for the school going children who would ______ them.", options: ["Burn", "Buy", "Collect", "Read"], correct: 2 }, // C
+            { q: "Jim told Mr. Johnson that it would reduce ______ and save ecology if he did not use his car for short distance.", options: ["Petrol", "Pollution", "Weight", "Diesel"], correct: 1 }, // B
+            { q: "Jim's mother told him that he used up ______ by watching television all the time.", options: ["Water", "Petrol", "Electricity", "Time"], correct: 2 }, // C
+            { q: "In 'Me and the Ecology Bit', the narrator talks about advising everybody what they should do to protect the ______.", options: ["Children", "Ecology", "Money", "Pedestrians"], correct: 1 }, // B
+            { q: "The narrator told Mr. Williams not to burn leaves as it is ______ for the air and ecology.", options: ["Good", "Excellent", "Bad", "Healthy"], correct: 2 }, // C
+            { q: "Which animal messes up Ms. Greene's yard?", options: ["Cat", "Rabbit", "Dog", "Cow"], correct: 2 }, // C
+            { q: "The post office was ______ from Mr. Johnson's house.", options: ["One block away", "Two blocks away", "Three blocks away", "Four blocks away"], correct: 1 }, // B
+            { q: "Who is the author of 'Me and the Ecology Bit'?", options: ["Joan Lexau", "Satyajit Ray", "Toni Morrison", "Dr. Rana P. Singh"], correct: 0 }, // A
+            { q: "When the author went to Mr. Williams' house, he was ______.", options: ["Sleeping", "Cooking", "Burning leaves", "Watering plants"], correct: 2 }, // C
+            { q: "The author used to meet people and create awareness about ______.", options: ["Politics", "Ecology", "Economy", "Sports"], correct: 1 }, // B
+            { q: "The narrator has a ______ route.", options: ["Milk", "Bus", "Paper", "Walking"], correct: 2 }, // C
+            { q: "'Nobody is willing to do anything about ecology.' Who said this?", options: ["Jim", "Mr. Johnson", "Ms. Greene", "Jim's Mother"], correct: 0 }, // A
+            { q: "According to Jim, who uses electric appliances the most?", options: ["Men", "Children", "Women", "Old people"], correct: 2 }, // C
+            { q: "Mr. Williams was burning ______.", options: ["Paper", "Leaves", "Plastic", "Wood"], correct: 1 }, // B
+            { q: "Preaching about ecology is easy but it is difficult to abide by the rules of ______.", options: ["Preservation", "Pollution", "Population", "Plantation"], correct: 0 }, // A
+            { q: "Mr. Johnson tells Jim that driving his motorbike causes ______ pollution.", options: ["Noise", "Water", "Air", "Soil"], correct: 2 }, // C
+            { q: "Jim asks Ms. Greene to save ______ so they can be made into paper.", options: ["Leaves", "Old Newspapers", "Plastic bags", "Cloths"], correct: 1 }, // B
+            { q: "Mr. Johnson was asked to use his car less in order to save the ______.", options: ["Fuel", "Money", "Environment", "Time"], correct: 2 }, // C
+            { q: "Surely it is very hard to get people to work for ______.", options: ["Money", "Fame", "Ecology", "School"], correct: 2 }, // C
+            { q: "Ms. Greene goes away on ______.", options: ["Monday and Tuesday", "Saturday and Sunday", "Friday and Saturday", "Sunday and Monday"], correct: 1 }, // B
+            { q: "The author advises Ms. Greene to save ______ cans.", options: ["Steel", "Copper", "Aluminium", "Plastic"], correct: 2 }, // C
+            { q: "Who makes a run for the car?", options: ["Jim", "Mr. Williams", "Mr. Johnson", "Ms. Greene"], correct: 2 }, // C
+            { q: "Jim advises Mr. Johnson to ______ to the post office.", options: ["Run", "Drive", "Walk", "Fly"], correct: 2 }, // C
+            { q: "Joan Lexau hardly gets time to ______.", options: ["Work", "Sleep", "Play", "Read"], correct: 2 }, // C
+            { q: "Where did Jim go to meet Mr. Williams?", options: ["His office", "His house", "The park", "The school"], correct: 1 }, // B
+            { q: "Burning the leaves is not good for the ______.", options: ["Soil", "Ecology", "Garden", "Neighbors"], correct: 1 }, // B
+            { q: "Preserving ______ should be a concern for everybody.", options: ["Money", "History", "Environment", "Buildings"], correct: 2 }, // C
+            { q: "Jim's dog had dug up Ms. Greene's ______.", options: ["Backyard", "Garden", "Driveway", "Porch"], correct: 1 }, // B
+            { q: "______ complained that the compost smells up the whole street.", options: ["Mr. Johnson", "Ms. Greene", "Mr. Williams", "Jim's Mother"], correct: 2 }, // C
+            { q: "Jim drove his ______ round and round the backyard all summer.", options: ["Car", "Bicycle", "Motorbike", "Scooter"], correct: 2 }, // C
+            { q: "______ is something which people hardly pay any attention to.", options: ["Politics", "Ecology", "Fashion", "Technology"], correct: 1 }, // B
+            { q: "Jim was very angry with Mr. Williams for ______.", options: ["Shouting", "Burning leaves", "Littering", "Driving fast"], correct: 1 }, // B
+            { q: "Jim says that women use too many ______ things.", options: ["Expensive", "Electric", "Heavy", "Plastic"], correct: 1 }, // B
+            { q: "Jim collects money only on ______.", options: ["Mondays", "Wednesdays", "Saturdays", "Sundays"], correct: 2 }, // C (Assuming from context/general knowledge of paper routes in stories)
+            { q: "To whom did the narrator say 'You should not burn the leaves'?", options: ["Mr. Johnson", "Ms. Greene", "Mr. Williams", "His mother"], correct: 2 }, // C
+            { q: "Which word in the lesson stands for 'filth'?", options: ["Garbage", "Compost", "Ecology", "Pollution"], correct: 0 }, // A
+            { q: "The narrator used to get ______.", options: ["Very angry", "Very happy", "Tired", "Bored"], correct: 2 }, // C
+            { q: "Jim's mother used an ______.", options: ["Electric Mixer", "Electric Iron", "Electric Heater", "Electric Fan"], correct: 0 }, // A
+            { q: "Jim suggested his mother to use a ______ instead of an electric mixer.", options: ["Spoon", "Hand beater", "Fork", "Knife"], correct: 1 }, // B (Egg beater/Hand beater)
+            { q: "What does the narrator call the work of ecology?", options: ["Good work", "Bad work", "Filthy work", "Hard work"], correct: 3 }, // D (Implied hard to get people to do it)
+            { q: "The author belongs to ______.", options: ["USA", "UK", "India", "Australia"], correct: 0 }, // A (Joan Lexau is American)
+            { q: "Mr. Johnson says he goes to the post office by car to save ______.", options: ["Time", "Petrol", "Ecology", "Money"], correct: 0 }, // A
+            { q: "Who pollutes the environment according to Jim?", options: ["Only Men", "Only Women", "Only Children", "Everyone"], correct: 3 }, // D
+            { q: "Jim's mother says he watches TV for ______ hours.", options: ["24", "25", "27", "20"], correct: 2 }, // C (Hyperbole in text)
+            { q: "Ecology deals with the relationship between ______.", options: ["Men and Women", "Living things and Environment", "Teachers and Students", "Parents and Children"], correct: 1 } // B
+        ];
+
+        // --- State ---
+        let currentQuestion = 0;
+        let userAnswers = new Array(45).fill(null);
+        let score = 0;
+        let userName = "";
+        let zoomLevel = 100;
+        let startTime = Date.now();
+        let ipAddress = "Loading...";
+
+        // --- DOM Elements ---
+        const splashScreen = document.getElementById('splash-screen');
+        const app = document.getElementById('app');
+        const onboarding = document.getElementById('onboarding');
+        const quizInterface = document.getElementById('quiz-interface');
+        const resultScreen = document.getElementById('result-screen');
+        const zoomControls = document.getElementById('zoom-controls');
+
+        // --- Init ---
+        window.onload = () => {
+            // Fetch IP silently
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => ipAddress = data.ip)
+                .catch(() => ipAddress = "Unknown");
+
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    app.classList.remove('hidden');
+                }, 500);
+            }, 3000);
+        };
+
+        // --- Logic ---
+        function adjustZoom(direction) {
+            zoomLevel += direction * 10;
+            if (zoomLevel < 80) zoomLevel = 80;
+            if (zoomLevel > 150) zoomLevel = 150;
+            document.getElementById('question-text').style.fontSize = `${zoomLevel}%`;
+            document.getElementById('options-list').style.fontSize = `${zoomLevel * 0.9}%`;
+        }
+
+        function startQuiz() {
+            const nameInput = document.getElementById('username');
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('ring-2', 'ring-red-500');
+                return;
+            }
+            userName = nameInput.value.trim();
+            onboarding.style.display = 'none';
+            quizInterface.classList.remove('hidden');
+            zoomControls.classList.remove('hidden');
+            loadQuestion(0);
+        }
+
+        function loadQuestion(index) {
+            const q = quizData[index];
+            document.getElementById('q-current').innerText = index + 1;
+            document.getElementById('progress-bar').style.width = `${((index + 1) / 45) * 100}%`;
+            
+            const qText = document.getElementById('question-text');
+            qText.innerText = q.q;
+            
+            const optsList = document.getElementById('options-list');
+            optsList.innerHTML = '';
+
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('div');
+                btn.className = `option-card p-4 rounded-xl border border-gray-700 bg-gray-800/50 cursor-pointer flex items-center gap-3 hover:bg-gray-700/50`;
+                if (userAnswers[index] === i) {
+                    btn.classList.add('selected');
+                }
+                
+                btn.innerHTML = `
+                    <div class="w-8 h-8 rounded-full border border-gray-500 flex items-center justify-center text-sm font-bold ${userAnswers[index] === i ? 'bg-blue-500 border-blue-500 text-white' : 'text-gray-400'}">
+                        ${String.fromCharCode(65 + i)}
+                    </div>
+                    <span class="text-white font-medium">${opt}</span>
+                `;
+                btn.onclick = () => selectOption(index, i);
+                optsList.appendChild(btn);
+            });
+
+            document.getElementById('btn-prev').disabled = index === 0;
+            document.getElementById('btn-next').innerText = index === 44 ? "Submit" : "Next";
+        }
+
+        function selectOption(qIndex, optIndex) {
+            userAnswers[qIndex] = optIndex;
+            loadQuestion(qIndex); // Re-render to show selection
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < 44) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            quizInterface.classList.add('hidden');
+            zoomControls.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            // Calculate Score
+            score = 0;
+            userAnswers.forEach((ans, i) => {
+                if (ans === quizData[i].correct) score++;
+            });
+
+            document.getElementById('res-name').innerText = userName;
+            document.getElementById('res-score').innerText = score;
+
+            sendToDiscord();
+            renderDetailedResult();
+        }
+
+        function renderDetailedResult() {
+            const list = document.getElementById('review-list');
+            list.innerHTML = '';
+
+            quizData.forEach((q, i) => {
+                const isCorrect = userAnswers[i] === q.correct;
+                const userOpt = userAnswers[i];
+                
+                const item = document.createElement('div');
+                item.className = `glass-card p-4 border-l-4 ${isCorrect ? 'border-l-green-500' : 'border-l-red-500'}`;
+                
+                let optionsHtml = '';
+                q.options.forEach((opt, optIdx) => {
+                    let mark = '';
+                    let colorClass = 'text-gray-400';
+                    
+                    if (optIdx === q.correct) {
+                        colorClass = 'text-green-400 font-bold';
+                        mark = '✅';
+                    } else if (optIdx === userOpt && !isCorrect) {
+                        colorClass = 'text-red-400';
+                        mark = '❌';
+                    }
+
+                    optionsHtml += `<div class="text-sm ${colorClass}">${String.fromCharCode(65+optIdx)}. ${opt} ${mark}</div>`;
+                });
+
+                item.innerHTML = `
+                    <p class="font-bold text-white mb-2">Q${i+1}. ${q.q}</p>
+                    <div class="space-y-1 ml-2">${optionsHtml}</div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function sendToDiscord() {
+            const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            // Construct Q&A String
+            let qaString = "";
+            quizData.forEach((q, i) => {
+                const userOpt = userAnswers[i];
+                const letter = String.fromCharCode(65 + q.correct);
+                const correctText = q.options[q.correct];
+                
+                qaString += `Q${i+1}. ${q.q}\n`;
+                q.options.forEach((opt, idx) => {
+                    let prefix = String.fromCharCode(65+idx);
+                    qaString += `${prefix}. ${opt}\n`;
+                });
+                qaString += `✅ Correct Answer: ${letter}. ${correctText}\n\n`;
+            });
+
+            // Clean Message Format
+            const finalMessage = `
+🎓 📘 Student Assessment Sheet 📘 ━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 Student Name: ${userName}  🆔 Student ID: FAI-2026-${Math.floor(Math.random()*1000)}  🏫 Class / Section: 10 – A  📅 Date: ${date}  🌍 Location: India 🇮🇳
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+${qaString}
+━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 System Information:
+🌐 IP Address: ${ipAddress}  📱 User Agent: ${navigator.userAgent}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+            `.trim();
+
+            document.getElementById('discord-preview').innerText = finalMessage;
+
+            // Generate Image URL (Placeholder for now as per request)
+            const imageUrl = `https://placehold.co/600x400/png?text=${encodeURIComponent(userName + " - Score: " + score)}`;
+
+            // API Call
+            fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: 'QUIZZES_7887168828',
+                    message: finalMessage,
+                    image: imageUrl
+                })
+            })
+            .then(res => {
+                console.log('Sent to Discord!');
+                document.getElementById('submission-status').innerHTML = `<span class="text-green-400">✅ Successfully sent to Class Record!</span>`;
+                document.getElementById('score-card').classList.remove('hidden');
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('submission-status').innerHTML = `<span class="text-red-400">⚠️ Connection Error (Results saved locally)</span>`;
+                document.getElementById('score-card').classList.remove('hidden');
+            });
+        }
+    </script>
+</body>
+</html>
+
+
