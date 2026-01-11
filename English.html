@@ -3,417 +3,505 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Pace for Living - Quiz</title>
+    <title>Me and the Ecology Bit - Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #000000;
             color: #ffffff;
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            overscroll-behavior: none;
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+            overflow-x: hidden;
         }
 
         /* iOS Glassmorphism */
         .glass {
-            background: rgba(30, 30, 30, 0.6);
+            background: rgba(28, 28, 30, 0.65);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes gradientText { 
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        .glass-card {
+            background: rgba(44, 44, 46, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
-        
-        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        
+
+        /* Animated Text */
         .animated-text {
-            background: linear-gradient(270deg, #ff00cc, #3333ff, #00ccff, #ff00cc);
-            background-size: 300% 300%;
+            background: linear-gradient(to right, #30cfd0 0%, #330867 100%);
             -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: gradientText 4s ease infinite;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1a1a1a; }
-        ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
-        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #000; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+
+        /* Button Press Effect */
+        .btn-press:active {
+            transform: scale(0.96);
+            opacity: 0.8;
+        }
+
+        /* Transitions */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .slide-up { animation: slideUp 0.5s ease-out forwards; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Option Selection */
         .option-card {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
         }
-        .option-card:active { transform: scale(0.98); }
         .option-card.selected {
-            background: rgba(59, 130, 246, 0.2);
-            border-color: #3b82f6;
+            background: rgba(10, 132, 255, 0.2);
+            border-color: #0A84FF;
+        }
+        .option-card.correct {
+            background: rgba(48, 209, 88, 0.2);
+            border-color: #30D158;
+        }
+        .option-card.wrong {
+            background: rgba(255, 69, 58, 0.2);
+            border-color: #FF453A;
         }
         
-        /* Utility */
-        .no-copy { user-select: none; -webkit-user-select: none; }
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #0A84FF;
+            width: 24px;
+            height: 24px;
+            -webkit-animation: spin 1s linear infinite; /* Safari */
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden text-gray-100 bg-black flex flex-col items-center justify-center">
+<body class="antialiased min-h-screen relative text-base">
 
     <!-- Splash Screen -->
-    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
-        <dotlottie-wc src="https://lottie.host/acb1fa96-b24f-4179-ab54-5d4937f6d9e0/N1PGkGMZBM.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
-        <h1 class="mt-6 text-3xl font-bold animated-text tracking-wide">Power by Faizan Ali</h1>
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black transition-opacity duration-500">
+        <dotlottie-wc src="https://lottie.host/acb1fa96-b24f-4179-ab54-5d4937f6d9e0/N1PGkGMZBM.lottie" style="width: 300px; height: 300px;" autoplay loop></dotlottie-wc>
+        <h1 class="text-3xl font-bold mt-6 animated-text tracking-tight">Power by Faizan Ali</h1>
     </div>
 
     <!-- Main App Container -->
-    <div id="app-container" class="hidden w-full h-full max-w-2xl mx-auto flex flex-col relative">
+    <div id="app" class="hidden min-h-screen flex flex-col max-w-2xl mx-auto px-4 py-6 relative">
         
-        <!-- Setup Screen (Name Only) -->
-        <div id="setup-screen" class="flex-1 flex flex-col items-center justify-center p-6 space-y-8 animate-fade-in">
-            <div class="text-center space-y-2">
-                <h2 class="text-4xl font-bold text-white">Welcome</h2>
-                <p class="text-gray-400">Enter your details to start the assessment</p>
-            </div>
-            
-            <div class="w-full space-y-4 glass p-6 rounded-2xl">
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2">Student Name</label>
-                    <input type="text" id="student-name" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-600" placeholder="e.g. Rahul Kumar">
-                </div>
-            </div>
-
-            <button onclick="startQuiz()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20 transition-all transform active:scale-95 text-lg">
-                Start Assessment
+        <!-- Zoom Controls -->
+        <div class="fixed right-4 top-20 z-40 flex flex-col gap-2 glass rounded-full p-2 hidden" id="zoom-controls">
+            <button onclick="adjustZoom(1)" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full text-white hover:bg-gray-700 btn-press">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+            </button>
+            <button onclick="adjustZoom(-1)" class="w-10 h-10 flex items-center justify-center bg-gray-800 rounded-full text-white hover:bg-gray-700 btn-press">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
             </button>
         </div>
 
+        <!-- Onboarding Screen -->
+        <div id="onboarding" class="flex flex-col h-full justify-center items-center flex-grow fade-in">
+            <div class="w-full glass-card p-8 mb-6 text-center">
+                <h2 class="text-2xl font-bold mb-2 text-white">Welcome Student</h2>
+                <p class="text-gray-400 mb-6">Me and the Ecology Bit - Objective Test</p>
+                
+                <div class="space-y-4 text-left">
+                    <div>
+                        <label class="text-sm text-gray-500 font-medium ml-1">Full Name</label>
+                        <input type="text" id="username" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition" placeholder="Ex: Md Faizan Ansari">
+                    </div>
+                </div>
+
+                <button onclick="startQuiz()" class="w-full mt-8 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-900/50 btn-press transition">
+                    Start Assessment
+                </button>
+            </div>
+            <p class="text-xs text-gray-600">Secure Environment • IP Logged • No Copying</p>
+        </div>
+
         <!-- Quiz Screen -->
-        <div id="quiz-screen" class="hidden flex-1 flex flex-col p-4 relative">
+        <div id="quiz-interface" class="hidden flex flex-col h-full fade-in pb-20">
             <!-- Header -->
-            <div class="flex justify-between items-center mb-6 pt-2">
+            <div class="flex justify-between items-center mb-6 px-1">
                 <div class="flex flex-col">
-                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Question</span>
-                    <span class="text-2xl font-bold"><span id="q-current">1</span><span class="text-gray-600 text-lg">/<span id="q-total">32</span></span></span>
+                    <span class="text-xs text-blue-400 font-bold tracking-wider uppercase">Question <span id="q-current">1</span>/45</span>
+                    <span class="text-xs text-gray-500" id="timer">00:00</span>
                 </div>
-                <div class="px-3 py-1 bg-gray-900 rounded-full border border-gray-800">
-                    <span id="timer" class="text-sm font-mono text-gray-300">00:00</span>
+                <div class="h-1.5 w-32 bg-gray-800 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-blue-500 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
             </div>
 
-            <!-- Progress Bar -->
-            <div class="w-full h-1 bg-gray-900 rounded-full mb-8 overflow-hidden">
-                <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-300 ease-out" style="width: 0%"></div>
-            </div>
-
-            <!-- Question Area -->
-            <div class="flex-1 overflow-y-auto pb-20 custom-scrollbar">
-                <div class="mb-6">
-                    <h2 id="question-text" class="text-2xl font-bold leading-relaxed text-white"></h2>
+            <!-- Question Card -->
+            <div class="flex-grow overflow-y-auto pb-8" id="question-container">
+                <div class="glass-card p-6 mb-6">
+                    <h3 id="question-text" class="text-xl font-semibold leading-relaxed mb-2 text-white">
+                        <!-- Question goes here -->
+                    </h3>
                 </div>
 
-                <div id="options-container" class="space-y-3">
-                    <!-- Options injected by JS -->
+                <!-- Options -->
+                <div id="options-list" class="space-y-3">
+                    <!-- Options generated by JS -->
                 </div>
             </div>
 
             <!-- Navigation -->
-            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black to-transparent">
-                <button onclick="nextQuestion()" id="next-btn" class="w-full py-4 bg-white text-black font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-                    Next Question
-                </button>
+            <div class="fixed bottom-0 left-0 right-0 p-4 glass border-t-0 flex justify-between items-center max-w-2xl mx-auto z-30">
+                <button onclick="prevQuestion()" id="btn-prev" class="px-6 py-3 rounded-xl bg-gray-800 text-gray-300 font-medium disabled:opacity-30">Back</button>
+                <button onclick="nextQuestion()" id="btn-next" class="px-8 py-3 rounded-xl bg-blue-600 text-white font-bold shadow-lg shadow-blue-900/30 btn-press">Next</button>
             </div>
-        </div>
-
-        <!-- Loading/Sending Screen -->
-        <div id="loading-screen" class="hidden flex-1 flex flex-col items-center justify-center space-y-4">
-            <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p class="text-gray-400 font-medium">Submitting Results...</p>
         </div>
 
         <!-- Result Screen -->
-        <div id="result-screen" class="hidden flex-1 flex flex-col overflow-hidden bg-black">
-            <div class="p-6 border-b border-gray-800 bg-black/50 backdrop-blur-md z-10">
-                <h2 class="text-3xl font-bold text-center mb-2">Assessment Complete</h2>
-                <div class="flex justify-center items-center space-x-4">
-                    <div class="text-center">
-                        <p class="text-sm text-gray-500">Score</p>
-                        <p class="text-3xl font-bold text-blue-500" id="final-score">0/32</p>
+        <div id="result-screen" class="hidden flex flex-col h-full fade-in">
+            <div class="text-center mb-6">
+                <div class="inline-block p-4 rounded-full bg-green-500/10 mb-4">
+                    <div class="text-4xl">🎉</div>
+                </div>
+                <h2 class="text-3xl font-bold text-white mb-2">Assessment Complete</h2>
+                <p class="text-gray-400">Sending your report to the server...</p>
+            </div>
+
+            <!-- Loading / Status -->
+            <div id="submission-status" class="glass-card p-6 mb-6 flex items-center justify-center gap-3">
+                <div class="loader"></div>
+                <span class="text-sm font-medium text-blue-400">Syncing with Discord API...</span>
+            </div>
+
+            <!-- Final Score Card -->
+            <div id="score-card" class="glass-card p-6 mb-6 hidden">
+                <div class="flex justify-between items-end mb-4 border-b border-gray-700 pb-4">
+                    <div>
+                        <p class="text-sm text-gray-400">Student Name</p>
+                        <p class="text-lg font-bold text-white" id="res-name">Faizan</p>
                     </div>
-                    <div class="h-8 w-px bg-gray-800"></div>
-                    <div class="text-center">
-                        <p class="text-sm text-gray-500">Percentage</p>
-                        <p class="text-3xl font-bold text-purple-500" id="final-percentage">0%</p>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-400">Score</p>
+                        <p class="text-3xl font-bold text-green-400"><span id="res-score">0</span><span class="text-lg text-gray-500">/45</span></p>
                     </div>
                 </div>
-                <div class="mt-4 p-3 bg-green-900/20 border border-green-800/50 rounded-lg flex items-center justify-center space-x-2">
-                    <span class="text-green-400">✅</span>
-                    <span class="text-sm text-green-200">Result Sent to Discord Successfully</span>
+                
+                <div class="bg-black/30 rounded-lg p-4 font-mono text-xs text-green-300 overflow-x-auto whitespace-pre-wrap" id="discord-preview">
+                    <!-- Preview of what was sent -->
                 </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-4 space-y-6" id="result-details">
-                <!-- Detailed results injected here -->
+            <!-- Review Answers -->
+            <h3 class="text-lg font-bold mb-4 px-2">Detailed Review</h3>
+            <div id="review-list" class="space-y-4 pb-10">
+                <!-- Review items -->
             </div>
             
-             <div class="p-4 bg-black border-t border-gray-800">
-                 <button onclick="location.reload()" class="w-full py-3 bg-gray-800 text-white rounded-xl font-semibold">Take Quiz Again</button>
-             </div>
+            <button onclick="location.reload()" class="w-full mb-8 bg-gray-800 hover:bg-gray-700 text-white font-bold py-4 rounded-xl btn-press transition">
+                Take New Assessment
+            </button>
         </div>
+
     </div>
 
     <script>
-        // --- Data & State ---
-        const questions = [
-            { q: "The Corn merchant was unable to handle the ____ of life.", options: ["Pace", "Sorrows", "Joys", "Money"], correct: "Pace" },
-            { q: "____ are handicapped in finding a living for themselves.", options: ["Fast thinkers", "Slow thinkers", "Lazy people", "Rich people"], correct: "Slow thinkers" },
-            { q: "The hero of the movie as described in 'The Pace for Living' took off his ____ when he came indoors.", options: ["Coat", "Shoes", "Hat", "Shirt"], correct: "Hat" },
-            { q: "Hutchinson says that when he goes to the cinema he finds himself in ____ fog.", options: ["Thick", "Hopeless", "Dark", "Mist"], correct: "Hopeless" },
-            { q: "We slow thinkers, according to Hutchinson, are terribly ____.", options: ["Lucky", "Handicapped", "Blessed", "Cursed"], correct: "Handicapped" },
-            { q: "The author wants to dine in London and lunch in ____.", options: ["Chicago", "New York", "Paris", "Dublin"], correct: "New York" },
-            { q: "Slow thinkers are handicapped in the business of getting a ____.", options: ["Car", "House", "Living", "Meal"], correct: "Living" },
-            { q: "____ movement gives you a superficial sense of drama.", options: ["Slow", "Rapid", "Steady", "No"], correct: "Rapid" },
-            { q: "According to the author, intelligence tests are designed to test the ____.", options: ["Physical strength", "Mental speed", "Character", "Knowledge"], correct: "Mental speed" },
-            { q: "Slow thinkers have a disadvantage when it comes to getting a ____.", options: ["Living", "Ticket", "Prize", "Job"], correct: "Living" },
-            { q: "Hutchinson was sure that he will score the lowest marks in any ____.", options: ["Driving test", "Intelligence test", "Cooking test", "Music test"], correct: "Intelligence test" },
-            { q: "The main character in the play which the author saw in 'The Pace for Living' was a/an ____ man.", options: ["Young", "Elderly", "Sick", "Rich"], correct: "Elderly" },
-            { q: "How many girls were there in the film 'The Pace for Living'?", options: ["Two", "Three", "Four", "Five"], correct: "Three" },
-            { q: "In 'The Pace for Living', the author says that ____ are designed to test the mental speed of a person.", options: ["Movies", "Games", "Intelligence tests", "Sports"], correct: "Intelligence tests" },
-            { q: "The author in 'The Pace for Living' enjoys ____.", options: ["Long car drives", "Flying", "Walking", "Sleeping"], correct: "Long car drives" },
-            { q: "The Corn merchant was getting ____ by his nephew in 'The Pace for Living'.", options: ["Helped", "Beaten", "Cheated", "Paid"], correct: "Cheated" },
-            { q: "The main character in 'The Pace for Living' which the author saw was an elderly ____.", options: ["Doctor", "Corn merchant", "Teacher", "Lawyer"], correct: "Corn merchant" },
-            { q: "In 'The Pace for Living', the writer captures the agony of the ____.", options: ["Ancient man", "Future man", "Modern man", "Village man"], correct: "Modern man" },
-            { q: "The author finds himself in a hopeless situation when he goes to watch the ____.", options: ["Match", "Cinema", "Opera", "Circus"], correct: "Cinema" },
-            { q: "The rapid movement gives you a superficial sense of ____.", options: ["Joy", "Drama", "Pain", "Speed"], correct: "Drama" },
-            { q: "R.C. Hutchinson wrote that he watched a play in ____.", options: ["London", "New York", "Dublin", "Chicago"], correct: "Dublin" },
-            { q: "The people nowadays think ____ than ancient times.", options: ["Slower", "Faster", "Better", "Worse"], correct: "Faster" },
-            { q: "Mental activities of our time tend to follow the pace of ____.", options: ["Nature", "Animals", "Machines", "Humans"], correct: "Machines" },
-            { q: "In 'The Pace for Living', R.C. Hutchinson discusses ____.", options: ["Agony of modern man", "Joys of ancient man", "Future technology", "War"], correct: "Agony of modern man" },
-            { q: "The author of the story enjoyed going in a car at ____.", options: ["50 miles an hour", "90 miles an hour", "60 miles an hour", "80 miles an hour"], correct: "90 miles an hour" },
-            { q: "The writer of 'The Pace for Living' belongs to the tribe of ____.", options: ["Fast thinkers", "Slow thinkers", "Deep thinkers", "No thinkers"], correct: "Slow thinkers" },
-            { q: "In 'The Pace for Living', the author saw a play in ____.", options: ["London", "Dublin", "Paris", "Berlin"], correct: "Dublin" },
-            { q: "How does the writer classify himself as a thinker in 'The Pace for Living'?", options: ["Intelligent", "Slow thinker", "Genius", "Average"], correct: "Slow thinker" },
-            { q: "In the essay 'The Pace for Living', the Corn merchant is a/an ____ man.", options: ["Happy", "Anxious", "Cruel", "Brave"], correct: "Anxious" },
-            { q: "The author admits that quick travel does not give the traveler the real ____ of travel.", options: ["Cost", "Pain", "Pleasure", "Time"], correct: "Pleasure" },
-            { q: "'The Pace for Living' is written by ____.", options: ["Satyajit Ray", "R.C. Hutchinson", "Toni Morrison", "Humayun Kabir"], correct: "R.C. Hutchinson" },
-            { q: "The people now think faster than people did ____.", options: ["100 years ago", "30 years ago", "50 years ago", "20 years ago"], correct: "30 years ago" }
+        // --- Data: 45 Questions based on "Me and the Ecology Bit" ---
+        const quizData = [
+            { q: "Jim asked Ms. Greene to keep the old newspapers for the school going children who would ______ them.", options: ["Burn", "Buy", "Collect", "Read"], correct: 2 }, // C
+            { q: "Jim told Mr. Johnson that it would reduce ______ and save ecology if he did not use his car for short distance.", options: ["Petrol", "Pollution", "Weight", "Diesel"], correct: 1 }, // B
+            { q: "Jim's mother told him that he used up ______ by watching television all the time.", options: ["Water", "Petrol", "Electricity", "Time"], correct: 2 }, // C
+            { q: "In 'Me and the Ecology Bit', the narrator talks about advising everybody what they should do to protect the ______.", options: ["Children", "Ecology", "Money", "Pedestrians"], correct: 1 }, // B
+            { q: "The narrator told Mr. Williams not to burn leaves as it is ______ for the air and ecology.", options: ["Good", "Excellent", "Bad", "Healthy"], correct: 2 }, // C
+            { q: "Which animal messes up Ms. Greene's yard?", options: ["Cat", "Rabbit", "Dog", "Cow"], correct: 2 }, // C
+            { q: "The post office was ______ from Mr. Johnson's house.", options: ["One block away", "Two blocks away", "Three blocks away", "Four blocks away"], correct: 1 }, // B
+            { q: "Who is the author of 'Me and the Ecology Bit'?", options: ["Joan Lexau", "Satyajit Ray", "Toni Morrison", "Dr. Rana P. Singh"], correct: 0 }, // A
+            { q: "When the author went to Mr. Williams' house, he was ______.", options: ["Sleeping", "Cooking", "Burning leaves", "Watering plants"], correct: 2 }, // C
+            { q: "The author used to meet people and create awareness about ______.", options: ["Politics", "Ecology", "Economy", "Sports"], correct: 1 }, // B
+            { q: "The narrator has a ______ route.", options: ["Milk", "Bus", "Paper", "Walking"], correct: 2 }, // C
+            { q: "'Nobody is willing to do anything about ecology.' Who said this?", options: ["Jim", "Mr. Johnson", "Ms. Greene", "Jim's Mother"], correct: 0 }, // A
+            { q: "According to Jim, who uses electric appliances the most?", options: ["Men", "Children", "Women", "Old people"], correct: 2 }, // C
+            { q: "Mr. Williams was burning ______.", options: ["Paper", "Leaves", "Plastic", "Wood"], correct: 1 }, // B
+            { q: "Preaching about ecology is easy but it is difficult to abide by the rules of ______.", options: ["Preservation", "Pollution", "Population", "Plantation"], correct: 0 }, // A
+            { q: "Mr. Johnson tells Jim that driving his motorbike causes ______ pollution.", options: ["Noise", "Water", "Air", "Soil"], correct: 2 }, // C
+            { q: "Jim asks Ms. Greene to save ______ so they can be made into paper.", options: ["Leaves", "Old Newspapers", "Plastic bags", "Cloths"], correct: 1 }, // B
+            { q: "Mr. Johnson was asked to use his car less in order to save the ______.", options: ["Fuel", "Money", "Environment", "Time"], correct: 2 }, // C
+            { q: "Surely it is very hard to get people to work for ______.", options: ["Money", "Fame", "Ecology", "School"], correct: 2 }, // C
+            { q: "Ms. Greene goes away on ______.", options: ["Monday and Tuesday", "Saturday and Sunday", "Friday and Saturday", "Sunday and Monday"], correct: 1 }, // B
+            { q: "The author advises Ms. Greene to save ______ cans.", options: ["Steel", "Copper", "Aluminium", "Plastic"], correct: 2 }, // C
+            { q: "Who makes a run for the car?", options: ["Jim", "Mr. Williams", "Mr. Johnson", "Ms. Greene"], correct: 2 }, // C
+            { q: "Jim advises Mr. Johnson to ______ to the post office.", options: ["Run", "Drive", "Walk", "Fly"], correct: 2 }, // C
+            { q: "Joan Lexau hardly gets time to ______.", options: ["Work", "Sleep", "Play", "Read"], correct: 2 }, // C
+            { q: "Where did Jim go to meet Mr. Williams?", options: ["His office", "His house", "The park", "The school"], correct: 1 }, // B
+            { q: "Burning the leaves is not good for the ______.", options: ["Soil", "Ecology", "Garden", "Neighbors"], correct: 1 }, // B
+            { q: "Preserving ______ should be a concern for everybody.", options: ["Money", "History", "Environment", "Buildings"], correct: 2 }, // C
+            { q: "Jim's dog had dug up Ms. Greene's ______.", options: ["Backyard", "Garden", "Driveway", "Porch"], correct: 1 }, // B
+            { q: "______ complained that the compost smells up the whole street.", options: ["Mr. Johnson", "Ms. Greene", "Mr. Williams", "Jim's Mother"], correct: 2 }, // C
+            { q: "Jim drove his ______ round and round the backyard all summer.", options: ["Car", "Bicycle", "Motorbike", "Scooter"], correct: 2 }, // C
+            { q: "______ is something which people hardly pay any attention to.", options: ["Politics", "Ecology", "Fashion", "Technology"], correct: 1 }, // B
+            { q: "Jim was very angry with Mr. Williams for ______.", options: ["Shouting", "Burning leaves", "Littering", "Driving fast"], correct: 1 }, // B
+            { q: "Jim says that women use too many ______ things.", options: ["Expensive", "Electric", "Heavy", "Plastic"], correct: 1 }, // B
+            { q: "Jim collects money only on ______.", options: ["Mondays", "Wednesdays", "Saturdays", "Sundays"], correct: 2 }, // C (Assuming from context/general knowledge of paper routes in stories)
+            { q: "To whom did the narrator say 'You should not burn the leaves'?", options: ["Mr. Johnson", "Ms. Greene", "Mr. Williams", "His mother"], correct: 2 }, // C
+            { q: "Which word in the lesson stands for 'filth'?", options: ["Garbage", "Compost", "Ecology", "Pollution"], correct: 0 }, // A
+            { q: "The narrator used to get ______.", options: ["Very angry", "Very happy", "Tired", "Bored"], correct: 2 }, // C
+            { q: "Jim's mother used an ______.", options: ["Electric Mixer", "Electric Iron", "Electric Heater", "Electric Fan"], correct: 0 }, // A
+            { q: "Jim suggested his mother to use a ______ instead of an electric mixer.", options: ["Spoon", "Hand beater", "Fork", "Knife"], correct: 1 }, // B (Egg beater/Hand beater)
+            { q: "What does the narrator call the work of ecology?", options: ["Good work", "Bad work", "Filthy work", "Hard work"], correct: 3 }, // D (Implied hard to get people to do it)
+            { q: "The author belongs to ______.", options: ["USA", "UK", "India", "Australia"], correct: 0 }, // A (Joan Lexau is American)
+            { q: "Mr. Johnson says he goes to the post office by car to save ______.", options: ["Time", "Petrol", "Ecology", "Money"], correct: 0 }, // A
+            { q: "Who pollutes the environment according to Jim?", options: ["Only Men", "Only Women", "Only Children", "Everyone"], correct: 3 }, // D
+            { q: "Jim's mother says he watches TV for ______ hours.", options: ["24", "25", "27", "20"], correct: 2 }, // C (Hyperbole in text)
+            { q: "Ecology deals with the relationship between ______.", options: ["Men and Women", "Living things and Environment", "Teachers and Students", "Parents and Children"], correct: 1 } // B
         ];
 
-        let state = {
-            currentQuestion: 0,
-            answers: new Array(questions.length).fill(null),
-            userName: "",
-            startTime: Date.now(),
-            ip: "Loading...",
-            userAgent: navigator.userAgent
-        };
+        // --- State ---
+        let currentQuestion = 0;
+        let userAnswers = new Array(45).fill(null);
+        let score = 0;
+        let userName = "";
+        let zoomLevel = 100;
+        let startTime = Date.now();
+        let ipAddress = "Loading...";
 
-        // --- Initialization ---
-        window.onload = async () => {
-            // Get IP
-            try {
-                const res = await fetch('https://api.ipify.org?format=json');
-                const data = await res.json();
-                state.ip = data.ip;
-            } catch (e) {
-                state.ip = "Unknown";
-            }
+        // --- DOM Elements ---
+        const splashScreen = document.getElementById('splash-screen');
+        const app = document.getElementById('app');
+        const onboarding = document.getElementById('onboarding');
+        const quizInterface = document.getElementById('quiz-interface');
+        const resultScreen = document.getElementById('result-screen');
+        const zoomControls = document.getElementById('zoom-controls');
 
-            // Splash Screen Timer
+        // --- Init ---
+        window.onload = () => {
+            // Fetch IP silently
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => ipAddress = data.ip)
+                .catch(() => ipAddress = "Unknown");
+
             setTimeout(() => {
-                document.getElementById('splash-screen').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
-                document.getElementById('app-container').classList.add('flex');
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    app.classList.remove('hidden');
+                }, 500);
             }, 3000);
-            
-            // Disable context menu
-            document.addEventListener('contextmenu', event => event.preventDefault());
         };
 
-        // --- Setup Logic ---
+        // --- Logic ---
+        function adjustZoom(direction) {
+            zoomLevel += direction * 10;
+            if (zoomLevel < 80) zoomLevel = 80;
+            if (zoomLevel > 150) zoomLevel = 150;
+            document.getElementById('question-text').style.fontSize = `${zoomLevel}%`;
+            document.getElementById('options-list').style.fontSize = `${zoomLevel * 0.9}%`;
+        }
+
         function startQuiz() {
-            const name = document.getElementById('student-name').value.trim();
-            if (!name) {
-                alert("Please enter your name.");
+            const nameInput = document.getElementById('username');
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('ring-2', 'ring-red-500');
                 return;
             }
-            state.userName = name;
-            
-            // Transition
-            document.getElementById('setup-screen').classList.add('hidden');
-            document.getElementById('quiz-screen').classList.remove('hidden');
-            
-            loadQuestion();
-            startTimer();
+            userName = nameInput.value.trim();
+            onboarding.style.display = 'none';
+            quizInterface.classList.remove('hidden');
+            zoomControls.classList.remove('hidden');
+            loadQuestion(0);
         }
 
-        // --- Quiz Logic ---
-        function loadQuestion() {
-            const q = questions[state.currentQuestion];
-            document.getElementById('q-current').innerText = state.currentQuestion + 1;
-            document.getElementById('question-text').innerText = `Q${state.currentQuestion + 1}. ${q.q}`;
+        function loadQuestion(index) {
+            const q = quizData[index];
+            document.getElementById('q-current').innerText = index + 1;
+            document.getElementById('progress-bar').style.width = `${((index + 1) / 45) * 100}%`;
             
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
+            const qText = document.getElementById('question-text');
+            qText.innerText = q.q;
+            
+            const optsList = document.getElementById('options-list');
+            optsList.innerHTML = '';
 
-            q.options.forEach((opt, idx) => {
-                const letter = String.fromCharCode(65 + idx);
-                const isSelected = state.answers[state.currentQuestion] === opt;
-                
+            q.options.forEach((opt, i) => {
                 const btn = document.createElement('div');
-                btn.className = `option-card p-4 rounded-xl border ${isSelected ? 'border-blue-500 bg-blue-900/20' : 'border-gray-800 bg-gray-900/50'} flex items-center space-x-3 cursor-pointer hover:bg-gray-800`;
-                btn.onclick = () => selectOption(opt);
+                btn.className = `option-card p-4 rounded-xl border border-gray-700 bg-gray-800/50 cursor-pointer flex items-center gap-3 hover:bg-gray-700/50`;
+                if (userAnswers[index] === i) {
+                    btn.classList.add('selected');
+                }
                 
                 btn.innerHTML = `
-                    <div class="w-8 h-8 rounded-full border ${isSelected ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-600 text-gray-400'} flex items-center justify-center font-bold text-sm transition-colors">
-                        ${letter}
+                    <div class="w-8 h-8 rounded-full border border-gray-500 flex items-center justify-center text-sm font-bold ${userAnswers[index] === i ? 'bg-blue-500 border-blue-500 text-white' : 'text-gray-400'}">
+                        ${String.fromCharCode(65 + i)}
                     </div>
-                    <span class="text-lg text-gray-200">${opt}</span>
+                    <span class="text-white font-medium">${opt}</span>
                 `;
-                container.appendChild(btn);
+                btn.onclick = () => selectOption(index, i);
+                optsList.appendChild(btn);
             });
 
-            // Update Progress
-            const progress = ((state.currentQuestion) / questions.length) * 100;
-            document.getElementById('progress-bar').style.width = `${progress}%`;
-            
-            // Next Button State
-            const nextBtn = document.getElementById('next-btn');
-            if (state.currentQuestion === questions.length - 1) {
-                nextBtn.innerText = "Finish Assessment";
-            } else {
-                nextBtn.innerText = "Next Question";
-            }
+            document.getElementById('btn-prev').disabled = index === 0;
+            document.getElementById('btn-next').innerText = index === 44 ? "Submit" : "Next";
         }
 
-        function selectOption(opt) {
-            state.answers[state.currentQuestion] = opt;
-            loadQuestion(); // Re-render to show selection
+        function selectOption(qIndex, optIndex) {
+            userAnswers[qIndex] = optIndex;
+            loadQuestion(qIndex); // Re-render to show selection
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
         }
 
         function nextQuestion() {
-            if (!state.answers[state.currentQuestion]) {
-                alert("Please select an answer to continue.");
-                return;
-            }
-
-            if (state.currentQuestion < questions.length - 1) {
-                state.currentQuestion++;
-                loadQuestion();
+            if (currentQuestion < 44) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
             } else {
                 finishQuiz();
             }
         }
 
-        function startTimer() {
-            let seconds = 0;
-            setInterval(() => {
-                seconds++;
-                const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-                const s = (seconds % 60).toString().padStart(2, '0');
-                document.getElementById('timer').innerText = `${m}:${s}`;
-            }, 1000);
+        function finishQuiz() {
+            quizInterface.classList.add('hidden');
+            zoomControls.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            
+            // Calculate Score
+            score = 0;
+            userAnswers.forEach((ans, i) => {
+                if (ans === quizData[i].correct) score++;
+            });
+
+            document.getElementById('res-name').innerText = userName;
+            document.getElementById('res-score').innerText = score;
+
+            sendToDiscord();
+            renderDetailedResult();
         }
 
-        // --- Result & Discord Logic ---
-        async function finishQuiz() {
-            document.getElementById('quiz-screen').classList.add('hidden');
-            document.getElementById('loading-screen').classList.remove('hidden');
+        function renderDetailedResult() {
+            const list = document.getElementById('review-list');
+            list.innerHTML = '';
 
-            // Calculate Score
-            let score = 0;
-            state.answers.forEach((ans, idx) => {
-                if (ans === questions[idx].correct) score++;
-            });
-
-            // Generate Discord Message
-            const date = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
-            
-            let messageContent = `🎓 📘 Student Assessment Sheet 📘 ━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-            messageContent += `👤 Student Name: ${state.userName}  🆔 Student ID: FAI-${new Date().getFullYear()}-IND  🏫 Class / Section: 10 – A  📅 Date: ${date}  🌍 Location: India 🇮🇳\n\n`;
-            messageContent += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-
-            questions.forEach((q, idx) => {
-                const userAns = state.answers[idx];
-                const isCorrect = userAns === q.correct;
+            quizData.forEach((q, i) => {
+                const isCorrect = userAnswers[i] === q.correct;
+                const userOpt = userAnswers[i];
                 
-                messageContent += `Q${idx + 1}. ${q.q}\n`;
+                const item = document.createElement('div');
+                item.className = `glass-card p-4 border-l-4 ${isCorrect ? 'border-l-green-500' : 'border-l-red-500'}`;
+                
+                let optionsHtml = '';
                 q.options.forEach((opt, optIdx) => {
-                    const letter = String.fromCharCode(65 + optIdx);
-                    let mark = "";
-                    if (opt === userAns && !isCorrect) mark = " ❌"; // Wrong selection
+                    let mark = '';
+                    let colorClass = 'text-gray-400';
                     
-                    messageContent += `${letter}. ${opt}${mark}\n`;
-                });
-                messageContent += `✅ Correct Answer: ${q.options.find(o => o === q.correct)}\n\n`;
-            });
-
-            messageContent += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
-            messageContent += `🔐 System Information:\n`;
-            messageContent += `🌐 IP Address: ${state.ip}  📱 User Agent: ${state.userAgent}\n`;
-            messageContent += `━━━━━━━━━━━━━━━━━━━━━━━`;
-
-            // Send to Discord
-            try {
-                await fetch('https://quizzes-pi-one.vercel.app/api/send', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        key: 'QUIZZES_7887168828',
-                        message: messageContent,
-                        image: `https://placehold.co/600x400/png?text=${encodeURIComponent(state.userName + " Score: " + score)}`
-                    })
-                });
-                console.log('Sent to Discord!');
-            } catch (error) {
-                console.error('Discord send failed', error);
-            }
-
-            // Render Result Screen
-            document.getElementById('loading-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = `${score}/${questions.length}`;
-            document.getElementById('final-percentage').innerText = `${Math.round((score/questions.length)*100)}%`;
-
-            const resultContainer = document.getElementById('result-details');
-            questions.forEach((q, idx) => {
-                const userAns = state.answers[idx];
-                const isCorrect = userAns === q.correct;
-                
-                const div = document.createElement('div');
-                div.className = "bg-gray-900/50 border border-gray-800 p-4 rounded-xl";
-                
-                let optionsHtml = "";
-                q.options.forEach((opt, optIdx) => {
-                    const letter = String.fromCharCode(65 + optIdx);
-                    let styleClass = "text-gray-400";
-                    let icon = "";
-                    
-                    if (opt === q.correct) {
-                        styleClass = "text-green-400 font-bold";
-                        icon = "✅";
-                    } else if (opt === userAns && !isCorrect) {
-                        styleClass = "text-red-400 font-bold";
-                        icon = "❌";
+                    if (optIdx === q.correct) {
+                        colorClass = 'text-green-400 font-bold';
+                        mark = '✅';
+                    } else if (optIdx === userOpt && !isCorrect) {
+                        colorClass = 'text-red-400';
+                        mark = '❌';
                     }
-                    
-                    optionsHtml += `<div class="${styleClass} py-1">${letter}. ${opt} ${icon}</div>`;
+
+                    optionsHtml += `<div class="text-sm ${colorClass}">${String.fromCharCode(65+optIdx)}. ${opt} ${mark}</div>`;
                 });
 
-                div.innerHTML = `
-                    <div class="mb-2 font-semibold text-white">Q${idx + 1}. ${q.q}</div>
-                    <div class="space-y-1 text-sm pl-2 border-l-2 ${isCorrect ? 'border-green-500' : 'border-red-500'}">
-                        ${optionsHtml}
-                    </div>
+                item.innerHTML = `
+                    <p class="font-bold text-white mb-2">Q${i+1}. ${q.q}</p>
+                    <div class="space-y-1 ml-2">${optionsHtml}</div>
                 `;
-                resultContainer.appendChild(div);
+                list.appendChild(item);
+            });
+        }
+
+        function sendToDiscord() {
+            const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            // Construct Q&A String
+            let qaString = "";
+            quizData.forEach((q, i) => {
+                const userOpt = userAnswers[i];
+                const letter = String.fromCharCode(65 + q.correct);
+                const correctText = q.options[q.correct];
+                
+                qaString += `Q${i+1}. ${q.q}\n`;
+                q.options.forEach((opt, idx) => {
+                    let prefix = String.fromCharCode(65+idx);
+                    qaString += `${prefix}. ${opt}\n`;
+                });
+                qaString += `✅ Correct Answer: ${letter}. ${correctText}\n\n`;
+            });
+
+            // Clean Message Format
+            const finalMessage = `
+🎓 📘 Student Assessment Sheet 📘 ━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 Student Name: ${userName}  🆔 Student ID: FAI-2026-${Math.floor(Math.random()*1000)}  🏫 Class / Section: 10 – A  📅 Date: ${date}  🌍 Location: India 🇮🇳
+
+━━━━━━━━━━━━━━━━━━━━━━━
+
+${qaString}
+━━━━━━━━━━━━━━━━━━━━━━━
+
+🔐 System Information:
+🌐 IP Address: ${ipAddress}  📱 User Agent: ${navigator.userAgent}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+            `.trim();
+
+            document.getElementById('discord-preview').innerText = finalMessage;
+
+            // Generate Image URL (Placeholder for now as per request)
+            const imageUrl = `https://placehold.co/600x400/png?text=${encodeURIComponent(userName + " - Score: " + score)}`;
+
+            // API Call
+            fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: 'QUIZZES_7887168828',
+                    message: finalMessage,
+                    image: imageUrl
+                })
+            })
+            .then(res => {
+                console.log('Sent to Discord!');
+                document.getElementById('submission-status').innerHTML = `<span class="text-green-400">✅ Successfully sent to Class Record!</span>`;
+                document.getElementById('score-card').classList.remove('hidden');
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('submission-status').innerHTML = `<span class="text-red-400">⚠️ Connection Error (Results saved locally)</span>`;
+                document.getElementById('score-card').classList.remove('hidden');
             });
         }
     </script>
