@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Pace for Living - Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overscroll-behavior: none;
+        }
+
+        /* iOS Glassmorphism */
+        .glass {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes gradientText { 
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        
+        .animated-text {
+            background: linear-gradient(270deg, #ff00cc, #3333ff, #00ccff, #ff00cc);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientText 4s ease infinite;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+        
+        /* Option Selection */
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-card:active { transform: scale(0.98); }
+        .option-card.selected {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
+        }
+        
+        /* Utility */
+        .no-copy { user-select: none; -webkit-user-select: none; }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden text-gray-100 bg-black flex flex-col items-center justify-center">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
+        <dotlottie-wc src="https://lottie.host/acb1fa96-b24f-4179-ab54-5d4937f6d9e0/N1PGkGMZBM.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <h1 class="mt-6 text-3xl font-bold animated-text tracking-wide">Power by Faizan Ali</h1>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="hidden w-full h-full max-w-2xl mx-auto flex flex-col relative">
+        
+        <!-- Setup Screen (Name Only) -->
+        <div id="setup-screen" class="flex-1 flex flex-col items-center justify-center p-6 space-y-8 animate-fade-in">
+            <div class="text-center space-y-2">
+                <h2 class="text-4xl font-bold text-white">Welcome</h2>
+                <p class="text-gray-400">Enter your details to start the assessment</p>
+            </div>
+            
+            <div class="w-full space-y-4 glass p-6 rounded-2xl">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Student Name</label>
+                    <input type="text" id="student-name" class="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 transition-colors text-white placeholder-gray-600" placeholder="e.g. Rahul Kumar">
+                </div>
+            </div>
+
+            <button onclick="startQuiz()" class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl shadow-lg shadow-blue-900/20 transition-all transform active:scale-95 text-lg">
+                Start Assessment
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden flex-1 flex flex-col p-4 relative">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6 pt-2">
+                <div class="flex flex-col">
+                    <span class="text-xs font-bold text-blue-400 uppercase tracking-wider">Question</span>
+                    <span class="text-2xl font-bold"><span id="q-current">1</span><span class="text-gray-600 text-lg">/<span id="q-total">32</span></span></span>
+                </div>
+                <div class="px-3 py-1 bg-gray-900 rounded-full border border-gray-800">
+                    <span id="timer" class="text-sm font-mono text-gray-300">00:00</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full h-1 bg-gray-900 rounded-full mb-8 overflow-hidden">
+                <div id="progress-bar" class="h-full bg-blue-500 transition-all duration-300 ease-out" style="width: 0%"></div>
+            </div>
+
+            <!-- Question Area -->
+            <div class="flex-1 overflow-y-auto pb-20 custom-scrollbar">
+                <div class="mb-6">
+                    <h2 id="question-text" class="text-2xl font-bold leading-relaxed text-white"></h2>
+                </div>
+
+                <div id="options-container" class="space-y-3">
+                    <!-- Options injected by JS -->
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black to-transparent">
+                <button onclick="nextQuestion()" id="next-btn" class="w-full py-4 bg-white text-black font-bold rounded-2xl shadow-lg transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                    Next Question
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading/Sending Screen -->
+        <div id="loading-screen" class="hidden flex-1 flex flex-col items-center justify-center space-y-4">
+            <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-gray-400 font-medium">Submitting Results...</p>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden flex-1 flex flex-col overflow-hidden bg-black">
+            <div class="p-6 border-b border-gray-800 bg-black/50 backdrop-blur-md z-10">
+                <h2 class="text-3xl font-bold text-center mb-2">Assessment Complete</h2>
+                <div class="flex justify-center items-center space-x-4">
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500">Score</p>
+                        <p class="text-3xl font-bold text-blue-500" id="final-score">0/32</p>
+                    </div>
+                    <div class="h-8 w-px bg-gray-800"></div>
+                    <div class="text-center">
+                        <p class="text-sm text-gray-500">Percentage</p>
+                        <p class="text-3xl font-bold text-purple-500" id="final-percentage">0%</p>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-green-900/20 border border-green-800/50 rounded-lg flex items-center justify-center space-x-2">
+                    <span class="text-green-400">✅</span>
+                    <span class="text-sm text-green-200">Result Sent to Discord Successfully</span>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 space-y-6" id="result-details">
+                <!-- Detailed results injected here -->
+            </div>
+            
+             <div class="p-4 bg-black border-t border-gray-800">
+                 <button onclick="location.reload()" class="w-full py-3 bg-gray-800 text-white rounded-xl font-semibold">Take Quiz Again</button>
+             </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Data & State ---
+        const questions = [
+            { q: "The Corn merchant was unable to handle the ____ of life.", options: ["Pace", "Sorrows", "Joys", "Money"], correct: "Pace" },
+            { q: "____ are handicapped in finding a living for themselves.", options: ["Fast thinkers", "Slow thinkers", "Lazy people", "Rich people"], correct: "Slow thinkers" },
+            { q: "The hero of the movie as described in 'The Pace for Living' took off his ____ when he came indoors.", options: ["Coat", "Shoes", "Hat", "Shirt"], correct: "Hat" },
+            { q: "Hutchinson says that when he goes to the cinema he finds himself in ____ fog.", options: ["Thick", "Hopeless", "Dark", "Mist"], correct: "Hopeless" },
+            { q: "We slow thinkers, according to Hutchinson, are terribly ____.", options: ["Lucky", "Handicapped", "Blessed", "Cursed"], correct: "Handicapped" },
+            { q: "The author wants to dine in London and lunch in ____.", options: ["Chicago", "New York", "Paris", "Dublin"], correct: "New York" },
+            { q: "Slow thinkers are handicapped in the business of getting a ____.", options: ["Car", "House", "Living", "Meal"], correct: "Living" },
+            { q: "____ movement gives you a superficial sense of drama.", options: ["Slow", "Rapid", "Steady", "No"], correct: "Rapid" },
+            { q: "According to the author, intelligence tests are designed to test the ____.", options: ["Physical strength", "Mental speed", "Character", "Knowledge"], correct: "Mental speed" },
+            { q: "Slow thinkers have a disadvantage when it comes to getting a ____.", options: ["Living", "Ticket", "Prize", "Job"], correct: "Living" },
+            { q: "Hutchinson was sure that he will score the lowest marks in any ____.", options: ["Driving test", "Intelligence test", "Cooking test", "Music test"], correct: "Intelligence test" },
+            { q: "The main character in the play which the author saw in 'The Pace for Living' was a/an ____ man.", options: ["Young", "Elderly", "Sick", "Rich"], correct: "Elderly" },
+            { q: "How many girls were there in the film 'The Pace for Living'?", options: ["Two", "Three", "Four", "Five"], correct: "Three" },
+            { q: "In 'The Pace for Living', the author says that ____ are designed to test the mental speed of a person.", options: ["Movies", "Games", "Intelligence tests", "Sports"], correct: "Intelligence tests" },
+            { q: "The author in 'The Pace for Living' enjoys ____.", options: ["Long car drives", "Flying", "Walking", "Sleeping"], correct: "Long car drives" },
+            { q: "The Corn merchant was getting ____ by his nephew in 'The Pace for Living'.", options: ["Helped", "Beaten", "Cheated", "Paid"], correct: "Cheated" },
+            { q: "The main character in 'The Pace for Living' which the author saw was an elderly ____.", options: ["Doctor", "Corn merchant", "Teacher", "Lawyer"], correct: "Corn merchant" },
+            { q: "In 'The Pace for Living', the writer captures the agony of the ____.", options: ["Ancient man", "Future man", "Modern man", "Village man"], correct: "Modern man" },
+            { q: "The author finds himself in a hopeless situation when he goes to watch the ____.", options: ["Match", "Cinema", "Opera", "Circus"], correct: "Cinema" },
+            { q: "The rapid movement gives you a superficial sense of ____.", options: ["Joy", "Drama", "Pain", "Speed"], correct: "Drama" },
+            { q: "R.C. Hutchinson wrote that he watched a play in ____.", options: ["London", "New York", "Dublin", "Chicago"], correct: "Dublin" },
+            { q: "The people nowadays think ____ than ancient times.", options: ["Slower", "Faster", "Better", "Worse"], correct: "Faster" },
+            { q: "Mental activities of our time tend to follow the pace of ____.", options: ["Nature", "Animals", "Machines", "Humans"], correct: "Machines" },
+            { q: "In 'The Pace for Living', R.C. Hutchinson discusses ____.", options: ["Agony of modern man", "Joys of ancient man", "Future technology", "War"], correct: "Agony of modern man" },
+            { q: "The author of the story enjoyed going in a car at ____.", options: ["50 miles an hour", "90 miles an hour", "60 miles an hour", "80 miles an hour"], correct: "90 miles an hour" },
+            { q: "The writer of 'The Pace for Living' belongs to the tribe of ____.", options: ["Fast thinkers", "Slow thinkers", "Deep thinkers", "No thinkers"], correct: "Slow thinkers" },
+            { q: "In 'The Pace for Living', the author saw a play in ____.", options: ["London", "Dublin", "Paris", "Berlin"], correct: "Dublin" },
+            { q: "How does the writer classify himself as a thinker in 'The Pace for Living'?", options: ["Intelligent", "Slow thinker", "Genius", "Average"], correct: "Slow thinker" },
+            { q: "In the essay 'The Pace for Living', the Corn merchant is a/an ____ man.", options: ["Happy", "Anxious", "Cruel", "Brave"], correct: "Anxious" },
+            { q: "The author admits that quick travel does not give the traveler the real ____ of travel.", options: ["Cost", "Pain", "Pleasure", "Time"], correct: "Pleasure" },
+            { q: "'The Pace for Living' is written by ____.", options: ["Satyajit Ray", "R.C. Hutchinson", "Toni Morrison", "Humayun Kabir"], correct: "R.C. Hutchinson" },
+            { q: "The people now think faster than people did ____.", options: ["100 years ago", "30 years ago", "50 years ago", "20 years ago"], correct: "30 years ago" }
+        ];
+
+        let state = {
+            currentQuestion: 0,
+            answers: new Array(questions.length).fill(null),
+            userName: "",
+            startTime: Date.now(),
+            ip: "Loading...",
+            userAgent: navigator.userAgent
+        };
+
+        // --- Initialization ---
+        window.onload = async () => {
+            // Get IP
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                state.ip = data.ip;
+            } catch (e) {
+                state.ip = "Unknown";
+            }
+
+            // Splash Screen Timer
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+                document.getElementById('app-container').classList.remove('hidden');
+                document.getElementById('app-container').classList.add('flex');
+            }, 3000);
+            
+            // Disable context menu
+            document.addEventListener('contextmenu', event => event.preventDefault());
+        };
+
+        // --- Setup Logic ---
+        function startQuiz() {
+            const name = document.getElementById('student-name').value.trim();
+            if (!name) {
+                alert("Please enter your name.");
+                return;
+            }
+            state.userName = name;
+            
+            // Transition
+            document.getElementById('setup-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            
+            loadQuestion();
+            startTimer();
+        }
+
+        // --- Quiz Logic ---
+        function loadQuestion() {
+            const q = questions[state.currentQuestion];
+            document.getElementById('q-current').innerText = state.currentQuestion + 1;
+            document.getElementById('question-text').innerText = `Q${state.currentQuestion + 1}. ${q.q}`;
+            
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const letter = String.fromCharCode(65 + idx);
+                const isSelected = state.answers[state.currentQuestion] === opt;
+                
+                const btn = document.createElement('div');
+                btn.className = `option-card p-4 rounded-xl border ${isSelected ? 'border-blue-500 bg-blue-900/20' : 'border-gray-800 bg-gray-900/50'} flex items-center space-x-3 cursor-pointer hover:bg-gray-800`;
+                btn.onclick = () => selectOption(opt);
+                
+                btn.innerHTML = `
+                    <div class="w-8 h-8 rounded-full border ${isSelected ? 'border-blue-500 bg-blue-500 text-white' : 'border-gray-600 text-gray-400'} flex items-center justify-center font-bold text-sm transition-colors">
+                        ${letter}
+                    </div>
+                    <span class="text-lg text-gray-200">${opt}</span>
+                `;
+                container.appendChild(btn);
+            });
+
+            // Update Progress
+            const progress = ((state.currentQuestion) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            // Next Button State
+            const nextBtn = document.getElementById('next-btn');
+            if (state.currentQuestion === questions.length - 1) {
+                nextBtn.innerText = "Finish Assessment";
+            } else {
+                nextBtn.innerText = "Next Question";
+            }
+        }
+
+        function selectOption(opt) {
+            state.answers[state.currentQuestion] = opt;
+            loadQuestion(); // Re-render to show selection
+        }
+
+        function nextQuestion() {
+            if (!state.answers[state.currentQuestion]) {
+                alert("Please select an answer to continue.");
+                return;
+            }
+
+            if (state.currentQuestion < questions.length - 1) {
+                state.currentQuestion++;
+                loadQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function startTimer() {
+            let seconds = 0;
+            setInterval(() => {
+                seconds++;
+                const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const s = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerText = `${m}:${s}`;
+            }, 1000);
+        }
+
+        // --- Result & Discord Logic ---
+        async function finishQuiz() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('loading-screen').classList.remove('hidden');
+
+            // Calculate Score
+            let score = 0;
+            state.answers.forEach((ans, idx) => {
+                if (ans === questions[idx].correct) score++;
+            });
+
+            // Generate Discord Message
+            const date = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+            
+            let messageContent = `🎓 📘 Student Assessment Sheet 📘 ━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            messageContent += `👤 Student Name: ${state.userName}  🆔 Student ID: FAI-${new Date().getFullYear()}-IND  🏫 Class / Section: 10 – A  📅 Date: ${date}  🌍 Location: India 🇮🇳\n\n`;
+            messageContent += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            questions.forEach((q, idx) => {
+                const userAns = state.answers[idx];
+                const isCorrect = userAns === q.correct;
+                
+                messageContent += `Q${idx + 1}. ${q.q}\n`;
+                q.options.forEach((opt, optIdx) => {
+                    const letter = String.fromCharCode(65 + optIdx);
+                    let mark = "";
+                    if (opt === userAns && !isCorrect) mark = " ❌"; // Wrong selection
+                    
+                    messageContent += `${letter}. ${opt}${mark}\n`;
+                });
+                messageContent += `✅ Correct Answer: ${q.options.find(o => o === q.correct)}\n\n`;
+            });
+
+            messageContent += `━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            messageContent += `🔐 System Information:\n`;
+            messageContent += `🌐 IP Address: ${state.ip}  📱 User Agent: ${state.userAgent}\n`;
+            messageContent += `━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            // Send to Discord
+            try {
+                await fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: 'QUIZZES_7887168828',
+                        message: messageContent,
+                        image: `https://placehold.co/600x400/png?text=${encodeURIComponent(state.userName + " Score: " + score)}`
+                    })
+                });
+                console.log('Sent to Discord!');
+            } catch (error) {
+                console.error('Discord send failed', error);
+            }
+
+            // Render Result Screen
+            document.getElementById('loading-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            document.getElementById('final-score').innerText = `${score}/${questions.length}`;
+            document.getElementById('final-percentage').innerText = `${Math.round((score/questions.length)*100)}%`;
+
+            const resultContainer = document.getElementById('result-details');
+            questions.forEach((q, idx) => {
+                const userAns = state.answers[idx];
+                const isCorrect = userAns === q.correct;
+                
+                const div = document.createElement('div');
+                div.className = "bg-gray-900/50 border border-gray-800 p-4 rounded-xl";
+                
+                let optionsHtml = "";
+                q.options.forEach((opt, optIdx) => {
+                    const letter = String.fromCharCode(65 + optIdx);
+                    let styleClass = "text-gray-400";
+                    let icon = "";
+                    
+                    if (opt === q.correct) {
+                        styleClass = "text-green-400 font-bold";
+                        icon = "✅";
+                    } else if (opt === userAns && !isCorrect) {
+                        styleClass = "text-red-400 font-bold";
+                        icon = "❌";
+                    }
+                    
+                    optionsHtml += `<div class="${styleClass} py-1">${letter}. ${opt} ${icon}</div>`;
+                });
+
+                div.innerHTML = `
+                    <div class="mb-2 font-semibold text-white">Q${idx + 1}. ${q.q}</div>
+                    <div class="space-y-1 text-sm pl-2 border-l-2 ${isCorrect ? 'border-green-500' : 'border-red-500'}">
+                        ${optionsHtml}
+                    </div>
+                `;
+                resultContainer.appendChild(div);
+            });
+        }
+    </script>
+</body>
+</html>
+
+
