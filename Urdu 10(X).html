@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board Class 10 Urdu Objective Quiz</title>
+    
+    <!-- Fonts: Noto Nastaliq for Urdu, Inter for Numbers/English -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+
+    <!-- Tailwind Configuration for Custom Colors/Fonts -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        urdu: ['"Noto Nastaliq Urdu"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                    colors: {
+                        // More vibrant palette for the colorful theme
+                        vibrant: {
+                            primary: '#00f2fe', // Bright Cyan
+                            secondary: '#4facfe', // Bright Blue
+                            accent: '#f093fb',   // Pink/Purple
+                            success: '#00dbde',  // Teal Green
+                            danger: '#fc00ff',   // Hot Pink/Red
+                        },
+                        ios: {
+                            bg: '#050505', // Deeper black
+                            card: '#121212',
+                            gray: '#9ca3af',
+                            separator: '#27272a'
+                        }
+                    },
+                    animation: {
+                        'gradient-x': 'gradient-x 3s ease infinite',
+                        'gradient-y': 'gradient-y 3s ease infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                        'slide-up': 'slideUp 0.5s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'gradient-x': {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        },
+                        'gradient-y': {
+                            '0%, 100%': { 'background-position': '50% 0%' },
+                            '50%': { 'background-position': '50% 100%' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'colorful-gradient': 'linear-gradient(to right, #00f2fe, #4facfe, #f093fb)',
+                        'colorful-gradient-rev': 'linear-gradient(to left, #00f2fe, #4facfe, #f093fb)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(to bottom, #4facfe, #f093fb); border-radius: 10px; }
+
+        /* Enhanced Glassmorphism with subtle color tint */
+        .glass {
+            background: rgba(18, 18, 18, 0.7);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .glass-colorful {
+             background: rgba(18, 18, 18, 0.6);
+             border: 1px solid rgba(255, 255, 255, 0.1);
+             position: relative;
+             overflow: hidden;
+        }
+        
+        /* Animated vibrant text gradient */
+        .text-gradient-vibrant {
+            background: linear-gradient(to right, #00f2fe, #4facfe, #f093fb, #00f2fe);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300%;
+            animation: gradient-x 4s linear infinite;
+        }
+
+        /* Vibrant Gradient Button */
+        .btn-gradient {
+            background-image: linear-gradient(to right, #00f2fe 0%, #4facfe 51%, #f093fb 100%);
+            background-size: 200% auto;
+            color: white;
+            transition: 0.5s;
+        }
+        .btn-gradient:hover {
+            background-position: right center;
+        }
+
+        /* Urdu Spacing */
+        .urdu-text { line-height: 2.4; }
+        .no-select { user-select: none; -webkit-user-select: none; }
+
+        /* Background ambient color */
+        .ambient-bg {
+             position: fixed;
+             top: 0; left: 0; right: 0; bottom: 0;
+             background: radial-gradient(circle at top left, rgba(79, 172, 254, 0.15), transparent 40%),
+                         radial-gradient(circle at bottom right, rgba(240, 147, 251, 0.15), transparent 40%);
+             z-index: -1;
+        }
+    </style>
+</head>
+<body class="bg-ios-bg text-white font-sans h-screen w-full overflow-hidden relative">
+
+    <!-- Ambient Background Mesh -->
+    <div class="ambient-bg animate-pulse-slow"></div>
+
+    <!-- SPLASH SCREEN -->
+    <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-ios-bg transition-opacity duration-700">
+        <div class="relative">
+             <!-- Colorful glow behind lottie -->
+            <div class="absolute inset-0 bg-colorful-gradient blur-3xl opacity-20 rounded-full transform scale-150 animate-pulse-slow"></div>
+            <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px; height: 300px;" autoplay loop class="relative z-10"></dotlottie-wc>
+        </div>
+        <h1 class="mt-6 text-3xl font-bold text-gradient-vibrant font-urdu tracking-wider animate-fade-in">Powered by Faizan</h1>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div id="app-container" class="hidden h-full flex flex-col max-w-2xl mx-auto px-4 py-6 relative z-10">
+        
+        <!-- AUTH SECTION -->
+        <div id="auth-section" class="flex-1 flex flex-col justify-center items-center animate-slide-up">
+            <div class="glass w-full p-8 rounded-[2rem] text-center relative overflow-hidden">
+                <!-- Decorative top gradient line -->
+                <div class="absolute top-0 left-0 right-0 h-1 bg-colorful-gradient"></div>
+                
+                <div class="w-20 h-20 bg-gradient-to-tr from-vibrant-primary/20 to-vibrant-accent/20 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-vibrant-primary/10 rotate-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-vibrant-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                    </svg>
+                </div>
+                <h2 class="text-4xl font-bold mb-3 font-urdu text-transparent bg-clip-text bg-colorful-gradient-rev lh-base">بہار بورڈ اردو کوئز</h2>
+                <p class="text-ios-gray mb-10 font-urdu text-md">برائے جماعت دہم (Class 10th)</p>
+                
+                <div class="space-y-6">
+                    <div class="text-right relative group">
+                        <label class="block text-sm font-medium text-vibrant-secondary mb-2 mr-1 font-urdu">اپنا نام لکھیں</label>
+                        <div class="absolute inset-0 bg-colorful-gradient rounded-xl blur opacity-20 group-hover:opacity-40 transition-opacity -z-10"></div>
+                        <input type="text" id="student-name" placeholder="محمد فیضان" class="w-full bg-ios-card/80 border border-ios-separator/50 rounded-xl px-5 py-4 text-right focus:outline-none focus:border-vibrant-secondary transition-colors text-white font-urdu text-lg relative z-10" dir="rtl">
+                    </div>
+                    <button onclick="startQuiz()" class="btn-gradient w-full font-bold py-4 rounded-xl transition-all transform active:scale-95 font-urdu text-xl shadow-lg shadow-vibrant-primary/30 relative overflow-hidden">
+                        <span class="relative z-10">ٹیسٹ شروع کریں</span>
+                    </button>
+                </div>
+            </div>
+            <p class="mt-8 text-xs text-ios-gray/50 mix-blend-plus-lighter">Secure Exam Environment • IP Logged</p>
+        </div>
+
+        <!-- QUIZ SECTION -->
+        <div id="quiz-section" class="hidden flex-col h-full">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center space-x-3 space-x-reverse">
+                    <span class="text-xs font-bold bg-ios-card/80 border border-vibrant-secondary/30 px-3 py-1.5 rounded-lg text-vibrant-secondary">10th Urdu</span>
+                    <span id="question-count" class="text-lg font-bold text-gradient-vibrant">1 / 100</span>
+                </div>
+                <div class="w-2/5 bg-ios-separator/50 h-2.5 rounded-full overflow-hidden relative p-[1px]">
+                    <div class="absolute inset-0 bg-colorful-gradient opacity-30 blur-sm"></div>
+                    <div id="progress-bar" class="bg-colorful-gradient h-full rounded-full transition-all duration-500 relative z-10" style="width: 1%;"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="flex-1 flex flex-col relative z-10">
+                <div class="glass-colorful flex-1 rounded-[2rem] p-6 mb-6 flex flex-col justify-center animate-fade-in relative overflow-y-auto shadow-2xl shadow-vibrant-primary/5">
+                    <!-- Colorful glow effect -->
+                    <div class="absolute -top-20 -left-20 w-40 h-40 bg-vibrant-primary opacity-20 blur-3xl rounded-full mix-blend-screen pointer-events-none"></div>
+                    <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-vibrant-accent opacity-20 blur-3xl rounded-full mix-blend-screen pointer-events-none"></div>
+
+                    <h3 id="question-text" class="relative z-10 text-xl md:text-3xl font-bold text-center leading-relaxed font-urdu mb-10 urdu-text text-white drop-shadow-sm">
+                        سوال لوڈ ہو رہا ہے...
+                    </h3>
+
+                    <div id="options-container" class="space-y-4 w-full relative z-10">
+                        <!-- Options injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Control -->
+            <div class="mt-auto pt-2 relative z-20">
+                <button id="next-btn" onclick="nextQuestion()" disabled class="w-full bg-ios-separator/80 text-ios-gray font-bold py-4 rounded-2xl transition-all font-urdu text-xl opacity-50 cursor-not-allowed backdrop-blur-md">
+                    اگلا سوال
+                </button>
+            </div>
+        </div>
+
+        <!-- RESULT SECTION -->
+        <div id="result-section" class="hidden flex-col h-full animate-slide-up">
+            <div class="text-center mb-8 relative">
+                <div class="absolute inset-0 bg-colorful-gradient opacity-20 blur-3xl rounded-full transform scale-y-50 pointer-events-none"></div>
+                <div class="inline-block p-4 rounded-full bg-gradient-to-tr from-vibrant-success/20 to-vibrant-primary/20 mb-4 shadow-lg shadow-vibrant-success/10 relative z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-vibrant-success" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-4xl font-bold font-urdu text-gradient-vibrant mb-2">نتیجہ مکمل!</h2>
+                <p class="text-ios-gray text-md">آپ کا سکور نیچے دیا گیا ہے</p>
+            </div>
+
+            <!-- Score Card -->
+            <div class="glass rounded-3xl p-8 mb-8 text-center relative overflow-hidden shadow-2xl shadow-vibrant-primary/10">
+                <div class="absolute top-0 left-0 w-full h-1.5 bg-colorful-gradient"></div>
+                <div class="flex justify-around items-center relative z-10">
+                    <div>
+                        <p class="text-vibrant-secondary text-xs font-bold uppercase tracking-wider mb-2">Total Score</p>
+                        <h3 id="final-score" class="text-5xl font-extrabold text-transparent bg-clip-text bg-colorful-gradient">0%</h3>
+                    </div>
+                    <div class="h-16 w-px bg-gradient-to-b from-vibrant-primary/50 to-vibrant-accent/50"></div>
+                    <div>
+                        <p class="text-vibrant-secondary text-xs font-bold uppercase tracking-wider mb-2">Correct Answers</p>
+                        <h3 id="correct-count" class="text-3xl font-bold text-white">0/100</h3>
+                    </div>
+                </div>
+                <div id="sending-status" class="mt-6 text-sm text-vibrant-secondary animate-pulse font-medium flex items-center justify-center">
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-vibrant-secondary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Sending report to Discord...
+                </div>
+            </div>
+
+            <!-- Detailed Review List -->
+            <div class="flex-1 overflow-y-auto pr-2 -mr-2 relative z-10" id="review-list">
+                <!-- Review items injected here -->
+            </div>
+            
+            <button onclick="location.reload()" class="mt-6 w-full btn-gradient text-white font-bold py-4 rounded-2xl transition-all transform active:scale-95 font-urdu text-lg shadow-lg relative z-20">
+                دوبارہ شروع کریں
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- CONSTANTS & CONFIG ---
+        const API_URL = "https://quizzes-pi-one.vercel.app/api/send";
+        const SECRET_KEY = "QUIZZES_7887168828"; 
+        
+        // --- DATA: 100 Questions (Simulated for demo) ---
+        // Using the same base questions but duplicating to reach 100 as per previous logic.
+        const baseQuestions = [
+            { q: "شبنم کمالی کا اصل نام کیا تھا؟", options: ["احمد رضا", "مصطفیٰ رضا", "حسن رضا", "احسن رضا"], ans: 1 },
+            { q: "انسان کی مشکلوں کو کون حل کرتا ہے؟", options: ["اللہ تعالیٰ", "پیغمبر", "فرشتہ", "بادشاہ"], ans: 0 },
+            { q: "سہیل عظیم آبادی کی پیدائش کب ہوئی؟", options: ["1910", "1911", "1912", "1913"], ans: 1 },
+            { q: "افسانہ 'کٹی ہوئی شاخ' کے مصنف کون ہیں؟", options: ["پریم چند", "کمر جہاں", "نگار عظیم", "سہیل عظیم آبادی"], ans: 1 },
+            { q: "ڈاکٹر محمد محسن کس موضوع پر مہارت رکھتے تھے؟", options: ["تاریخ", "نفسیات", "سیاست", "معاشیات"], ans: 1 },
+            { q: "گلوبل وارمنگ کیسا مسئلہ ہے؟", options: ["مناسب", "خوشگوار", "سنگین", "معتدل"], ans: 2 },
+            { q: "آریہ بھٹ نے اپنا تجربہ گاہ کہاں قائم کیا؟", options: ["گیا", "ترینگنا", "پٹنہ", "کھگول"], ans: 1 },
+            { q: "سر سید احمد خان کی پیدائش کہاں ہوئی؟", options: ["آگرہ", "دہلی", "لکھنؤ", "علی گڑھ"], ans: 1 },
+            { q: "اردو کا پہلا ناول نگار کسے کہا جاتا ہے؟", options: ["ڈپٹی نذیر احمد", "پریم چند", "کرشن چندر", "ہادی رسوا"], ans: 0 },
+            { q: "غالب کے آباء و اجداد کہاں سے ہندوستان آئے تھے؟", options: ["ایران", "عراق", "تہران", "افغانستان"], ans: 0 },
+            { q: "مرثیہ کس لفظ سے مشتق ہے؟", options: ["رثا", "رسائی", "رسا", "رثی"], ans: 0 },
+            { q: "شامل نصاب 'ہم کرہ' کے شاعر کون ہیں؟", options: ["غالب", "چکبست", "پرویز شاہدی", "ندافاضلی"], ans: 2 },
+            { q: "ہند آریائی زبانوں کا ارتقا کتنے ادوار میں ہوا؟", options: ["دو", "تین", "چار", "پانچ"], ans: 1 },
+            { q: "لطف الرحمان کس پارٹی کے وزیر تھے؟", options: ["کانگریس", "آر جے ڈی", "بی جے پی", "جے ڈی یو"], ans: 1 },
+            { q: "ڈرامہ کس زبان کا لفظ ہے؟", options: ["لاطینی", "یونانی", "ہندی", "عربی"], ans: 1 },
+            { q: "بھیم راؤ امبیڈکر کی وفات کب ہوئی؟", options: ["1955", "1956", "1960", "1965"], ans: 1 },
+            { q: "شامل نصاب انٹرویو میں کس کا انٹرویو لیا گیا؟", options: ["پریم چند", "بیدی", "کرشن چندر", "منٹو"], ans: 1 },
+            { q: "نظیر احمد کا تعلق کس صنف سے ہے؟", options: ["ناول", "افسانہ", "خاکہ", "انشائیہ"], ans: 0 },
+            { q: "غالب نے کتنے خطوط لکھے؟", options: ["نو سو", "آٹھ سو", "ہزار", "پانچ سو"], ans: 0 },
+            { q: "شهباز نے اپنی بیٹی کا نام کیا رکھا تھا؟", options: ["صغریٰ", "کبریٰ", "حمیدہ", "فہمیدہ"], ans: 0 },
+            { q: "مہدی افادی یوپی کے کس شہر میں پیدا ہوئے؟", options: ["الہ آباد", "گورکھپور", "لکھنؤ", "آگرہ"], ans: 1 },
+            { q: "مضمون 'ریا' کے مصنف کون ہیں؟", options: ["سر سید", "حالی", "شبلی", "نذیر احمد"], ans: 0 },
+            { q: "جگن ناتھ آزاد کون تھے؟", options: ["شاعر", "نقاد", "محقق", "سبھی"], ans: 3 },
+            { q: "مناظر فطرت کا شاعر کسے کہا جاتا ہے؟", options: ["چکبست", "اقبال", "غالب", "میر"], ans: 0 },
+            { q: "انڈیا گیٹ کس کی نظم ہے؟", options: ["جگن ناتھ آزاد", "چکبست", "پرویز شاہدی", "ندافاضلی"], ans: 0 },
+            { q: "درجہ ذیل میں سے اسم نکرہ کون ہے؟", options: ["گنگا", "پٹنہ", "دریا", "ہمالیہ"], ans: 2 },
+            { q: "غلام کی ضد کیا ہوگی؟", options: ["بندہ", "آقا", "نوکر", "مالک"], ans: 1 },
+            { q: "شیر بہادر کیسا اسم ہے؟", options: ["خطاب", "لقب", "عرف", "تخلص"], ans: 1 },
+            { q: "وہ لوگ کام کر رہے تھے - یہ کون سا زمانہ ہے؟", options: ["ماضی مطلق", "ماضی ناتمام", "ماضی قریب", "حال"], ans: 1 },
+            { q: "لعل کے کیا معنی ہیں؟", options: ["سرخ", "ہیرا", "موتی", "قیمتی پتھر"], ans: 0 },
+            { q: "نو گیارہ ہونا کا مطلب کیا ہے؟", options: ["فائدہ ہونا", "بھاگ جانا", "واپس آنا", "لڑنا"], ans: 1 },
+            { q: "حمد میں کس کی تعریف کی جاتی ہے؟", options: ["رسول کی", "خدا کی", "اولیاء کی", "بادشاہ کی"], ans: 1 },
+            { q: "نعت میں کس کی تعریف کی جاتی ہے؟", options: ["خدا کی", "رسول کی", "بزرگوں کی", "شاعر کی"], ans: 1 },
+            { q: "مرزا شوق کا اصل نام کیا تھا؟", options: ["تصدق حسین", "تفضل حسین", "حامد حسین", "احمد حسین"], ans: 0 },
+            { q: "نسیم کا پورا نام کیا تھا؟", options: ["دیا شنکر کول", "روی شنکر", "گنگا پرشاد", "شو نارائن"], ans: 0 },
+            { q: "زہر عشق کیا ہے؟", options: ["ناول", "افسانہ", "مثنوی", "ڈرامہ"], ans: 2 },
+            { q: "مبارک عظیم آبادی کے استاد کون تھے؟", options: ["ذوق", "غالب", "داغ", "مومن"], ans: 2 },
+            { q: "پروین شاکر کہاں پیدا ہوئیں؟", options: ["لاہور", "کراچی", "اسلام آباد", "ڈھاکہ"], ans: 1 },
+            { q: "عرفان صدیقی کا تعلق کس خاندان سے تھا؟", options: ["سید", "شیخ", "پٹھان", "مغل"], ans: 1 },
+            { q: "دوہے میں کتنے مصرعے ہوتے ہیں؟", options: ["دو", "چار", "چھ", "آٹھ"], ans: 0 },
+            { q: "گیت کس زبان سے اردو میں آئی؟", options: ["فارسی", "عربی", "ہندی", "پنجابی"], ans: 2 },
+            { q: "زاہد کلکتہ گیا - اس میں فاعل کون ہے؟", options: ["گیا", "کلکتہ", "زاہد", "کوئی نہیں"], ans: 2 },
+            { q: "عید گاہ کیا ہے؟", options: ["اسم آلہ", "اسم ظرف", "اسم صفت", "اسم کیفیت"], ans: 1 },
+            { q: "قلم تراش کیا ہے؟", options: ["اسم آلہ", "اسم ظرف", "اسم فاعل", "اسم مفعول"], ans: 0 },
+            { q: "جنگ کا متضاد کیا ہے؟", options: ["صلح", "امن", "لڑائی", "فساد"], ans: 0 },
+            { q: "آسمان کا مترادف کیا ہے؟", options: ["خورشید", "فلک", "قمر", "زمین"], ans: 1 },
+            { q: "کان بھرنا کا مطلب کیا ہے؟", options: ["چغلی کھانا", "سننا", "شور کرنا", "بیمار ہونا"], ans: 0 },
+            { q: "احمد کی ٹوپی لال ہے - اس میں صفت کون ہے؟", options: ["احمد", "ٹوپی", "لال", "ہے"], ans: 2 },
+            { q: "تم کہاں جا رہے ہو؟ - یہ کیسا جملہ ہے؟", options: ["خبریہ", "انشائیہ", "سوالیہ", "تمنائی"], ans: 2 },
+            { q: "کاش میں امیر ہوتا - یہ کیسا جملہ ہے؟", options: ["سوالیہ", "تمنائی", "امریہ", "فجائیہ"], ans: 1 }
+        ];
+
+        let quizData = [...baseQuestions, ...baseQuestions].map((item, index) => ({
+            id: index + 1,
+            question: item.q,
+            options: item.options,
+            correct: item.ans,
+            selected: null
+        }));
+        quizData = quizData.slice(0, 100);
+
+        // --- STATE ---
+        let currentQuestion = 0;
+        let score = 0;
+        let studentName = "";
+        let ipInfo = { ip: "Loading...", agent: navigator.userAgent };
+
+        // --- DOM ELEMENTS ---
+        const splashScreen = document.getElementById('splash-screen');
+        const appContainer = document.getElementById('app-container');
+        const authSection = document.getElementById('auth-section');
+        const quizSection = document.getElementById('quiz-section');
+        const resultSection = document.getElementById('result-section');
+        const nameInput = document.getElementById('student-name');
+        
+        // --- INITIALIZATION ---
+        window.onload = function() {
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    appContainer.classList.remove('hidden');
+                    fetchIP();
+                }, 700);
+            }, 3000);
+        };
+
+        async function fetchIP() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                ipInfo.ip = data.ip;
+            } catch (e) {
+                ipInfo.ip = "Unknown IP";
+            }
+        }
+
+        // --- QUIZ LOGIC ---
+        function startQuiz() {
+            const name = nameInput.value.trim();
+            if (!name) {
+                nameInput.parentElement.classList.add('animate-pulse');
+                setTimeout(() => nameInput.parentElement.classList.remove('animate-pulse'), 1000);
+                return;
+            }
+            studentName = name;
+            authSection.style.display = 'none';
+            quizSection.style.display = 'flex';
+            quizSection.classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = quizData[currentQuestion];
+            
+            document.getElementById('question-count').innerText = `${currentQuestion + 1} / ${quizData.length}`;
+            const pct = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+
+            const qText = document.getElementById('question-text');
+            qText.style.opacity = 0;
+            setTimeout(() => {
+                qText.innerText = q.question;
+                qText.style.opacity = 1;
+            }, 200);
+
+            const optsContainer = document.getElementById('options-container');
+            optsContainer.innerHTML = '';
+            
+            const labels = ['A', 'B', 'C', 'D'];
+            
+            q.options.forEach((opt, idx) => {
+                // Colorful Option Buttons
+                const btn = document.createElement('button');
+                btn.className = `w-full text-right p-4 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 transition-all flex items-center justify-between group no-select relative overflow-hidden backdrop-blur-md`;
+                btn.onclick = () => selectOption(idx, btn);
+                
+                btn.innerHTML = `
+                    <div class="absolute inset-0 bg-colorful-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <span class="font-urdu text-xl flex-1 mr-4 relative z-10">${opt}</span>
+                    <span class="w-10 h-10 rounded-full border-2 border-ios-gray/30 flex items-center justify-center text-sm text-ios-gray group-hover:border-vibrant-secondary group-hover:text-vibrant-secondary transition-all relative z-10 font-sans font-bold">${labels[idx]}</span>
+                `;
+                optsContainer.appendChild(btn);
+            });
+
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = true;
+            // Reset Next Button Style
+            nextBtn.className = 'w-full bg-ios-separator/80 text-ios-gray font-bold py-4 rounded-2xl transition-all font-urdu text-xl opacity-50 cursor-not-allowed backdrop-blur-md relative z-20';
+            nextBtn.innerText = currentQuestion === quizData.length - 1 ? "ختم کریں (Finish)" : "اگلا سوال";
+        }
+
+        function selectOption(index, btnElement) {
+            quizData[currentQuestion].selected = index;
+
+            const allBtns = document.getElementById('options-container').children;
+            for (let btn of allBtns) {
+                // Reset styles for unselected options
+                btn.className = `w-full text-right p-4 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-between no-select opacity-60 relative overflow-hidden backdrop-blur-md`;
+                btn.querySelector('span:last-child').className = "w-10 h-10 rounded-full border-2 border-ios-gray/30 flex items-center justify-center text-sm text-ios-gray transition-all relative z-10 font-sans font-bold";
+            }
+
+            // Apply vibrant selected style
+            btnElement.classList.remove('opacity-60', 'bg-white/5', 'border-white/10');
+            btnElement.classList.add('bg-vibrant-secondary/20', 'border-vibrant-secondary', 'shadow-[0_0_15px_rgba(79,172,254,0.3)]');
+            
+            // Highlights label circle
+            const labelCircle = btnElement.querySelector('span:last-child');
+            labelCircle.classList.remove('border-ios-gray/30', 'text-ios-gray');
+            labelCircle.classList.add('border-vibrant-secondary', 'text-vibrant-secondary', 'bg-vibrant-secondary/20');
+            
+            // Enable Colorful Next Button
+            const nextBtn = document.getElementById('next-btn');
+            nextBtn.disabled = false;
+            nextBtn.className = 'w-full btn-gradient text-white font-bold py-4 rounded-2xl transition-all transform active:scale-95 font-urdu text-xl shadow-lg relative z-20';
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            quizSection.style.display = 'none';
+            resultSection.style.display = 'flex';
+            resultSection.classList.remove('hidden');
+            calculateResults();
+        }
+
+        function calculateResults() {
+            score = 0;
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+            
+            quizData.forEach((q, idx) => {
+                const isCorrect = q.selected === q.correct;
+                if (isCorrect) score++;
+
+                const item = document.createElement('div');
+                // Colorful Review Items
+                item.className = `p-5 mb-4 rounded-2xl border backdrop-blur-md relative overflow-hidden ${isCorrect ? 'border-vibrant-success/30 bg-vibrant-success/10' : 'border-vibrant-danger/30 bg-vibrant-danger/10'}`;
+                
+                const userAnsText = q.selected !== null ? q.options[q.selected] : "چھوڑ دیا";
+                const correctAnsText = q.options[q.correct];
+                
+                item.innerHTML = `
+                    <div class="absolute inset-0 ${isCorrect ? 'bg-vibrant-success' : 'bg-vibrant-danger'} opacity-5 blur-xl pointer-events-none"></div>
+                    <p class="font-urdu text-lg mb-3 relative z-10"><span class="text-vibrant-secondary text-sm font-sans font-bold ml-3 bg-vibrant-secondary/10 px-2 py-1 rounded-md">Q${idx+1}</span> ${q.question}</p>
+                    <div class="flex flex-col space-y-2 text-md font-urdu relative z-10">
+                        <span class="${isCorrect ? 'text-vibrant-success' : 'text-vibrant-danger'} flex items-center">
+                            آپ کا جواب: ${userAnsText} 
+                            <span class="mr-2 text-xl">${isCorrect ? '✅' : '❌'}</span>
+                        </span>
+                        ${!isCorrect ? `<span class="text-vibrant-success flex items-center">صحیح جواب: ${correctAnsText} <span class="mr-2 text-xl">✅</span></span>` : ''}
+                    </div>
+                `;
+                reviewList.appendChild(item);
+            });
+
+            const finalPercentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('final-score').innerText = finalPercentage + "%";
+            document.getElementById('correct-count').innerText = `${score}/${quizData.length}`;
+
+            sendResultsToDiscord(finalPercentage);
+        }
+
+        // --- DISCORD INTEGRATION (Updated with Percentage) ---
+        async function sendResultsToDiscord(percentage) {
+            const statusEl = document.getElementById('sending-status');
+            const date = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+            
+            // *** ADDED PERCENTAGE HERE ***
+            const headerMsg = `
+🎓 📘 **Student Assessment Sheet** 📘
+━━━━━━━━━━━━━━━━━━━━━━━
+👤 **Student Name:** ${studentName}
+🆔 **Student ID:** FAI-${new Date().getFullYear()}-IND
+🏫 **Class:** 10 – Urdu (Bihar Board)
+📅 **Date:** ${date}
+🌍 **Location:** India 🇮🇳
+🏆 **Score:** ${score} / ${quizData.length}
+📊 **Percentage:** ${percentage}%
+━━━━━━━━━━━━━━━━━━━━━━━
+🔐 **System Information:**
+🌐 **IP Address:** ${ipInfo.ip}
+📱 **User Agent:** ${ipInfo.agent}
+━━━━━━━━━━━━━━━━━━━━━━━
+👇 **Detailed Question Breakdown Below** 👇
+`;
+            
+            await sendToAPI(headerMsg);
+
+            let currentChunk = "";
+            const labels = ['A', 'B', 'C', 'D'];
+
+            for (let i = 0; i < quizData.length; i++) {
+                const q = quizData[i];
+                let questionBlock = `\n📝 **Question ${i + 1}:**\n${q.question}\n`;
+                
+                q.options.forEach((opt, optIdx) => {
+                    let mark = "";
+                    let note = "";
+                    if (optIdx === q.correct) mark = "✅";
+                    if (optIdx === q.selected && optIdx !== q.correct) { mark = "❌"; note = " (Selected)"; }
+
+                    questionBlock += `🔹 ${labels[optIdx]}) ${opt} ${mark}${note}\n`;
+                });
+                questionBlock += `━━━━━━━━━━━━━━━━━━━━━━━`;
+
+                if ((currentChunk + questionBlock).length > 1500) {
+                    await sendToAPI(currentChunk);
+                    currentChunk = questionBlock;
+                } else {
+                    currentChunk += questionBlock;
+                }
+            }
+
+            if (currentChunk.length > 0) {
+                await sendToAPI(currentChunk);
+            }
+
+            statusEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg> Report Sent Successfully!';
+            statusEl.classList.remove('animate-pulse', 'text-vibrant-secondary');
+            statusEl.classList.add('text-vibrant-success');
+        }
+
+        async function sendToAPI(messageContent) {
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: SECRET_KEY,
+                        message: messageContent,
+                        image: 'https://cdn-icons-png.flaticon.com/512/3135/3135823.png'
+                    })
+                });
+            } catch (err) { console.error("Failed to send chunk", err); }
+        }
+    </script>
+</body>
+</html>
+
+
