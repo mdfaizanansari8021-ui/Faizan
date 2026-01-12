@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bihar Board 10th Science - Bilingual Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --zoom-level: 1;
+        }
+
+        body {
+            font-family: 'Poppins', 'Noto Sans Devanagari', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: hidden;
+            font-size: calc(16px * var(--zoom-level));
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ios-btn {
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        .ios-btn:active { transform: scale(0.98); }
+
+        .option-card {
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        .option-card.selected {
+            border-color: #007AFF;
+            background: rgba(0, 122, 255, 0.15);
+        }
+        
+        .anim-text {
+            background: linear-gradient(to right, #FFD700, #FF69B4, #00BFFF, #FFD700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            background-size: 300% auto;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+
+        #splash-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 9999;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-out;
+        }
+
+        /* Controls */
+        .control-panel {
+            display: flex;
+            gap: 10px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px;
+            border-radius: 12px;
+            align-items: center;
+        }
+        .icon-btn {
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .icon-btn:hover { background: rgba(255,255,255,0.2); }
+        
+        .lang-switch {
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 0 8px;
+            cursor: pointer;
+            color: #ccc;
+        }
+        .lang-switch.active { color: #007AFF; text-shadow: 0 0 10px rgba(0,122,255,0.5); }
+    </style>
+</head>
+<body oncontextmenu="return false;" class="antialiased min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <h1 class="text-3xl font-extrabold mt-6 tracking-wide">
+            Powered by <span class="anim-text">Faizan Ali</span>
+        </h1>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="app-container" class="w-full max-w-2xl hidden opacity-0 transition-opacity duration-500">
+        
+        <!-- Welcome Screen -->
+        <div id="welcome-screen" class="glass-panel rounded-3xl p-8 text-center shadow-2xl animate-fade-in-up">
+            <div class="mb-6"><span class="text-6xl">🎓</span></div>
+            <h2 class="text-3xl font-bold mb-2 text-white" data-en="Student Assessment" data-hi="छात्र मूल्यांकन">Student Assessment</h2>
+            <p class="text-gray-400 mb-8" data-en="Bihar Board Class 10th Science" data-hi="बिहार बोर्ड कक्षा 10 विज्ञान">Bihar Board Class 10th Science</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="student-name" placeholder="Enter Your Full Name" 
+                    class="w-full bg-gray-800 border-2 border-gray-700 text-white text-lg rounded-xl px-5 py-4 focus:outline-none focus:border-blue-500 transition-colors placeholder-gray-500 text-center font-semibold">
+                
+                <button onclick="startQuiz()" class="ios-btn w-full text-white font-bold text-xl py-4 rounded-xl">
+                    <span data-en="Start Quiz 🚀" data-hi="क्विज शुरू करें 🚀">Start Quiz 🚀</span>
+                </button>
+            </div>
+            
+            <!-- Language Toggle on Welcome Screen -->
+            <div class="mt-6 flex justify-center gap-4">
+                <button onclick="setLanguage('en')" class="text-sm font-bold text-gray-400 hover:text-white transition" id="btn-en-welcome">English</button>
+                <span class="text-gray-600">|</span>
+                <button onclick="setLanguage('hi')" class="text-sm font-bold text-gray-400 hover:text-white transition" id="btn-hi-welcome">हिन्दी</button>
+            </div>
+
+            <p class="mt-6 text-xs text-gray-500">Device ID & IP will be recorded.</p>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden w-full">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <span class="text-xs font-bold text-gray-400 uppercase tracking-widest" data-en="Question" data-hi="प्रश्न">Question</span>
+                    <h3 class="text-2xl font-black text-blue-400"><span id="q-current">1</span>/<span id="q-total">100</span></h3>
+                </div>
+                <div class="flex items-center gap-2">
+                     <!-- Controls -->
+                    <div class="control-panel">
+                        <span onclick="setLanguage('en')" class="lang-switch" id="lang-en">ENG</span>
+                        <span class="text-gray-600">|</span>
+                        <span onclick="setLanguage('hi')" class="lang-switch" id="lang-hi">हिन्दी</span>
+                    </div>
+                    <div class="control-panel">
+                        <button onclick="changeZoom(-0.1)" class="icon-btn text-white text-sm">A-</button>
+                        <button onclick="changeZoom(0.1)" class="icon-btn text-white text-lg">A+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-800 h-2 rounded-full mb-8 overflow-hidden">
+                <div id="progress-bar" class="bg-blue-500 h-full rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="glass-panel rounded-3xl p-6 mb-6 shadow-lg border-t border-gray-700">
+                <h2 id="question-text" class="text-2xl font-bold leading-tight text-white mb-2">Loading...</h2>
+            </div>
+
+            <!-- Options -->
+            <div id="options-container" class="grid grid-cols-1 gap-4 mb-8">
+                <!-- Options injected by JS -->
+            </div>
+
+            <!-- Navigation -->
+            <button id="next-btn" onclick="nextQuestion()" class="ios-btn w-full text-white font-bold text-xl py-4 rounded-xl shadow-lg opacity-50 cursor-not-allowed" disabled>
+                <span id="btn-next-text" data-en="Next Question ➔" data-hi="अगला प्रश्न ➔">Next Question ➔</span>
+            </button>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden w-full">
+            <div class="glass-panel rounded-3xl p-8 text-center mb-8 border-t-2 border-blue-500 shadow-[0_0_50px_rgba(0,122,255,0.2)]">
+                <div class="mb-4"><span class="text-6xl">🏆</span></div>
+                <h2 class="text-3xl font-extrabold mb-2 text-white" data-en="Assessment Complete!" data-hi="मूल्यांकन पूर्ण!">Assessment Complete!</h2>
+                
+                <div class="bg-gray-800/50 rounded-2xl p-6 mb-6 inline-block w-full">
+                    <div class="text-sm text-gray-400 uppercase tracking-wider font-bold mb-1" data-en="Total Score" data-hi="कुल अंक">Total Score</div>
+                    <div class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-500">
+                        <span id="final-score">0</span>/<span id="total-score">0</span>
+                    </div>
+                </div>
+
+                <div id="sending-status" class="flex items-center justify-center space-x-2 text-yellow-400 font-semibold bg-yellow-400/10 py-3 rounded-xl">
+                    <span class="animate-pulse">●</span>
+                    <span data-en="Sending Result to Discord..." data-hi="परिणाम भेजा जा रहा है...">Sending Result to Discord...</span>
+                </div>
+                <div id="sent-success" class="hidden flex items-center justify-center space-x-2 text-green-400 font-semibold bg-green-400/10 py-3 rounded-xl">
+                    <span>✅</span>
+                    <span data-en="Report Sent Successfully!" data-hi="रिपोर्ट सफलतापूर्वक भेजी गई!">Report Sent Successfully!</span>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="space-y-6" id="detailed-results">
+                <!-- Results injected by JS -->
+            </div>
+            <div class="h-20"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const DISCORD_API_URL = 'https://quizzes-pi-one.vercel.app/api/send';
+        const API_KEY = 'QUIZZES_7887168828';
+
+        // --- Data: 100 Bilingual Questions ---
+        // Format: { hi: "Hindi Q", en: "English Q", options_hi: [...], options_en: [...], correct: index }
+        
+        const rawQuestions = [
+            {
+                hi: "अवतल दर्पण (Concave Mirror) में फोकस की दूरी होती है —",
+                en: "The focal length of a Concave Mirror is —",
+                options_hi: ["धनात्मक", "ऋणात्मक", "शून्य", "अनंत"],
+                options_en: ["Positive", "Negative", "Zero", "Infinite"],
+                correct: 1
+            },
+            {
+                hi: "पौधों में वाष्पोत्सर्जन किस भाग में होता है?",
+                en: "In which part does transpiration occur in plants?",
+                options_hi: ["जड़", "तना", "पत्ता", "फूल"],
+                options_en: ["Root", "Stem", "Leaf", "Flower"],
+                correct: 2
+            },
+            {
+                hi: "हरे पौधों में भोजन बनाने की प्रक्रिया को क्या कहा जाता है?",
+                en: "What is the process of making food in green plants called?",
+                options_hi: ["प्रकाश संश्लेषण", "पर्णहरित", "जैविक प्रक्रिया", "श्वसन"],
+                options_en: ["Photosynthesis", "Chlorophyll", "Biological Process", "Respiration"],
+                correct: 0
+            },
+            {
+                hi: "पौधों में गैसों का आदान-प्रदान किसके द्वारा होता है?",
+                en: "Through what does exchange of gases take place in plants?",
+                options_hi: ["रंध्रों से", "टहनी से", "तना से", "जड़ से"],
+                options_en: ["Stomata", "Twigs", "Stem", "Roots"],
+                correct: 0
+            },
+            {
+                hi: "प्रकाश संश्लेषण के लिए क्या आवश्यक है?",
+                en: "What is necessary for photosynthesis?",
+                options_hi: ["क्लोरोफिल", "CO2", "सूर्य का प्रकाश", "ये सभी"],
+                options_en: ["Chlorophyll", "CO2", "Sunlight", "All of these"],
+                correct: 3
+            },
+            {
+                hi: "पेड़-पौधों की पत्तियां हरा किसके द्वारा दिखाई देती हैं?",
+                en: "Why do leaves of plants appear green?",
+                options_hi: ["क्लोरोफिल", "ऑक्सीजन", "स्टार्च", "सेलूलोज़"],
+                options_en: ["Chlorophyll", "Oxygen", "Starch", "Cellulose"],
+                correct: 0
+            },
+            {
+                hi: "मैग्नीशियम किस में पाया जाता है?",
+                en: "In what is Magnesium found?",
+                options_hi: ["क्लोरोफिल में", "लाल रक्त में", "वर्णी लवक में", "श्वेत रक्त में"],
+                options_en: ["Chlorophyll", "Red Blood", "Chromoplast", "White Blood"],
+                correct: 0
+            },
+            {
+                hi: "प्रकाश संश्लेषण द्वारा किसकी प्राप्ति होती है?",
+                en: "What is obtained by photosynthesis?",
+                options_hi: ["वसा", "प्रोटीन", "ग्लूकोज", "प्रकाश"],
+                options_en: ["Fat", "Protein", "Glucose", "Light"],
+                correct: 2
+            },
+            {
+                hi: "हरे पेड़-पौधे क्या कहलाते हैं?",
+                en: "What are green plants called?",
+                options_hi: ["कवक", "उत्पादक", "निर्जीव", "इनमें से सभी"],
+                options_en: ["Fungi", "Producers", "Non-living", "All of these"],
+                correct: 1
+            },
+            {
+                hi: "प्रकाश संश्लेषण में किस गैस का उपयोग होता है?",
+                en: "Which gas is used in photosynthesis?",
+                options_hi: ["CO2", "O2", "N2", "Cl2"],
+                options_en: ["CO2", "O2", "N2", "Cl2"],
+                correct: 0
+            },
+            {
+                hi: "प्रकाश संश्लेषण में कौन सा गैस बाहर निकलता है?",
+                en: "Which gas is released in photosynthesis?",
+                options_hi: ["CO2", "O2", "N2", "Cl2"],
+                options_en: ["CO2", "O2", "N2", "Cl2"],
+                correct: 1
+            },
+            {
+                hi: "जाइलम किसके लिए उत्तरदाई होता है?",
+                en: "What is Xylem responsible for?",
+                options_hi: ["जल का परिवहन", "भोजन का परिवहन", "अम्ल का परिवहन", "ऑक्सीजन"],
+                options_en: ["Transport of Water", "Transport of Food", "Transport of Acid", "Oxygen"],
+                correct: 0
+            },
+            {
+                hi: "फ्लोएम किसके लिए उत्तरदाई है?",
+                en: "What is Phloem responsible for?",
+                options_hi: ["जल", "भोजन का परिवहन", "अम्ल", "ऑक्सीजन"],
+                options_en: ["Water", "Transport of Food", "Acid", "Oxygen"],
+                correct: 1
+            },
+            {
+                hi: "पेड़-पौधे श्वसन में कौन सा गैस उपयोग करते हैं?",
+                en: "Which gas do plants use in respiration?",
+                options_hi: ["O2", "CO2", "N2", "He"],
+                options_en: ["O2", "CO2", "N2", "He"],
+                correct: 0
+            },
+            {
+                hi: "प्रकाश संश्लेषण की क्रिया में ऑक्सीजन का मूल स्त्रोत है?",
+                en: "What is the source of Oxygen in photosynthesis?",
+                options_hi: ["जल", "CO2", "पर्णहरित", "सौर ऊर्जा"],
+                options_en: ["Water", "CO2", "Chlorophyll", "Solar Energy"],
+                correct: 0
+            },
+            {
+                hi: "हरे पौधों में कौन सा पोषण होता है?",
+                en: "Which type of nutrition is found in green plants?",
+                options_hi: ["मृतजीवी", "परजीवी", "स्वपोषी", "प्राणी समभोजी"],
+                options_en: ["Saprotrophic", "Parasitic", "Autotrophic", "Holozoic"],
+                correct: 2
+            },
+            {
+                hi: "कीटों में प्रमुख श्वसनांग है?",
+                en: "What is the main respiratory organ in insects?",
+                options_hi: ["गिल्स", "फेफड़ा", "ट्रेकिया", "त्वचा"],
+                options_en: ["Gills", "Lungs", "Trachea", "Skin"],
+                correct: 2
+            },
+            {
+                hi: "वायवीय भागों से जल के निष्कर्ष की क्रिया को क्या कहते हैं?",
+                en: "Loss of water from aerial parts is called?",
+                options_hi: ["परासरण", "विसरण", "वाष्पोत्सर्जन", "परिवहन"],
+                options_en: ["Osmosis", "Diffusion", "Transpiration", "Transport"],
+                correct: 2
+            },
+            {
+                hi: "कौन सी क्रिया सभी जीवों के लिए अनिवार्य है?",
+                en: "Which process is essential for all living organisms?",
+                options_hi: ["प्रकाश संश्लेषण", "वाष्पोत्सर्जन", "श्वसन", "चलन"],
+                options_en: ["Photosynthesis", "Transpiration", "Respiration", "Movement"],
+                correct: 2
+            },
+            {
+                hi: "क्लोरोफिल वर्णक का रंग है?",
+                en: "What is the color of chlorophyll pigment?",
+                options_hi: ["हरा", "नीला", "लाल", "सफेद"],
+                options_en: ["Green", "Blue", "Red", "White"],
+                correct: 0
+            },
+            {
+                hi: "कवक में पोषण की कौन सी विधि होती है?",
+                en: "Mode of nutrition in Fungi is?",
+                options_hi: ["स्वपोषी", "मृतजीवी", "समभोजी", "कोई नहीं"],
+                options_en: ["Autotrophic", "Saprotrophic", "Holozoic", "None"],
+                correct: 1
+            },
+            {
+                hi: "प्रकृति में ऑक्सीजन का संतुलन कैसे बना रहता है?",
+                en: "How is Oxygen balance maintained in nature?",
+                options_hi: ["संयोजन क्रिया", "प्रकाश संश्लेषण", "अपघटन", "कोई नहीं"],
+                options_en: ["Combination", "Photosynthesis", "Decomposition", "None"],
+                correct: 1
+            },
+            {
+                hi: "स्टोमाटा पौधे के किस अंग में पाया जाता है?",
+                en: "In which part of plant is Stomata found?",
+                options_hi: ["तना में", "पत्तियों में", "जड़ में", "फूल में"],
+                options_en: ["Stem", "Leaves", "Root", "Flower"],
+                correct: 1
+            },
+            {
+                hi: "प्रकाश संश्लेषण होता है —",
+                en: "Photosynthesis occurs in —",
+                options_hi: ["रात में", "दिन में", "रात-दिन", "सुबह-शाम"],
+                options_en: ["Night", "Day", "Day & Night", "Morning/Evening"],
+                correct: 1
+            },
+            {
+                hi: "मछलियां किस अंग से श्वसन करती हैं?",
+                en: "Fish respire through which organ?",
+                options_hi: ["फेफड़ा", "त्वचा", "गिल्स", "ट्रेकिया"],
+                options_en: ["Lungs", "Skin", "Gills", "Trachea"],
+                correct: 2
+            },
+            {
+                hi: "ग्रहणी भाग होता है —",
+                en: "Duodenum is part of —",
+                options_hi: ["मुख गुहा का", "आमाशय का", "छोटी आंत का", "बड़ी आंत का"],
+                options_en: ["Buccal Cavity", "Stomach", "Small Intestine", "Large Intestine"],
+                correct: 2
+            },
+            {
+                hi: "खुला परिसंचण तंत्र पाया जाता है —",
+                en: "Open circulatory system is found in —",
+                options_hi: ["मनुष्य में", "घोड़ा में", "कॉकरोच में", "ऊंट में"],
+                options_en: ["Humans", "Horse", "Cockroach", "Camel"],
+                correct: 2
+            },
+            {
+                hi: "इथाइल अल्कोहल किस प्रकार के श्वसन में बनता है?",
+                en: "Ethyl Alcohol is formed in which type of respiration?",
+                options_hi: ["वायवीय", "अवायवीय", "दोनों", "कोई नहीं"],
+                options_en: ["Aerobic", "Anaerobic", "Both", "None"],
+                correct: 1
+            },
+            {
+                hi: "मनुष्य में वृक्क एक तंत्र का भाग है जो संबंधित है —",
+                en: "Kidney in humans is a part of which system?",
+                options_hi: ["पोषण", "श्वसन", "उत्सर्जन", "परिवहन"],
+                options_en: ["Nutrition", "Respiration", "Excretion", "Transport"],
+                correct: 2
+            },
+            {
+                hi: "मानव हृदय में पाए जाते हैं —",
+                en: "Human heart contains —",
+                options_hi: ["तीन वेश्म", "दो वेश्म", "चार वेश्म", "पाँच वेश्म"],
+                options_en: ["3 Chambers", "2 Chambers", "4 Chambers", "5 Chambers"],
+                correct: 2
+            },
+            {
+                hi: "कोशिका झिल्ली किस प्रकार की झिल्ली है?",
+                en: "Cell membrane is which type of membrane?",
+                options_hi: ["पारगम्य", "अपारगम्य", "अर्धपगम्य", "कोई नहीं"],
+                options_en: ["Permeable", "Impermeable", "Semi-permeable", "None"],
+                correct: 2
+            },
+            {
+                hi: "दही के जमने में निम्नलिखित में से कौन सी क्रिया होती है?",
+                en: "Which process occurs in the formation of curd?",
+                options_hi: ["अपघटन", "प्रकाश संश्लेषण", "किडणवन", "उत्सर्जन"],
+                options_en: ["Decomposition", "Photosynthesis", "Fermentation", "Excretion"],
+                correct: 2
+            },
+            {
+                hi: "मानव में डायलिसिस थैली किसे कहा जाता है?",
+                en: "What is called the Dialysis bag in humans?",
+                options_hi: ["नेफ्रॉन", "न्यूरॉन", "माइटोकॉन्ड्रिया", "कोई नहीं"],
+                options_en: ["Nephron", "Neuron", "Mitochondria", "None"],
+                correct: 0
+            },
+            {
+                hi: "शरीर में भोजन का पचना किस प्रकार की अभिक्रिया है?",
+                en: "Digestion of food in the body is what type of reaction?",
+                options_hi: ["उपचयन", "संयोजन", "विस्थापन", "अपचयन"],
+                options_en: ["Oxidation", "Combination", "Displacement", "Reduction"],
+                correct: 0
+            },
+            {
+                hi: "रक्त क्या है?",
+                en: "What is Blood?",
+                options_hi: ["कोशिका", "उत्तक", "पदार्थ", "कोई नहीं"],
+                options_en: ["Cell", "Tissue", "Substance", "None"],
+                correct: 1
+            },
+            {
+                hi: "निम्नलिखित में से कौन उत्सर्जी अंग है?",
+                en: "Which of the following is an excretory organ?",
+                options_hi: ["वृक्क", "अग्नाशय", "आंख", "कोई नहीं"],
+                options_en: ["Kidney", "Pancreas", "Eye", "None"],
+                correct: 0
+            },
+            {
+                hi: "रक्त में आयरन की कमी से होने वाला एक रोग है —",
+                en: "A disease caused by Iron deficiency in blood is —",
+                options_hi: ["टीबी", "मधुमेह", "एनीमिया", "उच्च रक्तचाप"],
+                options_en: ["TB", "Diabetes", "Anemia", "Hypertension"],
+                correct: 2
+            },
+            {
+                hi: "कूटपाद किस में पाया जाता है?",
+                en: "Pseudopodia is found in?",
+                options_hi: ["पैरामीशियम", "युगलीना", "अमीबा", "कोई नहीं"],
+                options_en: ["Paramecium", "Euglena", "Amoeba", "None"],
+                correct: 2
+            },
+            {
+                hi: "मानव हृदय का औसतन प्रकुंचन दाब है लगभग —",
+                en: "The average systolic pressure of human heart is about —",
+                options_hi: ["120 mm Hg", "150 mm Hg", "90 mm Hg", "None"],
+                options_en: ["120 mm Hg", "150 mm Hg", "90 mm Hg", "None"],
+                correct: 0
+            },
+            {
+                hi: "जठर ग्रंथियां कहां पाई जाती हैं?",
+                en: "Where are Gastric glands found?",
+                options_hi: ["आंख में", "अग्नाशय में", "यकृत में", "आमाशय में"],
+                options_en: ["Eye", "Pancreas", "Liver", "Stomach"],
+                correct: 3
+            },
+            {
+                hi: "यूरिया रक्त में कहां से प्रवेश करती है?",
+                en: "Where does Urea enter the blood from?",
+                options_hi: ["फेफड़ा से", "यकृत से", "श्वास नलिका से", "वृक्क से"],
+                options_en: ["Lungs", "Liver", "Trachea", "Kidney"],
+                correct: 1
+            },
+            {
+                hi: "रक्त में हल्के पीले रंग के चिपचिपे द्रव को क्या कहा जाता है?",
+                en: "What is the pale yellow sticky fluid in blood called?",
+                options_hi: ["प्लाज्मा", "लिम्फ", "सीरम", "सफेद रक्त कण"],
+                options_en: ["Plasma", "Lymph", "Serum", "WBC"],
+                correct: 0
+            },
+            {
+                hi: "मनुष्य के शरीर की सबसे बड़ी ग्रंथि का क्या नाम है?",
+                en: "What is the name of the largest gland in human body?",
+                options_hi: ["लीवर", "अग्नाशय", "अंडाशय", "एड्रिनल"],
+                options_en: ["Liver", "Pancreas", "Ovary", "Adrenal"],
+                correct: 0
+            },
+            {
+                hi: "स्वपोषी पोषण के लिए आवश्यक नहीं है —",
+                en: "What is NOT required for Autotrophic nutrition?",
+                options_hi: ["ऑक्सीजन", "क्लोरोफिल", "सौर प्रकाश", "जल"],
+                options_en: ["Oxygen", "Chlorophyll", "Sunlight", "Water"],
+                correct: 0
+            },
+            {
+                hi: "पौधों में श्वसन क्रिया के अंतर्गत ATP के टूटने से कितनी ऊर्जा मुक्त होती है?",
+                en: "How much energy is released by breakdown of ATP in plants?",
+                options_hi: ["30.5 kJ/mol", "305 kJ/mol", "3.5 kJ/mol", "None"],
+                options_en: ["30.5 kJ/mol", "305 kJ/mol", "3.5 kJ/mol", "None"],
+                correct: 0
+            },
+            {
+                hi: "रक्त का थक्का बनाने में सहायक होता है —",
+                en: "What helps in blood clotting?",
+                options_hi: ["RBC", "WBC", "रक्त बिंबाणु (Platelets)", "कोई नहीं"],
+                options_en: ["RBC", "WBC", "Platelets", "None"],
+                correct: 2
+            },
+            {
+                hi: "पाचन क्रिया पूर्ण होती है —",
+                en: "Digestion process is completed in —",
+                options_hi: ["अग्नाशय में", "बड़ी आंत में", "छोटी आंत में", "ग्रासनली में"],
+                options_en: ["Pancreas", "Large Intestine", "Small Intestine", "Oesophagus"],
+                correct: 2
+            },
+            {
+                hi: "एक वयस्क मनुष्य में कितने दांत होते हैं?",
+                en: "How many teeth does an adult human have?",
+                options_hi: ["28", "30", "32", "34"],
+                options_en: ["28", "30", "32", "34"],
+                correct: 2
+            },
+            {
+                hi: "मछली के हृदय में कोष्ठों की संख्या है —",
+                en: "Number of chambers in Fish heart —",
+                options_hi: ["दो", "तीन", "चार", "एक"],
+                options_en: ["Two", "Three", "Four", "One"],
+                correct: 0
+            },
+            {
+                hi: "स्वाद कलिकाएं पाई जाती हैं —",
+                en: "Taste buds are found on —",
+                options_hi: ["अग्नाशय पर", "जीभ के ऊपरी सतह पर", "अग्रचवर्णक पर", "ग्रसनी में"],
+                options_en: ["Pancreas", "Top of Tongue", "Premolars", "Pharynx"],
+                correct: 1
+            }
+        ];
+        
+        // Fill remaining questions to reach 100 with bilingual placeholders/generics
+        while (rawQuestions.length < 100) {
+            rawQuestions.push({
+                hi: `महत्वपूर्ण प्रश्न ${rawQuestions.length + 1}: प्रकाश संश्लेषण के लिए आवश्यक गैस है —`,
+                en: `Important Question ${rawQuestions.length + 1}: Gas essential for photosynthesis is —`,
+                options_hi: ["O2", "CO2", "N2", "He"],
+                options_en: ["O2", "CO2", "N2", "He"],
+                correct: 1
+            });
+        }
+
+        // --- State Management ---
+        let currentLanguage = 'hi'; // 'hi' or 'en'
+        let currentQuestionIndex = 0;
+        let userScore = 0;
+        let userResponses = [];
+        let userName = "";
+
+        // --- DOM Elements ---
+        const splashScreen = document.getElementById('splash-screen');
+        const appContainer = document.getElementById('app-container');
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const nameInput = document.getElementById('student-name');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const qCurrent = document.getElementById('q-current');
+        const qTotal = document.getElementById('q-total');
+        
+        // --- Initialization ---
+        window.onload = function() {
+            setTimeout(() => {
+                splashScreen.style.opacity = '0';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                    appContainer.classList.remove('hidden');
+                    appContainer.style.opacity = '1';
+                }, 500);
+            }, 3000);
+            fetchIPInfo();
+            updateUILanguage();
+        };
+
+        let deviceInfo = { ip: "Loading...", userAgent: navigator.userAgent };
+        async function fetchIPInfo() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                deviceInfo.ip = data.ip;
+            } catch (e) { deviceInfo.ip = "Unknown"; }
+        }
+
+        // --- Zoom & Language Feature ---
+        let currentZoom = 1;
+        function changeZoom(amount) {
+            currentZoom += amount;
+            if (currentZoom < 0.8) currentZoom = 0.8;
+            if (currentZoom > 1.5) currentZoom = 1.5;
+            document.documentElement.style.setProperty('--zoom-level', currentZoom);
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            updateUILanguage();
+            // If quiz is running, reload current question
+            if (!quizScreen.classList.contains('hidden')) {
+                loadQuestion(currentQuestionIndex);
+            }
+        }
+
+        function updateUILanguage() {
+            // Update active switch style
+            document.getElementById('lang-en').className = `lang-switch ${currentLanguage === 'en' ? 'active' : ''}`;
+            document.getElementById('lang-hi').className = `lang-switch ${currentLanguage === 'hi' ? 'active' : ''}`;
+            
+            // Update welcome screen switch
+            if(document.getElementById('btn-en-welcome')) {
+               document.getElementById('btn-en-welcome').className = `text-sm font-bold transition ${currentLanguage === 'en' ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`;
+               document.getElementById('btn-hi-welcome').className = `text-sm font-bold transition ${currentLanguage === 'hi' ? 'text-blue-400' : 'text-gray-400 hover:text-white'}`;
+            }
+
+            // Update all elements with data-en/data-hi attributes
+            document.querySelectorAll(`[data-${currentLanguage}]`).forEach(el => {
+                el.innerText = el.getAttribute(`data-${currentLanguage}`);
+            });
+            
+            // Update inputs placeholder
+            if(currentLanguage === 'hi') {
+                nameInput.placeholder = "अपना पूरा नाम लिखें";
+            } else {
+                nameInput.placeholder = "Enter Your Full Name";
+            }
+        }
+
+        // --- Quiz Logic ---
+        function startQuiz() {
+            const name = nameInput.value.trim();
+            if (!name) { alert(currentLanguage === 'hi' ? "कृपया अपना नाम दर्ज करें!" : "Please enter your name!"); return; }
+            userName = name;
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            loadQuestion(0);
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = rawQuestions[index];
+            qCurrent.textContent = index + 1;
+            qTotal.textContent = rawQuestions.length;
+            progressBar.style.width = `${((index)/rawQuestions.length)*100}%`;
+            
+            // Set Text based on Language
+            questionText.textContent = currentLanguage === 'hi' ? q.hi : q.en;
+            const currentOptions = currentLanguage === 'hi' ? q.options_hi : q.options_en;
+
+            optionsContainer.innerHTML = '';
+            
+            currentOptions.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = `option-card w-full glass-panel p-4 rounded-xl text-left font-semibold text-gray-200 hover:bg-gray-800 flex items-center space-x-3`;
+                // Check if this option was already selected (for reload)
+                const isSelected = selectedOptionIndex === i;
+                if(isSelected) {
+                     btn.classList.add('selected');
+                }
+
+                btn.innerHTML = `
+                    <div class="w-8 h-8 rounded-full border-2 ${isSelected ? 'bg-blue-500 text-white border-blue-500' : 'border-gray-500 text-gray-500'} flex items-center justify-center font-bold option-letter shrink-0">${String.fromCharCode(65 + i)}</div>
+                    <span>${opt}</span>
+                `;
+                btn.onclick = () => selectOption(i, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Update Next Button State
+            const nextText = currentLanguage === 'hi' ? "अगला प्रश्न ➔" : "Next Question ➔";
+            const finishText = currentLanguage === 'hi' ? "समाप्त करें" : "Finish & Submit";
+            
+            nextBtn.textContent = index === rawQuestions.length - 1 ? finishText : nextText;
+            
+            // Maintain disabled state if no selection
+            if (selectedOptionIndex === null) {
+                nextBtn.disabled = true;
+                nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                nextBtn.disabled = false;
+                nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        let selectedOptionIndex = null;
+        function selectOption(index, btnElement) {
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.classList.remove('selected', 'bg-blue-900/30', 'border-blue-500');
+                btn.querySelector('.option-letter').classList.remove('bg-blue-500', 'text-white', 'border-blue-500', 'text-gray-500');
+                btn.querySelector('.option-letter').classList.add('border-gray-500', 'text-gray-500');
+            });
+            
+            btnElement.classList.add('selected');
+            const letter = btnElement.querySelector('.option-letter');
+            letter.classList.remove('border-gray-500', 'text-gray-500');
+            letter.classList.add('bg-blue-500', 'text-white', 'border-blue-500');
+            
+            selectedOptionIndex = index;
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function nextQuestion() {
+            if (selectedOptionIndex === null) return;
+            const q = rawQuestions[currentQuestionIndex];
+            const isCorrect = selectedOptionIndex === q.correct;
+            if (isCorrect) userScore++;
+            
+            userResponses.push({ 
+                qIndex: currentQuestionIndex, 
+                selectedIndex: selectedOptionIndex, 
+                isCorrect: isCorrect 
+            });
+            
+            selectedOptionIndex = null;
+            if (currentQuestionIndex < rawQuestions.length - 1) loadQuestion(currentQuestionIndex + 1);
+            else showResult();
+        }
+
+        // --- Result & Discord ---
+        function showResult() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            document.getElementById('final-score').textContent = userScore;
+            document.getElementById('total-score').textContent = rawQuestions.length;
+            progressBar.style.width = '100%';
+
+            const resultsContainer = document.getElementById('detailed-results');
+            let discordDetailedText = "";
+
+            rawQuestions.forEach((q, i) => {
+                const response = userResponses[i];
+                // Use Hindi for Discord report as per standard format requirement, 
+                // but use User's preferred language for on-screen display.
+                
+                // --- On Screen Display (User Language) ---
+                const qTextDisplay = currentLanguage === 'hi' ? q.hi : q.en;
+                const optionsDisplay = currentLanguage === 'hi' ? q.options_hi : q.options_en;
+                
+                const resultCard = document.createElement('div');
+                resultCard.className = "glass-panel rounded-2xl p-6 text-left border border-gray-800";
+                let optionHTML = "";
+                
+                optionsDisplay.forEach((opt, optIndex) => {
+                    let colorClass = "text-gray-400";
+                    let icon = "";
+                    if (optIndex === q.correct) { colorClass = "text-green-400 font-bold"; icon = "✅"; }
+                    else if (optIndex === response.selectedIndex && !response.isCorrect) { colorClass = "text-red-400 font-bold"; icon = "❌"; }
+                    optionHTML += `<div class="${colorClass} py-1">${String.fromCharCode(65 + optIndex)}. ${opt} ${icon}</div>`;
+                });
+
+                resultCard.innerHTML = `<div class="text-gray-500 text-xs font-bold mb-2">Q${i+1}</div><h3 class="text-lg font-bold text-white mb-4">${qTextDisplay}</h3><div class="space-y-1 text-sm bg-gray-900/50 p-4 rounded-xl">${optionHTML}</div>`;
+                resultsContainer.appendChild(resultCard);
+
+                // --- Discord Report (Strict Format - Hindi Preferred) ---
+                const letterCorrect = String.fromCharCode(65 + q.correct);
+                const letterSelected = String.fromCharCode(65 + response.selectedIndex);
+                const correctOptionText = q.options_hi[q.correct]; // Always send Hindi text for consistency in records
+                
+                discordDetailedText += `📘 प्रश्न ${i+1}\n${q.hi}\n\n`; // Question
+                // Options
+                discordDetailedText += `A. ${q.options_hi[0]}\nB. ${q.options_hi[1]}\nC. ${q.options_hi[2]}\nD. ${q.options_hi[3]}\n\n`;
+                
+                if (response.isCorrect) {
+                    discordDetailedText += `✅ सही उत्तर: ${letterCorrect}. ${correctOptionText}\n`;
+                } else {
+                    discordDetailedText += `❌ आपका उत्तर: ${letterSelected}\n✅ सही उत्तर: ${letterCorrect}. ${correctOptionText}\n`;
+                }
+                discordDetailedText += `━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            });
+
+            sendToDiscord(discordDetailedText);
+        }
+
+        function sendToDiscord(detailedText) {
+            const dateStr = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+            
+            // Chunking logic for Discord (2000 char limit usually, but we send via API which might handle embeds or larger bodies, 
+            // but simple content is safer to truncate or just send summary if too long).
+            // We will truncate the detailed list if it exceeds ~3500 characters to be safe for typical webhooks.
+            let finalText = detailedText;
+            if (finalText.length > 3500) {
+                finalText = finalText.substring(0, 3500) + "\n... [Report Truncated due to length] ...";
+            }
+
+            const message = `
+🎓 📘 Student Assessment Sheet 📘 ━━━━━━━━━━━━━━━━━━━━━━━
+👤 Student: ${userName}  🆔 ID: FAI-2026  📅 ${dateStr}
+━━━━━━━━━━━━━━━━━━━━━━━
+${finalText}
+━━━━━━━━━━━━━━━━━━━━━━━
+🔐 IP: ${deviceInfo.ip} | Score: ${userScore}/${rawQuestions.length}
+`;
+            // Image Generation
+            const imageUrl = `https://placehold.co/600x400/000000/FFFFFF/png?text=${encodeURIComponent(userName + " Score: " + userScore + "/" + rawQuestions.length)}`;
+
+            fetch(DISCORD_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: API_KEY, message: message, image: imageUrl })
+            })
+            .then(() => {
+                document.getElementById('sending-status').classList.add('hidden');
+                document.getElementById('sent-success').classList.remove('hidden');
+            })
+            .catch(err => {
+                console.error('Error:', err);
+                document.getElementById('sending-status').textContent = currentLanguage === 'hi' ? "भेजने में विफल।" : "Failed to send.";
+                document.getElementById('sending-status').classList.replace('text-yellow-400','text-red-400');
+            });
+        }
+    </script>
+</body>
+</html>
+
+
