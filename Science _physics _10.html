@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Objective Quiz 2026 | Faizan Ali</title>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: rgba(28, 28, 30, 0.8);
+            --accent-color: #0A84FF;
+            --text-color: #FFFFFF;
+            --secondary-text: #8E8E93;
+            --correct-color: #32D74B;
+            --wrong-color: #FF453A;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none; /* Copy Disable */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- Splash Screen --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .animated-text {
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 20px;
+            background: linear-gradient(to right, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 5s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* --- Name Input Section --- */
+        #name-screen {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: var(--card-bg);
+            color: white;
+            font-size: 18px;
+            margin-bottom: 20px;
+            outline: none;
+        }
+
+        .ios-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 25px;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .ios-btn:active { transform: scale(0.95); }
+
+        /* --- Quiz UI --- */
+        #quiz-container {
+            display: none;
+            width: 95%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .question-text {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .option {
+            background: rgba(255, 255, 255, 0.05);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover { background: rgba(255, 255, 255, 0.1); }
+        .option.selected { border: 2px solid var(--accent-color); }
+
+        /* --- Result UI --- */
+        #result-screen {
+            display: none;
+            width: 95%;
+            max-width: 600px;
+            text-align: center;
+            padding-bottom: 50px;
+        }
+
+        .result-item {
+            text-align: left;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <div class="animated-text">Powered by Faizan Ali</div>
+    </div>
+
+    <div id="name-screen">
+        <h1 style="font-size: 32px;">अपना नाम लिखें</h1>
+        <input type="text" id="student-name" placeholder="आपका नाम यहाँ...">
+        <button class="ios-btn" onclick="startQuiz()">Continue</button>
+    </div>
+
+    <div id="quiz-container">
+        <div class="card">
+            <div id="question-number" style="color: var(--secondary-text); margin-bottom: 10px;">Question 1 of 250</div>
+            <div id="question" class="question-text"></div>
+            <div id="options"></div>
+        </div>
+        <button id="next-btn" class="ios-btn" style="width: 100%;" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div id="result-screen">
+        <div class="card">
+            <h2 id="final-score-text">परीक्षा समाप्त!</h2>
+            <img id="score-image" src="" alt="Score Image" style="width: 100%; border-radius: 15px; margin: 15px 0;">
+            <div id="display-results"></div>
+        </div>
+    </div>
+
+    <script>
+        const QUESTIONS = [
+            { q: "प्रकाश तरंग उदाहरण है —", options: ["ध्वनि तरंग का", "विद्युत चुंबकीय तरंग का", "पराबैंगनी तरंग का", "इनमें कोई नहीं"], a: 1 },
+            { q: "प्रकाश की किरणें गमन करती हैं —", options: ["सीधी रेखा में", "टेढ़ी रेखा में", "किसी भी दिशा में", "इनमें कोई नहीं"], a: 0 },
+            { q: "प्रकाश के परावर्तन के कितने नियम हैं?", options: ["एक", "दो", "तीन", "चार"], a: 1 },
+            { q: "अवतल दर्पण की फोकस दूरी होती है —", options: ["धनात्मक", "ऋणात्मक", "शून्य", "अनंत"], a: 1 },
+            { q: "दाढ़ी बनाने के लिए कौन सा दर्पण प्रयुक्त होता है?", options: ["समतल दर्पण", "उत्तल दर्पण", "अवतल दर्पण", "इनमें कोई नहीं"], a: 2 }
+            // यहाँ आप वीडियो से मिले बाकी 250 सवाल इसी फॉर्मेट में जोड़ सकते हैं।
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+        let userAnswers = [];
+        let studentInfo = { name: "", ip: "", device: "" };
+
+        // 1. Splash Screen Logic
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('splash-screen').style.display = 'none';
+                    document.getElementById('name-screen').style.display = 'block';
+                }, 500);
+            }, 3000);
+            fetchSystemDetails();
+        };
+
+        async function fetchSystemDetails() {
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                studentInfo.ip = data.ip;
+                studentInfo.device = navigator.userAgent;
+            } catch (e) { studentInfo.ip = "Unknown"; }
+        }
+
+        function startQuiz() {
+            const nameInput = document.getElementById('student-name').value;
+            if (!nameInput) return alert("कृपया अपना नाम दर्ज करें!");
+            studentInfo.name = nameInput;
+            document.getElementById('name-screen').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = QUESTIONS[currentQ];
+            document.getElementById('question-number').innerText = `Question ${currentQ + 1} of ${QUESTIONS.length}`;
+            document.getElementById('question').innerText = q.q;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = "";
+            
+            q.options.forEach((opt, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerText = `${String.fromCharCode(65 + index)}. ${opt}`;
+                div.onclick = () => selectOption(index, div);
+                optionsDiv.appendChild(div);
+            });
+        }
+
+        function selectOption(index, el) {
+            const all = document.querySelectorAll('.option');
+            all.forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            userAnswers[currentQ] = index;
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQ] === undefined) return alert("कृपया एक उत्तर चुनें!");
+            
+            if (userAnswers[currentQ] === QUESTIONS[currentQ].a) score++;
+
+            currentQ++;
+            if (currentQ < QUESTIONS.length) {
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        async function finishQuiz() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'block';
+            
+            // Generate Score Image URL
+            const scoreImg = `https://placehold.co/600x400/000/fff?text=Score:+${score}/${QUESTIONS.length}`;
+            document.getElementById('score-image').src = scoreImg;
+
+            // Show Local Results
+            let resultHTML = `<h3>Student: ${studentInfo.name}</h3>`;
+            QUESTIONS.forEach((q, i) => {
+                const isCorrect = userAnswers[i] === q.a;
+                resultHTML += `
+                    <div class="result-item">
+                        <p><b>Q${i+1}: ${q.q}</b></p>
+                        <p style="color: ${isCorrect ? 'var(--correct-color)' : 'var(--wrong-color)'}">
+                            Your Answer: ${q.options[userAnswers[i]]} ${isCorrect ? '✅' : '❌'}
+                        </p>
+                        ${!isCorrect ? `<p style="color: var(--correct-color)">Correct: ${q.options[q.a]}</p>` : ''}
+                    </div>`;
+            });
+            document.getElementById('display-results').innerHTML = resultHTML;
+
+            // Send to Discord
+            sendToDiscord(scoreImg);
+        }
+
+        function sendToDiscord(scoreImg) {
+            let message = `🎓 📘 Student Assessment Sheet 📘 ━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            message += `👤 Student Name: ${studentInfo.name}\n📅 Date: ${new Date().toLocaleDateString('hi-IN')}\n🌍 Location: India 🇮🇳\n━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            QUESTIONS.forEach((q, i) => {
+                message += `📘 प्रश्न ${i+1}\n${q.q}\n`;
+                q.options.forEach((opt, idx) => {
+                    let symbol = "";
+                    if (idx === q.a) symbol = " ✅";
+                    else if (idx === userAnswers[i] && userAnswers[i] !== q.a) symbol = " ❌";
+                    message += `${String.fromCharCode(65 + idx)}. ${opt}${symbol}\n`;
+                });
+                message += `✅ सही उत्तर: ${q.options[q.a]}\n\n`;
+            });
+
+            message += `━━━━━━━━━━━━━━━━━━━━━━━\n🔐 System Information:\n🌐 IP Address: ${studentInfo.ip}\n📱 User Agent: ${studentInfo.device}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: 'QUIZZES_7887168828',
+                    message: message,
+                    image: scoreImg
+                })
+            }).then(() => console.log('Result Sent to Discord!'));
+        }
+    </script>
+</body>
+</html>
