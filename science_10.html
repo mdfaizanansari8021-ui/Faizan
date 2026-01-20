@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Science Premium Quiz | Faizan Ali</title>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <style>
+        :root {
+            --ios-bg: #000000;
+            --ios-card: #1C1C1E;
+            --ios-blue: #0A84FF;
+            --ios-green: #30D158;
+            --ios-red: #FF453A;
+            --ios-text: #FFFFFF;
+            --ios-secondary: #8E8E93;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none; /* Disable copy */
+        }
+
+        body {
+            background-color: var(--ios-bg);
+            color: var(--ios-text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: black;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+        }
+
+        .colorful-text {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 20px;
+            background: linear-gradient(to right, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: move-bg 8s linear infinite;
+        }
+
+        @keyframes move-bg {
+            from { background-position: 0%; }
+            to { background-position: 400%; }
+        }
+
+        /* Container */
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+            display: none;
+        }
+
+        .card {
+            background: var(--ios-card);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        h1 { font-size: 28px; margin-bottom: 10px; }
+        p { color: var(--ios-secondary); margin-bottom: 30px; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: #2C2C2E;
+            color: white;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        /* Quiz UI */
+        .question-box { text-align: left; }
+        .q-text { font-size: 22px; font-weight: bold; margin-bottom: 20px; display: block; }
+        
+        .option {
+            background: #2C2C2E;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 2px solid transparent;
+            font-size: 18px;
+        }
+
+        .option:hover { background: #3A3A3C; }
+        .option.selected { border-color: var(--ios-blue); background: #3A3A3C; }
+
+        .progress-bar {
+            height: 6px;
+            background: #3A3A3C;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--ios-blue);
+            width: 0%;
+            transition: 0.3s;
+        }
+
+        /* Result Styles */
+        .result-item {
+            text-align: left;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #3A3A3C;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <div class="colorful-text">Power by Faizan Ali</div>
+    </div>
+
+    <div id="login-container" class="app-container">
+        <div class="card">
+            <h1>Science Quiz 2026</h1>
+            <p>Enter your details to start the assessment</p>
+            <input type="text" id="student-name" placeholder="Enter Your Full Name">
+            <button class="btn" onclick="startQuiz()">Continue</button>
+        </div>
+    </div>
+
+    <div id="quiz-container" class="app-container">
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill"></div></div>
+        <div class="card question-box">
+            <span id="question-num" style="color: var(--ios-blue); font-weight: bold;">Question 1/20</span>
+            <span id="question-text" class="q-text">Loading...</span>
+            <div id="options-container"></div>
+            <button class="btn" id="next-btn" style="margin-top: 20px;" onclick="nextQuestion()">Next Question</button>
+        </div>
+    </div>
+
+    <div id="result-container" class="app-container">
+        <div class="card">
+            <h1 id="final-score-title">Assessment Completed!</h1>
+            <div id="web-result-sheet" style="margin-top:20px;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = "https://quizzes-pi-one.vercel.app/api/send";
+        const SECRET_KEY = "QUIZZES_7887168828";
+
+        const questions = [
+            { q: "सिल्वर क्लोराइड का रंग कैसा होता है?", a: "श्वेत", o: ["श्वेत", "पीला", "हरा", "काला"] },
+            { q: "सिंगल बॉन्ड -CHO अभिक्रिया मूलक को कहते हैं?", a: "एल्डिहाइड", o: ["एल्डिहाइड", "अल्कोहल", "कीटोन", "अम्ल"] },
+            { q: "विद्युत आवेश का SI मात्रक क्या होता है?", a: "कूलाम्ब", o: ["वोल्ट", "ओम", "एम्पियर", "कूलाम्ब"] },
+            { q: "डायनेमो यांत्रिक ऊर्जा को किस ऊर्जा में परिवर्तित करता है?", a: "विद्युत ऊर्जा", o: ["विद्युत ऊर्जा", "ध्वनि ऊर्जा", "सौर ऊर्जा", "इनमें से कोई नहीं"] },
+            { q: "टेस्टोस्टेरोन स्रावित होता है?", a: "वृषण से", o: ["वृषण से", "अंडाशय से", "थायराइड से", "पीयूष से"] },
+            { q: "फूल का कौन सा भाग फल में बदलता है?", a: "अंडाशय", o: ["पुंकेसर", "स्त्रीकेसर", "अंडाशय", "बीजांड"] },
+            { q: "तालाब का जल कम गहरा दिखाई देने का कारण क्या है?", a: "अपवर्तन", o: ["परावर्तन", "अपवर्तन", "विवर्तन", "ध्रुवण"] },
+            { q: "पौधे में भोजन किस रूप में जमा होता है?", a: "स्टार्च", o: ["ग्लूकोज", "प्रोटीन", "स्टार्च", "फैटी एसिड"] },
+            { q: "एक एंगस्ट्रम (1Å) का मान कितना होता है?", a: "10^-10 मीटर", o: ["10^-10 मीटर", "10^-8 मीटर", "10^-12 मीटर", "10^-6 मीटर"] },
+            { q: "मैग्नीशियम पाया जाता है?", a: "क्लोरोफिल में", o: ["क्लोरोफिल में", "लाल रक्त कण में", "वर्णी लवक में", "श्वेत रक्त कण में"] },
+            { q: "सोडियम के संयोजी सेल में इलेक्ट्रॉनों की संख्या कितनी है?", a: "1", o: ["1", "2", "8", "7"] },
+            { q: "कौन सा हाइड्रोकार्बन सबसे सरल यौगिक है?", a: "मीथेन", o: ["मीथेन", "ईथेन", "प्रोपेन", "ब्यूटेन"] },
+            { q: "द्विखंडन होता है?", a: "इनमें से सभी", o: ["अमीबा", "पैरामीशियम", "लिस्मेनिया", "इनमें से सभी"] },
+            { q: "किसे अनुवांशिकी का पिता कहा जाता है?", a: "ग्रेगर जॉन मेंडल", o: ["डार्विन", "ग्रेगर जॉन मेंडल", "लैमार्क", "वाइसमैन"] },
+            { q: "किसी जीव की जीनी संरचना क्या कहलाती है?", a: "जीनोटाइप", o: ["फीनोटाइप", "जीनोटाइप", "अनुवांशिकता", "विभिन्नता"] },
+            { q: "कौन अंतः स्रावी और बाह्य स्रावी ग्रंथि जैसा कार्य नहीं करता है?", a: "पीयूष ग्रंथि", o: ["अग्नाशय", "अंडाशय", "वृषण", "पीयूष ग्रंथि"] },
+            { q: "निषेचन के फलस्वरूप अंडाशय विकसित होता है?", a: "फल में", o: ["बीज में", "फल में", "फूल में", "पत्ती में"] },
+            { q: "कौन सा जैव अनिमनीकरणीय प्रदूषक है?", a: "प्लास्टिक", o: ["कागज", "प्लास्टिक", "गोबर", "सब्जी के छिलके"] },
+            { q: "अष्टक सिद्धांत को किसने स्थापित किया?", a: "न्यूलैंड्स", o: ["डोबरेनर", "न्यूलैंड्स", "मेंडलीफ", "मोजले"] },
+            { q: "कौन कमरे के तापक्रम पर द्रव अवस्था में रहता है?", a: "एथेनॉल", o: ["मीथेन", "ईथेन", "एथेनॉल", "ब्यूटेन"] }
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+        let userName = "";
+        let userResponses = [];
+
+        // Splash screen logic
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('splash-screen').style.display = 'none';
+                document.getElementById('login-container').style.display = 'block';
+            }, 500);
+        }, 3000);
+
+        function startQuiz() {
+            userName = document.getElementById('student-name').value;
+            if (!userName) return alert("Please enter your name!");
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('question-num').innerText = `Question ${currentQ + 1}/20`;
+            document.getElementById('question-text').innerText = q.q;
+            document.getElementById('progress-fill').style.width = `${((currentQ) / 20) * 100}%`;
+            
+            const optionsDiv = document.getElementById('options-container');
+            optionsDiv.innerHTML = "";
+            q.o.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerText = opt;
+                div.onclick = () => {
+                    document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+                    div.classList.add('selected');
+                };
+                optionsDiv.appendChild(div);
+            });
+        }
+
+        function nextQuestion() {
+            const selected = document.querySelector('.option.selected');
+            if (!selected) return alert("Please select an answer!");
+
+            userResponses.push({
+                question: questions[currentQ].q,
+                selected: selected.innerText,
+                correct: questions[currentQ].a
+            });
+
+            if (selected.innerText === questions[currentQ].a) score++;
+
+            currentQ++;
+            if (currentQ < questions.length) {
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        async function finishQuiz() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+            
+            let ipData = { ip: "Loading...", userAgent: navigator.userAgent };
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                ipData.ip = data.ip;
+            } catch(e) {}
+
+            const date = new Date().toLocaleDateString('hi-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+            
+            // Generate Web Display
+            let webHtml = `<h3>Score: ${score}/20</h3><hr>`;
+            let discordMsg = `🎓 📘 Student Assessment Sheet 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 Name: ${userName}\n📅 Date: ${date}\n🌍 Location: India 🇮🇳\n🎯 Score: ${score}/20\n━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            userResponses.forEach((item, index) => {
+                const isCorrect = item.selected === item.correct;
+                webHtml += `
+                    <div class="result-item">
+                        <b>Q${index + 1}: ${item.question}</b><br>
+                        <span style="color:${isCorrect ? '#30D158' : '#FF453A'}">${isCorrect ? '✅' : '❌'} Your Answer: ${item.selected}</span><br>
+                        ${!isCorrect ? `<span style="color:#30D158">✅ Correct Answer: ${item.correct}</span>` : ''}
+                    </div>`;
+
+                // Discord Format
+                discordMsg += `📘 प्रश्न ${index + 1}\n${item.question}\n`;
+                questions[index].o.forEach(opt => {
+                    let prefix = "";
+                    if (opt === item.correct) prefix = "✅ ";
+                    else if (opt === item.selected && !isCorrect) prefix = "❌ ";
+                    discordMsg += `${prefix}${opt}\n`;
+                });
+                discordMsg += `✅ सही उत्तर: ${item.correct}\n\n`;
+            });
+
+            discordMsg += `━━━━━━━━━━━━━━━━━━━━━━━\n🔐 System Information:\n🌐 IP: ${ipData.ip}\n📱 Device: ${navigator.platform}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            document.getElementById('web-result-sheet').innerHTML = webHtml;
+
+            // Send to Discord
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: SECRET_KEY,
+                    message: discordMsg,
+                    image: `https://placehold.co/600x400/000/fff?text=${encodeURIComponent(userName)}+Score+${score}`
+                })
+            }).then(() => console.log("Sent to Discord"));
+        }
+    </script>
+</body>
+</html>
