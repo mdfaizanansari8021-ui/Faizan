@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Science Quiz | Faizan Ali</title>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <style>
+        :root {
+            --bg: #000000;
+            --card: #1c1c1e;
+            --accent: #0a84ff;
+            --text: #ffffff;
+            --secondary: #8e8e93;
+            --correct: #32d74b;
+            --wrong: #ff453a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            user-select: none; /* Disable Copy */
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* --- Splash Screen --- */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .powered-by {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            background: linear-gradient(90deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: rainbow 5s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0%; }
+            100% { background-position: 400%; }
+        }
+
+        /* --- Login & Container --- */
+        #login-screen, #quiz-container, #result-screen {
+            display: none;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+            min-height: 100vh;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ios-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 0.5px solid #38383a;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: #2c2c2e;
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+
+        .btn:active { transform: scale(0.95); }
+
+        /* --- Quiz UI --- */
+        .q-header { margin-bottom: 30px; text-align: center; }
+        .q-title { font-size: 22px; margin-bottom: 20px; color: var(--text); font-weight: 700; }
+        .option {
+            background: #2c2c2e;
+            padding: 18px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 17px;
+        }
+        .option:hover { background: #3a3a3c; }
+        .option.selected { border-color: var(--accent); background: rgba(10, 132, 255, 0.1); }
+
+        /* --- Result --- */
+        .result-item { margin-bottom: 20px; padding: 15px; border-bottom: 1px solid #38383a; }
+        .res-q { font-weight: bold; margin-bottom: 10px; display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <div class="powered-by">Powered by Faizan Ali</div>
+    </div>
+
+    <div id="login-screen" style="display: flex;">
+        <div class="ios-card">
+            <h1 style="margin-bottom: 20px; text-align: center;">Welcome</h1>
+            <input type="text" id="userName" placeholder="अपना नाम लिखें...">
+            <button class="btn" onclick="startQuiz()">Start Quiz</button>
+        </div>
+    </div>
+
+    <div id="quiz-container">
+        <div class="ios-card">
+            <div class="q-header">
+                <span id="q-count" style="color: var(--secondary)">Question 1/80</span>
+            </div>
+            <div id="question-box">
+                <p class="q-title" id="q-text">Loading...</p>
+                <div id="options-container"></div>
+            </div>
+            <button class="btn" style="margin-top: 20px;" id="next-btn" onclick="nextQuestion()">Next</button>
+        </div>
+    </div>
+
+    <div id="result-screen">
+        <div class="ios-card">
+            <h2 style="text-align: center; color: var(--correct);">Assessment Completed ✅</h2>
+            <div id="final-summary" style="margin: 20px 0; font-size: 18px; text-align: center;"></div>
+            <div id="detailed-results"></div>
+        </div>
+    </div>
+
+    <script>
+        // Data & Variables
+        const secretKey = 'QUIZZES_7887168828';
+        let currentIdx = 0;
+        let score = 0;
+        let userAnswers = [];
+        let userName = "";
+
+        const questions = [
+            { q: "चुंबकीय क्षेत्र चुंबक के ध्रुव पर होते हैं —", a: ["महत्तम", "निम्नतम", "सामान्य", "कोई नहीं"], ans: 0 },
+            { q: "प्रतिबिंब की ऊंचाई और वस्तु की ऊंचाई के अनुपात को कहते हैं —", a: ["आवर्धन", "प्रवर्धन", "संवर्धन", "कोई नहीं"], ans: 0 },
+            { q: "अल्कोहल का अपवर्तनांक कितना होता है?", a: ["1.33", "1.36", "1.44", "2.42"], ans: 1 },
+            { q: "नेत्र लेंस में समायोजन की क्रिया होती है —", a: ["आयरिस द्वारा", "नेत्र लेंस द्वारा", "सिलियरी मांसपेशियों द्वारा", "कॉर्निया द्वारा"], ans: 2 },
+            { q: "प्रत्यावर्ती धारा (AC) की आवृत्ति कितनी होती है?", a: ["40Hz", "50Hz", "60Hz", "100Hz"], ans: 1 },
+            { q: "स्पेक्ट्रम प्राप्त करने के लिए किसका उपयोग होता है?", a: ["कांच की सिल्ली", "अवतल दर्पण", "उत्तल लेंस", "प्रिज्म"], ans: 3 },
+            { q: "लेंसों में मुख्य फोकस की संख्या कितनी होती है?", a: ["एक", "दो", "तीन", "चार"], ans: 1 },
+            { q: "रोगियों के नाक, कान, गले आदि की जांच के लिए डॉक्टर प्रयोग करते हैं —", a: ["अवतल दर्पण", "उत्तल दर्पण", "समतल दर्पण", "कोई नहीं"], ans: 0 },
+            { q: "प्रकाश के अपवर्तन के कितने नियम हैं?", a: ["एक", "दो", "तीन", "चार"], ans: 1 },
+            { q: "बिजली के फ्यूज का तार बना होता है —", a: ["तांबे का", "टिन का", "तांबे और टिन का", "लोहे का"], ans: 2 }
+            // Note: 80 questions would be added here in the same format.
+        ];
+
+        // 1. Splash Screen Logic
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
+        }, 3000);
+
+        function startQuiz() {
+            userName = document.getElementById('userName').value;
+            if(!userName) return alert("कृपया अपना नाम दर्ज करें!");
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'flex';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questions[currentIdx];
+            document.getElementById('q-count').innerText = `Question ${currentIdx + 1}/${questions.length}`;
+            document.getElementById('q-text').innerText = q.q;
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            q.a.forEach((opt, i) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.innerText = opt;
+                div.onclick = () => selectOption(i, div);
+                container.appendChild(div);
+            });
+        }
+
+        let selected = null;
+        function selectOption(idx, el) {
+            selected = idx;
+            document.querySelectorAll('.option').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+        }
+
+        function nextQuestion() {
+            if(selected === null) return alert("एक विकल्प चुनें!");
+            
+            userAnswers.push({
+                question: questions[currentIdx].q,
+                options: questions[currentIdx].a,
+                selected: selected,
+                correct: questions[currentIdx].ans
+            });
+
+            if(selected === questions[currentIdx].ans) score++;
+
+            selected = null;
+            currentIdx++;
+            if(currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        async function showResult() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('result-screen').style.display = 'flex';
+            
+            let summaryHTML = `Name: ${userName} | Score: ${score}/${questions.length}`;
+            document.getElementById('final-summary').innerText = summaryHTML;
+
+            let detailsHTML = "";
+            let discordMsg = `🎓 📘 Student Assessment Sheet 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 Name: ${userName}\n📊 Score: ${score}/${questions.length}\n📅 Date: ${new Date().toLocaleDateString()}\n━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+            userAnswers.forEach((item, i) => {
+                let optionsText = "";
+                item.options.forEach((opt, j) => {
+                    let mark = "";
+                    if(j === item.correct) mark = " ✅";
+                    if(j === item.selected && j !== item.correct) mark = " ❌";
+                    optionsText += `${String.fromCharCode(65+j)}. ${opt}${mark}\n`;
+                });
+
+                discordMsg += `📘 प्रश्न ${i+1}\n${item.question}\n${optionsText}\n✅ सही उत्तर: ${item.options[item.correct]}\n\n`;
+
+                detailsHTML += `<div class="result-item">
+                    <span class="res-q">${i+1}. ${item.question}</span>
+                    <p>Your Answer: ${item.options[item.selected]} ${item.selected === item.correct ? '✅' : '❌'}</p>
+                    <p style="color: var(--correct)">Correct: ${item.options[item.correct]}</p>
+                </div>`;
+            });
+
+            document.getElementById('detailed-results').innerHTML = detailsHTML;
+
+            // Fetch IP & System Info
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                const systemInfo = `\n🔐 System Information:\n🌐 IP: ${ipData.ip}\n📱 Device: ${navigator.userAgent}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+                discordMsg += systemInfo;
+
+                // Send to Discord
+                fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        key: secretKey,
+                        message: discordMsg,
+                        image: `https://placehold.co/600x400/000000/FFFFFF/png?text=Score+${score}+Out+Of+${questions.length}`
+                    })
+                }).then(() => console.log('Sent to Discord!'));
+            } catch(e) { console.error(e); }
+        }
+    </script>
+</body>
+</html>
