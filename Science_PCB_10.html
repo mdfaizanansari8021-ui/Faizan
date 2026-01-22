@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Science Quiz | Faizan Ali</title>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+    <style>
+        :root {
+            --ios-bg: #000000;
+            --ios-card: #1C1C1E;
+            --ios-blue: #0A84FF;
+            --ios-green: #30D158;
+            --ios-red: #FF453A;
+            --ios-text: #FFFFFF;
+            --ios-secondary: #8E8E93;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--ios-bg);
+            color: var(--ios-text);
+            overflow-x: hidden;
+        }
+
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .powered-by {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: rainbow 3s linear infinite;
+        }
+
+        @keyframes rainbow {
+            to { background-position: 200% center; }
+        }
+
+        /* Login Screen */
+        #login-container {
+            display: none;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .ios-card {
+            background: var(--ios-card);
+            padding: 30px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 12px;
+            border: none;
+            background: #2C2C2E;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .ios-btn {
+            background: var(--ios-blue);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            width: 100%;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .ios-btn:active { transform: scale(0.95); }
+
+        /* Quiz UI */
+        #quiz-container {
+            display: none;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .question-card {
+            background: var(--ios-card);
+            padding: 25px;
+            border-radius: 24px;
+            margin-top: 50px;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            margin: 12px 0;
+            background: #2C2C2E;
+            border: 2px solid transparent;
+            border-radius: 15px;
+            color: white;
+            text-align: left;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        .option-btn:hover { background: #3A3A3C; }
+        
+        /* Result UI */
+        #result-container {
+            display: none;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .result-item {
+            background: var(--ios-card);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            border-left: 5px solid var(--ios-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="splash-screen">
+        <dotlottie-wc src="https://lottie.host/439a1631-6ff8-41a0-89c3-4fc2ae44f333/yCSzWTE6LT.lottie" style="width: 300px;height: 300px" autoplay loop></dotlottie-wc>
+        <div class="powered-by">Powered by Faizan Ali</div>
+    </div>
+
+    <div id="login-container">
+        <div class="ios-card">
+            <h2>Welcome</h2>
+            <p style="color: var(--ios-secondary)">Please enter your name to start</p>
+            <input type="text" id="student-name" placeholder="Full Name">
+            <button class="ios-btn" onclick="startQuiz()">Continue</button>
+        </div>
+    </div>
+
+    <div id="quiz-container">
+        <div class="question-card">
+            <h3 id="q-num" style="color: var(--ios-blue); margin-bottom: 10px;">Question 1</h3>
+            <h2 id="q-text" style="font-size: 1.5rem; margin-bottom: 20px;">Loading...</h2>
+            <div id="options-box"></div>
+        </div>
+    </div>
+
+    <div id="result-container">
+        <h1 style="text-align: center; margin-bottom: 20px;">Assessment Result</h1>
+        <div id="result-summary"></div>
+    </div>
+
+    <script>
+        const QUIZ_DATA = [
+            { q: "निम्न में कौन सा पदार्थ लेंस के लिए प्रयुक्त नहीं किया जा सकता?", a: "पीतल", o: ["जल", "काँच", "प्लास्टिक", "पीतल"] },
+            { q: "प्रकाश के अपवर्तन के कितने नियम हैं?", a: "2", o: ["1", "2", "3", "4"] },
+            { q: "किसी वस्तु का प्रतिबिंब आँख के जिस भाग पर बनता है वह है —", a: "रेटिना", o: ["कॉर्निया", "रेटिना", "पुतली", "आइरिस"] },
+            { q: "अवतल दर्पण की फोकस दूरी होती है —", a: "ऋणात्मक", o: ["धनात्मक", "ऋणात्मक", "शून्य", "अनंत"] },
+            { q: "किस माध्यम के अपवर्तनांक का मान होता है —", a: "sin i / sin r", o: ["sin i / sin r", "sin r / sin i", "sin i × sin r", "sin i + sin r"] }
+            // Add other 95 questions here following the same format
+        ];
+
+        let currentQ = 0;
+        let score = 0;
+        let studentName = "";
+        let userResponses = [];
+        const SECRET_KEY = "QUIZZES_7887168828";
+
+        // Splash handling
+        setTimeout(() => {
+            document.getElementById('splash-screen').style.display = 'none';
+            document.getElementById('login-container').style.display = 'flex';
+        }, 3000);
+
+        function startQuiz() {
+            studentName = document.getElementById('student-name').value;
+            if (!studentName) return alert("Please enter your name");
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const data = QUIZ_DATA[currentQ];
+            document.getElementById('q-num').innerText = `Question ${currentQ + 1} of ${QUIZ_DATA.length}`;
+            document.getElementById('q-text').innerText = data.q;
+            const optionsBox = document.getElementById('options-box');
+            optionsBox.innerHTML = "";
+            data.o.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(opt);
+                optionsBox.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selected) {
+            const data = QUIZ_DATA[currentQ];
+            userResponses.push({ q: data.q, selected: selected, correct: data.a });
+            if (selected === data.a) score++;
+
+            currentQ++;
+            if (currentQ < QUIZ_DATA.length) {
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        async function finishQuiz() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('result-container').style.display = 'block';
+
+            // Get IP and Device Info
+            let ip = "Unknown";
+            try {
+                const res = await fetch('https://api.ipify.org?format=json');
+                const data = await res.json();
+                ip = data.ip;
+            } catch (e) {}
+
+            const deviceInfo = navigator.userAgent;
+            const dateStr = new Date().toLocaleString('hi-IN');
+
+            // Build Discord Message
+            let message = `🎓 📘 Student Assessment Sheet 📘\n━━━━━━━━━━━━━━━━━━━━━━━\n👤 Student Name: ${studentName}\n🆔 Score: ${score}/${QUIZ_DATA.length}\n📅 Date: ${dateStr}\n🌍 Location: India 🇮🇳\n━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            userResponses.forEach((item, index) => {
+                const status = item.selected === item.correct ? "✅" : "❌";
+                message += `📘 प्रश्न ${index + 1}\n${item.q}\nSelected: ${item.selected} ${status}\n✅ सही उत्तर: ${item.correct}\n\n`;
+            });
+
+            message += `━━━━━━━━━━━━━━━━━━━━━━━\n🔐 System Information:\n🌐 IP Address: ${ip}\n📱 User Agent: ${deviceInfo}\n━━━━━━━━━━━━━━━━━━━━━━━`;
+
+            // Build Website Result View
+            const summaryDiv = document.getElementById('result-summary');
+            summaryDiv.innerHTML = `<div class="ios-card" style="max-width: 100%; margin-bottom: 20px;"><h2>Score: ${score}/${QUIZ_DATA.length}</h2></div>`;
+            userResponses.forEach((item, index) => {
+                summaryDiv.innerHTML += `
+                    <div class="result-item">
+                        <p><strong>Q${index + 1}: ${item.q}</strong></p>
+                        <p style="color: ${item.selected === item.correct ? 'var(--ios-green)' : 'var(--ios-red)'}">Your Answer: ${item.selected}</p>
+                        <p style="color: var(--ios-green)">Correct: ${item.correct}</p>
+                    </div>
+                `;
+            });
+
+            // Send to Discord
+            fetch('https://quizzes-pi-one.vercel.app/api/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    key: SECRET_KEY,
+                    message: message,
+                    image: `https://placehold.co/600x400/000/fff?text=${encodeURIComponent(studentName + ' - Score: ' + score)}`
+                })
+            }).then(() => console.log('Result Sent Successfully!'));
+        }
+    </script>
+</body>
+</html>
